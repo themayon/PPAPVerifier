@@ -1,4 +1,4 @@
-# Deploy fullstackhero with Docker Compose
+# Deploy fullstack with Docker Compose
 
 This brings up the full stack on a single host:
 

@@ -474,8 +474,8 @@ variable "alarm_email_addresses" {
 
 variable "container_registry" {
   type        = string
-  description = "Container registry URL (e.g., ghcr.io/fullstackhero)."
-  default     = "ghcr.io/fullstackhero"
+  description = "Container registry URL (e.g., ghcr.io/fullstack)."
+  default     = "ghcr.io/fullstack"
 }
 
 variable "container_image_tag" {

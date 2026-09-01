@@ -171,7 +171,7 @@ For each, first read the existing test file to confirm it's missing, then add on
 ## Final
 - [ ] `dotnet build src/FSH.Starter.slnx` (TreatWarningsAsErrors) + full `dotnet test` (Docker up).
 - [ ] Both frontends: typecheck/lint/build + Playwright.
-- [ ] Docs repo (`C:\Users\mukesh\repos\fullstackhero\docs`) + changelog (golden rule #10): new config key,
+- [ ] Docs repo (`C:\Users\mukesh\repos\fullstack\docs`) + changelog (golden rule #10): new config key,
       new endpoints, QuestPDF license note, dashboard subscription page + banners, expiry/renewal emails.
 - [ ] Update memory `project_tenant_billing_lifecycle.md` (Phases 3–4 + dashboard + tests done).
 

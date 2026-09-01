@@ -34,7 +34,7 @@ export function ApiKeysSettings() {
             variant="outline"
             onClick={() => {
               window.open(
-                "https://github.com/fullstackhero/dotnet-starter-kit",
+                "https://github.com/fullstack/dotnet-starter-kit",
                 "_blank",
                 "noopener,noreferrer",
               );

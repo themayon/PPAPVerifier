@@ -66,13 +66,13 @@
             "datatype": "string",
             "description": "Default 'from' address for outbound mail.",
             "defaultValue": "noreply@example.com",
-            "replaces": "mukesh@fullstackhero.net"
+            "replaces": "mukesh@fullstack.net"
         },
         "sendgridFrom": {
             "type": "generated",
             "generator": "constant",
             "parameters": { "value": "noreply@example.com" },
-            "replaces": "sendgrid@fullstackhero.net"
+            "replaces": "sendgrid@fullstack.net"
         },
         "nameUnderscore": {
             "type": "derived",

@@ -5,7 +5,7 @@ import { cn } from "@/lib/cn";
  * any surface that needs a sub-header-sized reference to the product.
  *
  * Matches the dashboard's brand treatment: a small gradient square carrying
- * the "F" initial, paired with the "fullstackhero" wordmark with a tinted
+ * the "F" initial, paired with the "fullstack" wordmark with a tinted
  * accent on "hero", and a small "Admin" sub-label.
  *
  * The chartreuse signal colour from the old Console identity is retired here.
@@ -37,7 +37,7 @@ export function BrandMark({ className }: { className?: string }) {
 
 /**
  * BrandMarkXL — splash version for the Login page. Leads with the FSH logo
- * mark + "fullstackhero" wordmark, then a display monogram and a one-line
+ * mark + "fullstack" wordmark, then a display monogram and a one-line
  * system blurb.
  */
 export function BrandMarkXL({ className }: { className?: string }) {
@@ -46,7 +46,7 @@ export function BrandMarkXL({ className }: { className?: string }) {
       <div className="flex items-center gap-2.5">
         <img
           src="/logo-fullstackhero.png"
-          alt="fullstackhero"
+          alt="fullstack"
           className="size-7 object-contain"
         />
         <span className="font-display text-[18px] font-semibold tracking-tight text-[var(--color-foreground)]">

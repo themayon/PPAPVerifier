@@ -2027,7 +2027,7 @@ git commit -m "docs(agents): update eventing rules and skills for the framework-
 
 ### Task 6.2: Docs site and changelog
 
-**Files:** the separate docs repo at `C:\Users\mukesh\repos\fullstackhero\docs`.
+**Files:** the separate docs repo at `C:\Users\mukesh\repos\fullstack\docs`.
 
 - [ ] **Step 1** — update the eventing/architecture pages to match the new model.
 - [ ] **Step 2** — add a changelog entry under `src/content/docs/changelog/` covering: the `framework` schema and its migration, `AddEventingForDbContext` removal (breaking for anyone who called it), per-tenant outbox dispatch, and multi-instance claiming.

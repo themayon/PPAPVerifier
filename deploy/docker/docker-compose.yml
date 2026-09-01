@@ -1,4 +1,4 @@
-# fullstackhero — production docker-compose.
+# fullstack — production docker-compose.
 # Run from this directory:
 #   cp .env.example .env && $EDITOR .env
 #   docker compose up -d --build

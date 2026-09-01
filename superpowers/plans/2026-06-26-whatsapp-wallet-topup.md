@@ -1356,7 +1356,7 @@ git commit -m "test(e2e): wallet topup request + admin approval flows"
 ### Task 12: Docs + changelog (definition of done)
 
 **Files:**
-- Modify (docs repo `C:\Users\mukesh\repos\fullstackhero\docs`): a Billing/WhatsApp wallet page describing the top-up lifecycle + the BSP model.
+- Modify (docs repo `C:\Users\mukesh\repos\fullstack\docs`): a Billing/WhatsApp wallet page describing the top-up lifecycle + the BSP model.
 - Create: `src/content/docs/changelog/<entry>.md` (in the docs repo's changelog dir; match the existing entry format).
 
 **Interfaces:** none (documentation).
@@ -1368,8 +1368,8 @@ git commit -m "test(e2e): wallet topup request + admin approval flows"
 - [ ] **Step 3: Commit (in the docs repo)**
 
 ```bash
-git -C C:/Users/mukesh/repos/fullstackhero/docs add .
-git -C C:/Users/mukesh/repos/fullstackhero/docs commit -m "docs: WhatsApp prepaid wallet + top-up lifecycle"
+git -C C:/Users/mukesh/repos/fullstack/docs add .
+git -C C:/Users/mukesh/repos/fullstack/docs commit -m "docs: WhatsApp prepaid wallet + top-up lifecycle"
 ```
 
 ---

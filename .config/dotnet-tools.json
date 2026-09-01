@@ -9,7 +9,7 @@
       ],
       "rollForward": false
     },
-    "fullstackhero.cli": {
+    "fullstack.cli": {
       "version": "10.0.0-rc.1",
       "commands": [
         "fsh"

@@ -9,9 +9,9 @@ internal static class FshConstants
 
     // URLs
     internal const string NuGetFlatContainerUrl = "https://api.nuget.org/v3-flatcontainer";
-    internal const string GitHubRepoUrl = "https://github.com/fullstackhero/dotnet-starter-kit";
+    internal const string GitHubRepoUrl = "https://github.com/fullstack/dotnet-starter-kit";
     internal const string ReleaseNotesUrl = $"{GitHubRepoUrl}/releases";
-    internal const string DocsUrl = "https://fullstackhero.net";
+    internal const string DocsUrl = "https://fullstack.net";
 
     // Default ports
     internal const int ApiHttpPort = 5030;

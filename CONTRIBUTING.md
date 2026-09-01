@@ -5,8 +5,8 @@ Thanks for helping out. The conventions below keep PRs reviewable.
 ## Reporting issues
 
 - **Security:** Use GitHub's private advisories — see [SECURITY.md](SECURITY.md). Do not file public issues for vulnerabilities.
-- **Bugs:** Open a [GitHub issue](https://github.com/fullstackhero/dotnet-starter-kit/issues) with a minimal repro, your .NET SDK version, and the DB provider.
-- **Features:** Start a [Discussion](https://github.com/fullstackhero/dotnet-starter-kit/discussions) before opening a PR for non-trivial work.
+- **Bugs:** Open a [GitHub issue](https://github.com/fullstack/dotnet-starter-kit/issues) with a minimal repro, your .NET SDK version, and the DB provider.
+- **Features:** Start a [Discussion](https://github.com/fullstack/dotnet-starter-kit/discussions) before opening a PR for non-trivial work.
 
 ## Dev setup
 

@@ -116,5 +116,5 @@ dotnet test src/FSH.Starter.slnx       # integration tests require Docker
 
 ## Learn more
 
-- [FSH Documentation](https://fullstackhero.net)
-- [Source & issues](https://github.com/fullstackhero/dotnet-starter-kit)
+- [FSH Documentation](https://fullstack.net)
+- [Source & issues](https://github.com/fullstack/dotnet-starter-kit)

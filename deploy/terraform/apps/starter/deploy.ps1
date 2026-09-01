@@ -24,7 +24,7 @@ param(
   [Parameter(Mandatory, HelpMessage = 'AWS region, e.g. us-east-1 or ap-south-1')][string]$Region,
   [switch]$BuildApi,
   [string]$ImageTag,
-  [string]$Registry = 'ghcr.io/fullstackhero',
+  [string]$Registry = 'ghcr.io/fullstack',
   [switch]$SkipMigrate,
   [switch]$SeedDemo,
   [switch]$SkipFrontend,
@@ -87,7 +87,7 @@ if ($BuildApi) {
   # registry host must be split out of the repository name (folding it into
   # ContainerRepository silently loads to the local Docker daemon instead).
   $registryHost = $Registry.Split('/')[0]                                   # e.g. ghcr.io
-  $registryPath = $Registry.Substring($registryHost.Length).TrimStart('/')  # e.g. fullstackhero
+  $registryPath = $Registry.Substring($registryHost.Length).TrimStart('/')  # e.g. fullstack
   $apiRepo = if ($registryPath) { "$registryPath/$ApiImageName" } else { $ApiImageName }
   $migratorRepo = if ($registryPath) { "$registryPath/$MigratorImageName" } else { $MigratorImageName }
   Write-Host "==> Building & pushing API image $registryHost/$apiRepo`:$ImageTag"
@@ -100,7 +100,7 @@ if ($BuildApi) {
   # Native exes don't trip $ErrorActionPreference — check $LASTEXITCODE, else a
   # denied/failed push (e.g. a fork with no write access to $Registry) falls
   # through and only surfaces later as an ECS CannotPullContainerError.
-  if ($LASTEXITCODE -ne 0) { Die "API image build/push failed (exit $LASTEXITCODE) — check you're logged in to '$registryHost' and have push access to '$apiRepo' (a fork can't push to ghcr.io/fullstackhero; pass -Registry <your-registry> or -ImageTag <a-published-tag>)." }
+  if ($LASTEXITCODE -ne 0) { Die "API image build/push failed (exit $LASTEXITCODE) — check you're logged in to '$registryHost' and have push access to '$apiRepo' (a fork can't push to ghcr.io/fullstack; pass -Registry <your-registry> or -ImageTag <a-published-tag>)." }
   Write-Host "==> Building & pushing migrator image $registryHost/$migratorRepo`:$ImageTag"
   dotnet publish "$RepoRoot/src/Host/FSH.Starter.DbMigrator/FSH.Starter.DbMigrator.csproj" `
     -c Release -r linux-x64 `
@@ -108,7 +108,7 @@ if ($BuildApi) {
     -p:ContainerRegistry="$registryHost" `
     -p:ContainerRepository="$migratorRepo" `
     -p:ContainerImageTags="$ImageTag"
-  if ($LASTEXITCODE -ne 0) { Die "migrator image build/push failed (exit $LASTEXITCODE) — check you're logged in to '$registryHost' and have push access to '$migratorRepo' (a fork can't push to ghcr.io/fullstackhero; pass -Registry <your-registry> or -ImageTag <a-published-tag>)." }
+  if ($LASTEXITCODE -ne 0) { Die "migrator image build/push failed (exit $LASTEXITCODE) — check you're logged in to '$registryHost' and have push access to '$migratorRepo' (a fork can't push to ghcr.io/fullstack; pass -Registry <your-registry> or -ImageTag <a-published-tag>)." }
   $tfImageArgs = @('-var', "container_registry=$Registry", '-var', "api_image_name=$ApiImageName", '-var', "migrator_image_name=$MigratorImageName", '-var', "container_image_tag=$ImageTag")
 }
 elseif ($ImageTag) {

@@ -118,7 +118,7 @@ public sealed class MultiModuleOutboxTests
         $"corr-{id:N}",
         "Identity",
         Guid.CreateVersion7().ToString(),
-        "outbox-1349@fullstackhero.net",
+        "outbox-1349@fullstack.net",
         "Out",
         "Box");
 

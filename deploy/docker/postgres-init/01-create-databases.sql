@@ -1,4 +1,4 @@
--- Postgres init for fullstackhero
+-- Postgres init for fullstack
 -- This file runs only on first boot (when /var/lib/postgresql/data is empty).
 -- The `fsh` database itself is created by POSTGRES_DB= in the compose env;
 -- we just add the extensions the framework relies on.

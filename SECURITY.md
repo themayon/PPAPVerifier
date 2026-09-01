@@ -8,7 +8,7 @@ This is a starter kit. Only the current `main` branch receives security fixes fr
 
 **Do not open a public issue.** Use GitHub's private vulnerability reporting:
 
-<https://github.com/fullstackhero/dotnet-starter-kit/security/advisories/new>
+<https://github.com/fullstack/dotnet-starter-kit/security/advisories/new>
 
 Please include:
 
