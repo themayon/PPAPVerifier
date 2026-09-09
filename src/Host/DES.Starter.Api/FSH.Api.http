@@ -1,0 +1,6 @@
+﻿@DES.Api_HostAddress = http://localhost:5014
+
+GET {{DES.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

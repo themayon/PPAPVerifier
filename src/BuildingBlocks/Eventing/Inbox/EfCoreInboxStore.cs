@@ -1,7 +1,7 @@
-using FSH.Framework.Eventing.Persistence;
+﻿using DES.Framework.Eventing.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Framework.Eventing.Inbox;
+namespace DES.Framework.Eventing.Inbox;
 
 /// <summary>
 /// EF Core inbox store over the framework-owned <see cref="EventingDbContext"/>.

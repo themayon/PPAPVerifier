@@ -1,4 +1,4 @@
-<div align="center">
+﻿<div align="center">
 
 # ⚡ FullStack .NET 10 Starter Kit
 
@@ -93,7 +93,7 @@ dotnet new fsh -n MyApp
 
 ```bash
 git clone https://github.com/fullstack/dotnet-starter-kit.git MyApp && cd MyApp
-dotnet run --project src/Host/FSH.Starter.AppHost
+dotnet run --project src/Host/DES.Starter.AppHost
 ```
 
 > **Prerequisites:** [.NET 10 SDK](https://dotnet.microsoft.com/download) · [Docker](https://www.docker.com/) (Postgres/Valkey/MinIO via Aspire) · [Node 20+](https://nodejs.org/) (for the React apps).
@@ -126,9 +126,9 @@ dotnet run --project src/Host/FSH.Starter.AppHost
 |---|---|
 | `src/BuildingBlocks/` | Shared framework libraries (Core, Persistence, Web, Caching, Eventing, Storage, Quota…) |
 | `src/Modules/{Name}/` | Bounded contexts — each with a runtime project + a `.Contracts` project (its public API) |
-| `src/Host/FSH.Starter.Api` | Composition-root Web API host |
-| `src/Host/FSH.Starter.AppHost` | .NET Aspire orchestrator (Postgres, Valkey, MinIO, migrator, API, both React apps) |
-| `src/Host/FSH.Starter.DbMigrator` | One-shot migrate/seed runner (DB is **not** migrated at API startup) |
+| `src/Host/DES.Starter.Api` | Composition-root Web API host |
+| `src/Host/DES.Starter.AppHost` | .NET Aspire orchestrator (Postgres, Valkey, MinIO, migrator, API, both React apps) |
+| `src/Host/DES.Starter.DbMigrator` | One-shot migrate/seed runner (DB is **not** migrated at API startup) |
 | `src/Tools/CLI` | The `fsh` CLI (Spectre.Console) |
 | `clients/admin`, `clients/dashboard` | The two React apps |
 | `deploy/` | Docker Compose, Terraform (AWS), Dokploy |
@@ -157,7 +157,7 @@ Guides → [Local orchestration](https://fullstack.net/docs/deployment/aspire/) 
 ## 🧪 Testing
 
 ```bash
-dotnet test src/FSH.Starter.slnx        # backend: unit + architecture + Testcontainers integration
+dotnet test src/DES.Starter.slnx        # backend: unit + architecture + Testcontainers integration
 cd clients/admin     && npm run test:e2e # Playwright (operator app)
 cd clients/dashboard && npm run test:e2e # Playwright (tenant app)
 ```

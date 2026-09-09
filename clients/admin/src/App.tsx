@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+﻿import { Suspense } from "react";
 import { RouterProvider } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
@@ -30,7 +30,7 @@ export function App() {
               <RouterProvider router={router} />
             </Suspense>
           </RealtimeProvider>
-          <FshToaster />
+          <DesToaster />
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
@@ -45,7 +45,7 @@ export function App() {
  * tracks the console's own light/dark toggle, not the OS preference. All
  * surface styling lives in globals.css under the `.fsh-toast` selectors.
  */
-function FshToaster() {
+function DesToaster() {
   const { theme } = useTheme();
   return (
     <Toaster

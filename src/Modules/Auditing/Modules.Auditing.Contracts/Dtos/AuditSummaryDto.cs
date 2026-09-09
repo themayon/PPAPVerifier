@@ -1,6 +1,6 @@
-using FSH.Modules.Auditing.Contracts;
+﻿using DES.Modules.Auditing.Contracts;
 
-namespace FSH.Modules.Auditing.Contracts.Dtos;
+namespace DES.Modules.Auditing.Contracts.Dtos;
 
 public sealed class AuditSummaryDto
 {

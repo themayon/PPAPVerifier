@@ -1,6 +1,6 @@
 ﻿using Mediator;
 
-namespace FSH.Modules.Multitenancy.Contracts.v1.CreateTenant;
+namespace DES.Modules.Multitenancy.Contracts.v1.CreateTenant;
 
 public sealed record CreateTenantCommand(
     string Id,

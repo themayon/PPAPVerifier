@@ -1,7 +1,7 @@
-using FSH.Modules.Files.Contracts.v1.DTOs;
-using FSH.Modules.Files.Domain;
+﻿using DES.Modules.Files.Contracts.v1.DTOs;
+using DES.Modules.Files.Domain;
 
-namespace FSH.Modules.Files.Features.v1.Internal;
+namespace DES.Modules.Files.Features.v1.Internal;
 
 /// <summary>
 /// Shared mapper from FileAsset → FileAssetDto so handlers don't duplicate the projection.

@@ -1,8 +1,8 @@
-using Finbuckle.MultiTenant;
+﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Eventing.Outbox;
-using FSH.Framework.Eventing.Persistence;
-using FSH.Framework.Shared.Multitenancy;
+using DES.Framework.Eventing.Outbox;
+using DES.Framework.Eventing.Persistence;
+using DES.Framework.Shared.Multitenancy;
 using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Eventing;
@@ -12,12 +12,12 @@ namespace Integration.Tests.Tests.Eventing;
 /// backoff, then dead-lettered with no way to recover it. Exercises the real
 /// <see cref="EfCoreOutboxStore"/> over Postgres.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class OutboxRetryTests
 {
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
 
-    public OutboxRetryTests(FshWebApplicationFactory factory)
+    public OutboxRetryTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
     }

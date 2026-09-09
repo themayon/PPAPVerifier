@@ -1,16 +1,16 @@
-using FSH.Framework.Caching;
-using FSH.Framework.Shared.Constants;
-using FSH.Framework.Shared.Identity.Claims;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Identity.Data;
-using FSH.Modules.Identity.Domain;
+﻿using DES.Framework.Caching;
+using DES.Framework.Shared.Constants;
+using DES.Framework.Shared.Identity.Claims;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Identity.Data;
+using DES.Modules.Identity.Domain;
 using Finbuckle.MultiTenant.Abstractions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Identity.Authorization;
+namespace DES.Modules.Identity.Authorization;
 
 /// <summary>
 /// Adds missing permission claims to the built-in roles (<see cref="RoleConstants.Admin"/>,
@@ -19,7 +19,7 @@ namespace FSH.Modules.Identity.Authorization;
 /// </summary>
 public sealed class RolePermissionSyncer(
     IdentityDbContext context,
-    RoleManager<FshRole> roleManager,
+    RoleManager<DesRole> roleManager,
     IMultiTenantContextAccessor<AppTenantInfo> tenantAccessor,
     HybridCache cache,
     TimeProvider timeProvider,
@@ -46,7 +46,7 @@ public sealed class RolePermissionSyncer(
         }
     }
 
-    private async Task<int> SyncRoleAsync(string roleName, IReadOnlyList<FshPermission> targetPermissions, CancellationToken cancellationToken)
+    private async Task<int> SyncRoleAsync(string roleName, IReadOnlyList<DesPermission> targetPermissions, CancellationToken cancellationToken)
     {
         var role = await roleManager.Roles
             .SingleOrDefaultAsync(r => r.Name == roleName, cancellationToken)
@@ -66,7 +66,7 @@ public sealed class RolePermissionSyncer(
 
         var toAdd = targetPermissions
             .Where(p => !existingSet.Contains(p.Name))
-            .Select(p => new FshRoleClaim
+            .Select(p => new DesRoleClaim
             {
                 RoleId = role.Id,
                 ClaimType = ClaimConstants.Permission,

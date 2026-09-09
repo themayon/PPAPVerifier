@@ -1,4 +1,4 @@
-namespace FSH.Framework.Eventing.Abstractions;
+﻿namespace DES.Framework.Eventing.Abstractions;
 
 /// <summary>
 /// One database the outbox dispatcher must drain.

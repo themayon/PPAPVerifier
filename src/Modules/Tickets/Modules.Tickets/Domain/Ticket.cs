@@ -1,10 +1,10 @@
-using System.Net;
-using FSH.Framework.Core.Domain;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Tickets.Contracts.Dtos;
-using FSH.Modules.Tickets.Domain.Events;
+﻿using System.Net;
+using DES.Framework.Core.Domain;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Tickets.Contracts.Dtos;
+using DES.Modules.Tickets.Domain.Events;
 
-namespace FSH.Modules.Tickets.Domain;
+namespace DES.Modules.Tickets.Domain;
 
 /// <summary>
 /// Ticket aggregate — encapsulates the lifecycle state machine and owns

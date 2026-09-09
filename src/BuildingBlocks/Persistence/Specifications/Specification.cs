@@ -1,7 +1,7 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
-namespace FSH.Framework.Persistence.Specifications;
+namespace DES.Framework.Persistence.Specifications;
 
 /// <summary>
 /// Base specification for entity-level queries.

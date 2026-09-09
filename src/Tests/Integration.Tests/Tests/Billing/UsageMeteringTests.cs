@@ -1,5 +1,5 @@
-using System.Text.Json;
-using FSH.Modules.Billing.Contracts.Dtos;
+﻿using System.Text.Json;
+using DES.Modules.Billing.Contracts.Dtos;
 using Hangfire;
 using Hangfire.Storage;
 using Integration.Tests.Infrastructure;
@@ -7,7 +7,7 @@ using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Billing;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class UsageMeteringTests
 {
     private const string BillingBasePath = "/api/v1/billing";
@@ -19,10 +19,10 @@ public sealed class UsageMeteringTests
         Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
     };
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public UsageMeteringTests(FshWebApplicationFactory factory)
+    public UsageMeteringTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

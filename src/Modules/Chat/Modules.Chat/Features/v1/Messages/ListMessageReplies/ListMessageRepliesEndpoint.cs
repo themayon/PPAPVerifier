@@ -1,12 +1,12 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Chat.Contracts.Authorization;
-using FSH.Modules.Chat.Contracts.v1.Queries;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Chat.Contracts.Authorization;
+using DES.Modules.Chat.Contracts.v1.Queries;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Chat.Features.v1.Messages.ListMessageReplies;
+namespace DES.Modules.Chat.Features.v1.Messages.ListMessageReplies;
 
 public static class ListMessageRepliesEndpoint
 {

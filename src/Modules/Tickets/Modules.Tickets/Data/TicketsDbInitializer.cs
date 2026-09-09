@@ -1,8 +1,8 @@
-using FSH.Framework.Persistence;
+﻿using DES.Framework.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Tickets.Data;
+namespace DES.Modules.Tickets.Data;
 
 public sealed class TicketsDbInitializer(
     TicketsDbContext dbContext,

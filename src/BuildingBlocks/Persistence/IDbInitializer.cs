@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Persistence;
+﻿namespace DES.Framework.Persistence;
 
 /// <summary>
 /// Interface for database initialization operations including migrations and seeding.

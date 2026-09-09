@@ -1,9 +1,9 @@
-using Finbuckle.MultiTenant.EntityFrameworkCore.Extensions;
-using FSH.Modules.Identity.Domain;
+﻿using Finbuckle.MultiTenant.EntityFrameworkCore.Extensions;
+using DES.Modules.Identity.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FSH.Modules.Identity.Data.Configurations;
+namespace DES.Modules.Identity.Data.Configurations;
 
 public class UserGroupConfiguration : IEntityTypeConfiguration<UserGroup>
 {

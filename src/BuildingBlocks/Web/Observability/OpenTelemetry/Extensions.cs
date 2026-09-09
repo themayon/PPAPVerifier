@@ -1,4 +1,4 @@
-using FSH.Framework.Caching.Telemetry;
+﻿using DES.Framework.Caching.Telemetry;
 using Mediator;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -12,9 +12,9 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using System.Diagnostics;
-using static FSH.Framework.Web.Observability.OpenTelemetry.OpenTelemetryOptions;
+using static DES.Framework.Web.Observability.OpenTelemetry.OpenTelemetryOptions;
 
-namespace FSH.Framework.Web.Observability.OpenTelemetry;
+namespace DES.Framework.Web.Observability.OpenTelemetry;
 
 public static class Extensions
 {
@@ -39,7 +39,7 @@ public static class Extensions
 
         // Honor the orchestrator's identity: Aspire (and any OTLP collector) injects OTEL_SERVICE_NAME as the
         // resource name it knows the process by (e.g. "fsh-starter-api"). Overriding it with the entry-assembly
-        // name ("FSH.Starter.Api") de-correlates our telemetry from that resource, so the dashboard lists the
+        // name ("DES.Starter.Api") de-correlates our telemetry from that resource, so the dashboard lists the
         // process twice. Adopt the injected name when present; fall back to ApplicationName when running standalone.
         var serviceName = Environment.GetEnvironmentVariable("OTEL_SERVICE_NAME")
             ?? builder.Environment.ApplicationName;
@@ -103,11 +103,11 @@ public static class Extensions
                 metrics.AddMeter(CachingTelemetry.MeterName);
 
                 // Auditing pipeline metrics (published, dropped, flush, dead-letter).
-                metrics.AddMeter("FSH.Modules.Auditing");
+                metrics.AddMeter("DES.Modules.Auditing");
 
                 // Eventing outbox metrics (dead-letter, redrive) — string literal matches
                 // EventingTelemetry.MeterName; Web does not reference the Eventing project.
-                metrics.AddMeter("FSH.Eventing");
+                metrics.AddMeter("DES.Eventing");
 
                 foreach (var meterName in options.Metrics.MeterNames ?? Array.Empty<string>())
                 {
@@ -156,7 +156,7 @@ public static class Extensions
                         }
                     })
                     .AddSource(builder.Environment.ApplicationName)
-                    .AddSource("FSH.Hangfire")
+                    .AddSource("DES.Hangfire")
                     .AddSource(CachingTelemetry.ActivitySourceName);
 
                 if (exportOtlp)

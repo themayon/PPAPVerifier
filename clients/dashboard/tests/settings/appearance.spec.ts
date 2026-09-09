@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+﻿import { expect, test } from "@playwright/test";
 import { installShellMocks } from "../helpers/shell-mocks";
 import { seedAuthedSession, TEST_USER } from "../helpers/auth-seed";
 
@@ -50,7 +50,7 @@ test.describe("settings/appearance — theme + accent (client-side)", () => {
     await page.goto("/settings/appearance");
 
     await page.getByRole("button", { name: "Dark theme" }).click();
-    const stored = await page.evaluate(() => window.localStorage.getItem("fsh.theme"));
+    const stored = await page.evaluate(() => window.localStorage.getItem("des.theme"));
     expect(stored).toBe("dark");
   });
 

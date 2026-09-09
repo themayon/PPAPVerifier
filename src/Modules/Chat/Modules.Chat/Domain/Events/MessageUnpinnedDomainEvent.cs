@@ -1,6 +1,6 @@
-using FSH.Framework.Core.Domain;
+﻿using DES.Framework.Core.Domain;
 
-namespace FSH.Modules.Chat.Domain.Events;
+namespace DES.Modules.Chat.Domain.Events;
 
 public sealed record MessageUnpinnedDomainEvent(
     Guid ChannelId,

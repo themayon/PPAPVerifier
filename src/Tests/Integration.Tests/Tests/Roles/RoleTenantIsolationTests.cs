@@ -1,4 +1,4 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Roles;
@@ -9,12 +9,12 @@ namespace Integration.Tests.Tests.Roles;
 /// appear in tenant B's roles) and direct lookup (tenant B cannot read the role by id).
 /// Cross-tenant scaffolding mirrors <see cref="Webhooks.WebhookTenantIsolationTests"/>.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class RoleTenantIsolationTests
 {
     private readonly AuthHelper _auth;
 
-    public RoleTenantIsolationTests(FshWebApplicationFactory factory)
+    public RoleTenantIsolationTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

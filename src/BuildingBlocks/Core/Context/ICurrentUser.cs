@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace FSH.Framework.Core.Context;
+namespace DES.Framework.Core.Context;
 
 /// <summary>
 /// Represents the current authenticated user context with access to user information and claims.

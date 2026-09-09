@@ -1,11 +1,11 @@
-using System.Net;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Catalog.Contracts.v1.Brands;
-using FSH.Modules.Catalog.Data;
+﻿using System.Net;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Catalog.Contracts.v1.Brands;
+using DES.Modules.Catalog.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Brands.UpdateBrand;
+namespace DES.Modules.Catalog.Features.v1.Brands.UpdateBrand;
 
 public sealed class UpdateBrandCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<UpdateBrandCommand, Guid>

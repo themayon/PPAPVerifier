@@ -1,10 +1,10 @@
-using FSH.Modules.Files.Contracts.v1.Commands;
+﻿using DES.Modules.Files.Contracts.v1.Commands;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Files.Features.v1.FinalizeUpload;
+namespace DES.Modules.Files.Features.v1.FinalizeUpload;
 
 public static class FinalizeUploadEndpoint
 {

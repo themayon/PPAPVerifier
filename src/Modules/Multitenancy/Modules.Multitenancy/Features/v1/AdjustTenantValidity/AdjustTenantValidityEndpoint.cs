@@ -1,13 +1,13 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Multitenancy.Contracts.Authorization;
-using FSH.Modules.Multitenancy.Contracts.v1.AdjustTenantValidity;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Multitenancy.Contracts.Authorization;
+using DES.Modules.Multitenancy.Contracts.v1.AdjustTenantValidity;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Multitenancy.Features.v1.AdjustTenantValidity;
+namespace DES.Modules.Multitenancy.Features.v1.AdjustTenantValidity;
 
 public static class AdjustTenantValidityEndpoint
 {

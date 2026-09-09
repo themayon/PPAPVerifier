@@ -1,6 +1,6 @@
-using System.Net;
-using FSH.Framework.Mailing;
-using FSH.Framework.Mailing.Services;
+﻿using System.Net;
+using DES.Framework.Mailing;
+using DES.Framework.Mailing.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using NSubstitute;

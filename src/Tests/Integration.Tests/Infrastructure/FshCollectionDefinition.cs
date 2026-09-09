@@ -1,7 +1,7 @@
-namespace Integration.Tests.Infrastructure;
+﻿namespace Integration.Tests.Infrastructure;
 
 [CollectionDefinition(Name)]
-public sealed class FshCollectionDefinition : ICollectionFixture<FshWebApplicationFactory>
+public sealed class DesCollectionDefinition : ICollectionFixture<DesWebApplicationFactory>
 {
-    public const string Name = "FshIntegration";
+    public const string Name = "DesIntegration";
 }

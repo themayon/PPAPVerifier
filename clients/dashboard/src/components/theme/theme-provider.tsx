@@ -1,4 +1,4 @@
-import {
+﻿import {
   createContext,
   useCallback,
   useContext,
@@ -48,8 +48,8 @@ type ThemeContextValue = {
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
-const THEME_STORAGE_KEY = "fsh.theme";
-const REDUCED_MOTION_STORAGE_KEY = "fsh.reduce-motion";
+const THEME_STORAGE_KEY = "des.theme";
+const REDUCED_MOTION_STORAGE_KEY = "des.reduce-motion";
 const ACCENT_CLASS_PREFIX = "accent-";
 const FALLBACK_TRANSITION_MS = 280;
 

@@ -1,14 +1,14 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Files;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class UploadValidationTests
 {
     private const string FilesBasePath = "/api/v1/files";
     private readonly AuthHelper _auth;
 
-    public UploadValidationTests(FshWebApplicationFactory factory)
+    public UploadValidationTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

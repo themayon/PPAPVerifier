@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api-client";
+﻿import { apiFetch } from "@/lib/api-client";
 import type { PagedResponse } from "@/lib/api-types";
 
 export type WebhookSubscriptionDto = {
@@ -78,7 +78,7 @@ export function listWebhookDeliveries(
 }
 
 /**
- * Curated list of event names commonly emitted by FSH modules. Webhook
+ * Curated list of event names commonly emitted by DES modules. Webhook
  * subscriptions accept arbitrary strings — these just power the chip
  * picker in the create dialog so operators don't have to remember the
  * canonical kebab-case names.

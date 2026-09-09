@@ -1,10 +1,10 @@
-using FSH.Modules.Webhooks.Data;
-using FSH.Modules.Webhooks.Domain;
+﻿using DES.Modules.Webhooks.Data;
+using DES.Modules.Webhooks.Domain;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace FSH.Modules.Webhooks.Services;
+namespace DES.Modules.Webhooks.Services;
 
 public sealed class WebhookDeliveryService(
     IHttpClientFactory httpClientFactory,

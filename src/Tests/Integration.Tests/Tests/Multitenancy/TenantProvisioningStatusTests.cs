@@ -1,10 +1,10 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Multitenancy;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class TenantProvisioningStatusTests
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -23,7 +23,7 @@ public sealed class TenantProvisioningStatusTests
 
     private readonly AuthHelper _auth;
 
-    public TenantProvisioningStatusTests(FshWebApplicationFactory factory)
+    public TenantProvisioningStatusTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

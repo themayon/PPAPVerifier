@@ -1,7 +1,7 @@
-using FSH.Modules.Auditing.Contracts.Dtos;
+﻿using DES.Modules.Auditing.Contracts.Dtos;
 using Mediator;
 
-namespace FSH.Modules.Auditing.Contracts.v1.GetAuditsByCorrelation;
+namespace DES.Modules.Auditing.Contracts.v1.GetAuditsByCorrelation;
 
 public sealed class GetAuditsByCorrelationQuery : IQuery<IReadOnlyList<AuditSummaryDto>>
 {

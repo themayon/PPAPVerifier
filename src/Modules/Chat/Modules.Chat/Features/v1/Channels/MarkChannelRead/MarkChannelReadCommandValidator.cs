@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Chat.Contracts.v1.Commands;
+﻿using FluentValidation;
+using DES.Modules.Chat.Contracts.v1.Commands;
 
-namespace FSH.Modules.Chat.Features.v1.Channels.MarkChannelRead;
+namespace DES.Modules.Chat.Features.v1.Channels.MarkChannelRead;
 
 public sealed class MarkChannelReadCommandValidator : AbstractValidator<MarkChannelReadCommand>
 {

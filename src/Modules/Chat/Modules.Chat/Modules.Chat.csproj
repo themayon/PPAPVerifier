@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<RootNamespace>FSH.Modules.Chat</RootNamespace>
-		<AssemblyName>FSH.Modules.Chat</AssemblyName>
+		<RootNamespace>DES.Modules.Chat</RootNamespace>
+		<AssemblyName>DES.Modules.Chat</AssemblyName>
 		<NoWarn>$(NoWarn);CA1031;CA1812;CA1859;CA1002;CA2227;S3267</NoWarn>
 	</PropertyGroup>
 

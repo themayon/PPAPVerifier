@@ -1,4 +1,4 @@
-name: CodeQL Analysis
+﻿name: CodeQL Analysis
 on:
   pull_request:
     branches: [main]
@@ -22,5 +22,5 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
-      - run: dotnet build src/FSH.Starter.slnx -c Release
+      - run: dotnet build src/DES.Starter.slnx -c Release
       - uses: github/codeql-action/analyze@v3

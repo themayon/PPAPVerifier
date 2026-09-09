@@ -1,9 +1,9 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Idempotency;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class IdempotencyFilterTests
 {
     private const string IdempotencyHeader = "Idempotency-Key";
@@ -11,7 +11,7 @@ public sealed class IdempotencyFilterTests
 
     private readonly AuthHelper _auth;
 
-    public IdempotencyFilterTests(FshWebApplicationFactory factory)
+    public IdempotencyFilterTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

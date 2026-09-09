@@ -1,4 +1,4 @@
-namespace FSH.Framework.Caching;
+﻿namespace DES.Framework.Caching;
 
 /// <summary>
 /// Cache key conventions and tag constants used across the FullStackHero starter kit.

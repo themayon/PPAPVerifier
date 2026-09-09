@@ -1,8 +1,8 @@
-using FSH.Modules.Tickets.Domain;
+﻿using DES.Modules.Tickets.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FSH.Modules.Tickets.Data.Configurations;
+namespace DES.Modules.Tickets.Data.Configurations;
 
 public sealed class TicketCommentConfiguration : IEntityTypeConfiguration<TicketComment>
 {

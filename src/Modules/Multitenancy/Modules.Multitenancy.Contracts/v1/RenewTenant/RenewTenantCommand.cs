@@ -1,6 +1,6 @@
-using Mediator;
+﻿using Mediator;
 
-namespace FSH.Modules.Multitenancy.Contracts.v1.RenewTenant;
+namespace DES.Modules.Multitenancy.Contracts.v1.RenewTenant;
 
 /// <summary>
 /// Renews a tenant for one more plan term. When <see cref="PlanKey"/> is null the current plan is

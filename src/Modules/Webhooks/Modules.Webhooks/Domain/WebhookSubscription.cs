@@ -1,6 +1,6 @@
-using FSH.Framework.Core.Domain;
+﻿using DES.Framework.Core.Domain;
 
-namespace FSH.Modules.Webhooks.Domain;
+namespace DES.Modules.Webhooks.Domain;
 
 public sealed class WebhookSubscription : BaseEntity<Guid>
 {

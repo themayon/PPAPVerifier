@@ -1,21 +1,21 @@
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Data;
-using FSH.Modules.Identity.Domain;
+﻿using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Data;
+using DES.Modules.Identity.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace FSH.Modules.Identity.Services;
+namespace DES.Modules.Identity.Services;
 
 internal sealed class PasswordHistoryService : IPasswordHistoryService
 {
     private readonly IdentityDbContext _db;
-    private readonly UserManager<FshUser> _userManager;
+    private readonly UserManager<DesUser> _userManager;
     private readonly PasswordPolicyOptions _passwordPolicyOptions;
 
     public PasswordHistoryService(
         IdentityDbContext db,
-        UserManager<FshUser> userManager,
+        UserManager<DesUser> userManager,
         IOptions<PasswordPolicyOptions> passwordPolicyOptions)
     {
         _db = db;

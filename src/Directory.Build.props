@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 	<PropertyGroup>
 		<!-- Target framework -->
 		<TargetFramework>net10.0</TargetFramework>
@@ -44,7 +44,7 @@
 		<Company>FullStack</Company>
 		<Version>10.0.0</Version>
 		<RepositoryUrl>https://github.com/fullstack/dotnet-starter-kit</RepositoryUrl>
-		<PackageTags>FSH;FullStack;Modular;CQRS;VerticalSlice;DotNet;CleanArchitecture</PackageTags>
+		<PackageTags>DES;FullStack;Modular;CQRS;VerticalSlice;DotNet;CleanArchitecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageProjectUrl>https://fullstack.net</PackageProjectUrl>

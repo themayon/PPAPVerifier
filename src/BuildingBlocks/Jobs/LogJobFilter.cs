@@ -1,10 +1,10 @@
-using Hangfire.Client;
+﻿using Hangfire.Client;
 using Hangfire.Logging;
 using Hangfire.Server;
 using Hangfire.States;
 using Hangfire.Storage;
 
-namespace FSH.Framework.Jobs;
+namespace DES.Framework.Jobs;
 
 public class LogJobFilter : IClientFilter, IServerFilter, IElectStateFilter, IApplyStateFilter
 {

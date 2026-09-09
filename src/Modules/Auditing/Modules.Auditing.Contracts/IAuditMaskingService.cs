@@ -1,4 +1,4 @@
-namespace FSH.Modules.Auditing.Contracts;
+﻿namespace DES.Modules.Auditing.Contracts;
 
 /// <summary>
 /// Result of running a masking pass over a payload. Carries the masked

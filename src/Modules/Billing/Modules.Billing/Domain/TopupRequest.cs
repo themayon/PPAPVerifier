@@ -1,7 +1,7 @@
-using FSH.Framework.Core.Domain;
-using FSH.Modules.Billing.Contracts;
+﻿using DES.Framework.Core.Domain;
+using DES.Modules.Billing.Contracts;
 
-namespace FSH.Modules.Billing.Domain;
+namespace DES.Modules.Billing.Domain;
 
 public sealed class TopupRequest : AggregateRoot<Guid>
 {

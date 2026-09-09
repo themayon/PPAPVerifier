@@ -1,8 +1,8 @@
-using System.Diagnostics;
-using FSH.Framework.Caching.Telemetry;
+﻿using System.Diagnostics;
+using DES.Framework.Caching.Telemetry;
 using Microsoft.Extensions.Caching.Hybrid;
 
-namespace FSH.Framework.Caching;
+namespace DES.Framework.Caching;
 
 /// <summary>
 /// <see cref="HybridCache"/> decorator that records OpenTelemetry metrics and spans for every

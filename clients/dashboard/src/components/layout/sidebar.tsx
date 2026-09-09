@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   ChevronDown,
@@ -17,7 +17,7 @@ import {
   type NavSpec,
 } from "@/components/layout/nav-data";
 
-const COLLAPSED_KEY = "fsh.sidebar.collapsed";
+const COLLAPSED_KEY = "des.sidebar.collapsed";
 
 /** Persisted collapsed state. Reads localStorage on mount; writes on change. */
 function useCollapsedSidebar() {

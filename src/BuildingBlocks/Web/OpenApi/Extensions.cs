@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
-namespace FSH.Framework.Web.OpenApi;
+namespace DES.Framework.Web.OpenApi;
 
 public static class Extensions
 {
@@ -79,7 +79,7 @@ public static class Extensions
         {
             var configuration = app.Configuration;
             options
-                .WithTitle(configuration["OpenApi:Title"] ?? "FSH API")
+                .WithTitle(configuration["OpenApi:Title"] ?? "DES API")
                 .WithTheme(Scalar.AspNetCore.ScalarTheme.Alternate)
                 .EnableDarkMode()
                 .HideModels()

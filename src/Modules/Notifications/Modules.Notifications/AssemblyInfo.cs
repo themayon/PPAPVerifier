@@ -1,6 +1,6 @@
-using System.Runtime.CompilerServices;
-using FSH.Framework.Web.Modules;
+﻿using System.Runtime.CompilerServices;
+using DES.Framework.Web.Modules;
 
-[assembly: FshModule(typeof(FSH.Modules.Notifications.NotificationsModule), 750)]
+[assembly: DesModule(typeof(DES.Modules.Notifications.NotificationsModule), 750)]
 [assembly: InternalsVisibleTo("Notifications.Tests")]
 [assembly: InternalsVisibleTo("Integration.Tests")]

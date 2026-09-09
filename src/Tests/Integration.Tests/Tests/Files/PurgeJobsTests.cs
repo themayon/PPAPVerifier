@@ -1,13 +1,13 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Security.Cryptography;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Storage.Services;
-using FSH.Modules.Files.Contracts.v1.DTOs;
-using FSH.Modules.Files.Data;
-using FSH.Modules.Files.Domain;
-using FSH.Modules.Files.Jobs;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Storage.Services;
+using DES.Modules.Files.Contracts.v1.DTOs;
+using DES.Modules.Files.Data;
+using DES.Modules.Files.Domain;
+using DES.Modules.Files.Jobs;
 using Hangfire;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
@@ -23,14 +23,14 @@ namespace Integration.Tests.Tests.Files;
 /// a purgeable precondition. The real S3/MinIO RemoveAsync runs against bytes that were genuinely
 /// PUT, so this also exercises S3StorageService.RemoveAsync (DeleteObject) end-to-end.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class PurgeJobsTests
 {
     private const string FilesBasePath = "/api/v1/files";
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public PurgeJobsTests(FshWebApplicationFactory factory)
+    public PurgeJobsTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

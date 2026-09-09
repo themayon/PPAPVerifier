@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using FSH.Framework.Shared.Storage;
-using FSH.Framework.Storage;
+using DES.Framework.Shared.Storage;
+using DES.Framework.Storage;
 
-namespace FSH.Modules.Identity.Features.v1.Users;
+namespace DES.Modules.Identity.Features.v1.Users;
 
 public sealed class UserImageValidator : AbstractValidator<FileUploadRequest>
 {

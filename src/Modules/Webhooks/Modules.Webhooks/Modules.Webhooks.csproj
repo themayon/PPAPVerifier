@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>FSH.Modules.Webhooks</RootNamespace>
-    <AssemblyName>FSH.Modules.Webhooks</AssemblyName>
+    <RootNamespace>DES.Modules.Webhooks</RootNamespace>
+    <AssemblyName>DES.Modules.Webhooks</AssemblyName>
     <NoWarn>$(NoWarn);CA1031;CA1054;CA1056;CA1308;CA1812;CA1859;S3267</NoWarn>
   </PropertyGroup>
   <ItemGroup>

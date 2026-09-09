@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Billing.Contracts.v1.Invoices;
+﻿using FluentValidation;
+using DES.Modules.Billing.Contracts.v1.Invoices;
 
-namespace FSH.Modules.Billing.Features.v1.Invoices.GenerateInvoices;
+namespace DES.Modules.Billing.Features.v1.Invoices.GenerateInvoices;
 
 public sealed class GenerateInvoicesCommandValidator : AbstractValidator<GenerateInvoicesCommand>
 {

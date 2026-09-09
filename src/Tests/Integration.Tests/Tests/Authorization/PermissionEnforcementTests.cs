@@ -1,14 +1,14 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Authorization;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class PermissionEnforcementTests
 {
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public PermissionEnforcementTests(FshWebApplicationFactory factory)
+    public PermissionEnforcementTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

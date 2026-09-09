@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Chat.Contracts.v1.Commands;
+﻿using FluentValidation;
+using DES.Modules.Chat.Contracts.v1.Commands;
 
-namespace FSH.Modules.Chat.Features.v1.Messages.UnpinMessage;
+namespace DES.Modules.Chat.Features.v1.Messages.UnpinMessage;
 
 public sealed class UnpinMessageCommandValidator : AbstractValidator<UnpinMessageCommand>
 {

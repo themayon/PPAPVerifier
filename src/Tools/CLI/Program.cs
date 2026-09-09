@@ -1,5 +1,5 @@
-using System.Reflection;
-using FSH.CLI.Commands;
+﻿using System.Reflection;
+using DES.CLI.Commands;
 using Spectre.Console.Cli;
 
 // Strip the +gitsha build-metadata suffix so `fsh --version` prints a clean version.
@@ -27,7 +27,7 @@ app.Configure(config =>
         .WithDescription("Show CLI and template version information.");
 
     config.AddCommand<UpdateCommand>("update")
-        .WithDescription("Update the FSH CLI tool and dotnet new template to the latest version.");
+        .WithDescription("Update the DES CLI tool and dotnet new template to the latest version.");
 });
 
 return await app.RunAsync(args).ConfigureAwait(false);

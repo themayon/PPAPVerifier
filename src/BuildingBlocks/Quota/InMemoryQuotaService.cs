@@ -1,9 +1,9 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Quota;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Quota;
 
-namespace FSH.Framework.Quota;
+namespace DES.Framework.Quota;
 
 /// <summary>
 /// Per-process quota counter. Suitable for development and tests; not shared across instances so

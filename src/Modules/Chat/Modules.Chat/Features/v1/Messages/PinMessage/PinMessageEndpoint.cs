@@ -1,12 +1,12 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Chat.Contracts.Authorization;
-using FSH.Modules.Chat.Contracts.v1.Commands;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Chat.Contracts.Authorization;
+using DES.Modules.Chat.Contracts.v1.Commands;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Chat.Features.v1.Messages.PinMessage;
+namespace DES.Modules.Chat.Features.v1.Messages.PinMessage;
 
 public static class PinMessageEndpoint
 {

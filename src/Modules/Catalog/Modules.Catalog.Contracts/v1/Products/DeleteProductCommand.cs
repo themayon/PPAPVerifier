@@ -1,5 +1,5 @@
-using Mediator;
+﻿using Mediator;
 
-namespace FSH.Modules.Catalog.Contracts.v1.Products;
+namespace DES.Modules.Catalog.Contracts.v1.Products;
 
 public sealed record DeleteProductCommand(Guid ProductId) : ICommand<Unit>;

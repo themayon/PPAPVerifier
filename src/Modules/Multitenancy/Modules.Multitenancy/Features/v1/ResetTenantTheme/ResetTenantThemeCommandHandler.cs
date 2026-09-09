@@ -1,11 +1,11 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Multitenancy.Contracts.Authorization;
-using FSH.Modules.Multitenancy.Contracts;
-using FSH.Modules.Multitenancy.Contracts.v1.ResetTenantTheme;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Multitenancy.Contracts.Authorization;
+using DES.Modules.Multitenancy.Contracts;
+using DES.Modules.Multitenancy.Contracts.v1.ResetTenantTheme;
 using Mediator;
 
-namespace FSH.Modules.Multitenancy.Features.v1.ResetTenantTheme;
+namespace DES.Modules.Multitenancy.Features.v1.ResetTenantTheme;
 
 public sealed class ResetTenantThemeCommandHandler(
     ITenantThemeService themeService,

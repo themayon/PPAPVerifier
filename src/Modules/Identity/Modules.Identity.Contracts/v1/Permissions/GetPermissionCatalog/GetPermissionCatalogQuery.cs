@@ -1,7 +1,7 @@
-using FSH.Modules.Identity.Contracts.DTOs;
+﻿using DES.Modules.Identity.Contracts.DTOs;
 using Mediator;
 
-namespace FSH.Modules.Identity.Contracts.v1.Permissions.GetPermissionCatalog;
+namespace DES.Modules.Identity.Contracts.v1.Permissions.GetPermissionCatalog;
 
 /// <summary>
 /// Returns every permission registered with the host's <c>PermissionConstants</c> registry,

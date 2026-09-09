@@ -1,9 +1,9 @@
-using Finbuckle.MultiTenant;
+﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Eventing.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
+using DES.Framework.Eventing.Abstractions;
+using DES.Framework.Shared.Multitenancy;
 
-namespace FSH.Modules.Multitenancy.Services;
+namespace DES.Modules.Multitenancy.Services;
 
 /// <summary>
 /// Finbuckle-backed <see cref="IEventTenantScope"/>. Installs the ambient tenant context

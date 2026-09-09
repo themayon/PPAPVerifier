@@ -1,11 +1,11 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Auditing;
-using FSH.Modules.Auditing.Contracts;
-using FSH.Modules.Auditing.Contracts.Dtos;
-using FSH.Modules.Auditing.Persistence;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Auditing;
+using DES.Modules.Auditing.Contracts;
+using DES.Modules.Auditing.Contracts.Dtos;
+using DES.Modules.Auditing.Persistence;
 using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Auditing;
@@ -20,7 +20,7 @@ namespace Integration.Tests.Tests.Auditing;
 /// filter and asserts the row comes back (no 500). All payloads carry a unique correlation id so
 /// the assertions are isolated from audit rows written by the background worker.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class AuditPayloadFilterTests
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -31,10 +31,10 @@ public sealed class AuditPayloadFilterTests
         Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() }
     };
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public AuditPayloadFilterTests(FshWebApplicationFactory factory)
+    public AuditPayloadFilterTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);
@@ -89,7 +89,7 @@ public sealed class AuditPayloadFilterTests
     {
         // Arrange
         var correlationId = NewCorrelationId();
-        var exceptionType = $"FSH.Test.WidgetException_{Guid.NewGuid():N}";
+        var exceptionType = $"DES.Test.WidgetException_{Guid.NewGuid():N}";
         var payload = SerializeException(ExceptionArea.Api, exceptionType, "/api/v1/widgets");
         await SeedAuditRecordAsync(AuditEventType.Exception, AuditSeverity.Error, correlationId, payload);
 

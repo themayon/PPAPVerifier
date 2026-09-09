@@ -1,14 +1,14 @@
-using System.Collections.ObjectModel;
-using FSH.Framework.Storage.Services;
-using FSH.Modules.Files.Contracts.v1.DTOs;
-using FSH.Modules.Files.Contracts.v1.Queries;
-using FSH.Modules.Files.Data;
-using FSH.Modules.Files.Domain;
-using FSH.Modules.Files.Features.v1.Internal;
+﻿using System.Collections.ObjectModel;
+using DES.Framework.Storage.Services;
+using DES.Modules.Files.Contracts.v1.DTOs;
+using DES.Modules.Files.Contracts.v1.Queries;
+using DES.Modules.Files.Data;
+using DES.Modules.Files.Domain;
+using DES.Modules.Files.Features.v1.Internal;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Files.Features.v1.ListSharedFiles;
+namespace DES.Modules.Files.Features.v1.ListSharedFiles;
 
 /// <summary>
 /// Returns Public, Available files belonging to the built-in tenant-wide owner types so the SPA

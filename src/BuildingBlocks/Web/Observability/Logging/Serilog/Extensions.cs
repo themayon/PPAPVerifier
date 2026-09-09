@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -6,7 +6,7 @@ using Serilog.Events;
 using Serilog.Filters;
 using Serilog.Sinks.OpenTelemetry;
 
-namespace FSH.Framework.Web.Observability.Logging.Serilog;
+namespace DES.Framework.Web.Observability.Logging.Serilog;
 
 public static class Extensions
 {

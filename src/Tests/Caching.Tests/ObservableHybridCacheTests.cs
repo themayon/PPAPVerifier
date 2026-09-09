@@ -1,6 +1,6 @@
-using System.Diagnostics.Metrics;
-using FSH.Framework.Caching;
-using FSH.Framework.Caching.Telemetry;
+﻿using System.Diagnostics.Metrics;
+using DES.Framework.Caching;
+using DES.Framework.Caching.Telemetry;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +17,7 @@ public sealed class HybridCacheTelemetryCollection;
 /// <summary>
 /// Behavioral tests for the OTel decorator wrapping HybridCache. We assert that
 /// hit/miss counters fire correctly via a <see cref="MeterListener"/> subscribed to the
-/// <c>FSH.Caching</c> meter.
+/// <c>DES.Caching</c> meter.
 /// </summary>
 [Collection("HybridCacheTelemetry")]
 public sealed class ObservableHybridCacheTests : IDisposable

@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Mailing.Services;
+﻿namespace DES.Framework.Mailing.Services;
 
 public interface IMailService
 {

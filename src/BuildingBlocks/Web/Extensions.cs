@@ -1,26 +1,26 @@
-﻿using FSH.Framework.Caching;
-using FSH.Framework.Jobs;
-using FSH.Framework.Mailing;
-using FSH.Framework.Persistence;
-using FSH.Framework.Quota;
-using FSH.Framework.Shared.Constants;
-using FSH.Framework.Web.Auth;
-using FSH.Framework.Web.Cors;
-using FSH.Framework.Web.Exceptions;
-using FSH.Framework.Web.FeatureFlags;
-using FSH.Framework.Web.Idempotency;
-using FSH.Framework.Web.Sse;
-using FSH.Framework.Web.Health;
-using FSH.Framework.Web.Mediator.Behaviors;
-using FSH.Framework.Web.Modules;
-using FSH.Framework.Web.Observability.Logging.Serilog;
-using FSH.Framework.Web.Observability.OpenTelemetry;
-using FSH.Framework.Web.OpenApi;
-using FSH.Framework.Web.Origin;
-using FSH.Framework.Web.RateLimiting;
-using FSH.Framework.Web.Realtime;
-using FSH.Framework.Web.Security;
-using FSH.Framework.Web.Versioning;
+﻿using DES.Framework.Caching;
+using DES.Framework.Jobs;
+using DES.Framework.Mailing;
+using DES.Framework.Persistence;
+using DES.Framework.Quota;
+using DES.Framework.Shared.Constants;
+using DES.Framework.Web.Auth;
+using DES.Framework.Web.Cors;
+using DES.Framework.Web.Exceptions;
+using DES.Framework.Web.FeatureFlags;
+using DES.Framework.Web.Idempotency;
+using DES.Framework.Web.Sse;
+using DES.Framework.Web.Health;
+using DES.Framework.Web.Mediator.Behaviors;
+using DES.Framework.Web.Modules;
+using DES.Framework.Web.Observability.Logging.Serilog;
+using DES.Framework.Web.Observability.OpenTelemetry;
+using DES.Framework.Web.OpenApi;
+using DES.Framework.Web.Origin;
+using DES.Framework.Web.RateLimiting;
+using DES.Framework.Web.Realtime;
+using DES.Framework.Web.Security;
+using DES.Framework.Web.Versioning;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Caching.Distributed;
@@ -30,15 +30,15 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Mediator;
 
-namespace FSH.Framework.Web;
+namespace DES.Framework.Web;
 
 public static class Extensions
 {
-    public static IHostApplicationBuilder AddHeroPlatform(this IHostApplicationBuilder builder, Action<FshPlatformOptions>? configure = null)
+    public static IHostApplicationBuilder AddHeroPlatform(this IHostApplicationBuilder builder, Action<DesPlatformOptions>? configure = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        var options = new FshPlatformOptions();
+        var options = new DesPlatformOptions();
         configure?.Invoke(options);
 
         PermissionConstants.Register(SystemPermissions.All);
@@ -139,11 +139,11 @@ public static class Extensions
     }
 
 
-    public static WebApplication UseHeroPlatform(this WebApplication app, Action<FshPipelineOptions>? configure = null)
+    public static WebApplication UseHeroPlatform(this WebApplication app, Action<DesPipelineOptions>? configure = null)
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        var options = new FshPipelineOptions();
+        var options = new DesPipelineOptions();
         configure?.Invoke(options);
 
         var corsEnabled = options.UseCors && IsCorsEnabled(app.Configuration);
@@ -231,7 +231,7 @@ public static class Extensions
     }
 }
 
-public sealed class FshPlatformOptions
+public sealed class DesPlatformOptions
 {
     public bool EnableCors { get; set; } = true;
     public bool EnableOpenApi { get; set; } = true;
@@ -246,7 +246,7 @@ public sealed class FshPlatformOptions
     public bool EnableQuotas { get; set; } = false;
 }
 
-public sealed class FshPipelineOptions
+public sealed class DesPipelineOptions
 {
     public bool UseCors { get; set; } = true;
     public bool UseOpenApi { get; set; } = true;

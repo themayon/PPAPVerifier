@@ -1,12 +1,12 @@
-using Finbuckle.MultiTenant;
+﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Eventing.Abstractions;
-using FSH.Framework.Eventing.Outbox;
-using FSH.Framework.Eventing.Persistence;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Billing.Contracts.Events;
-using FSH.Modules.Catalog.Data;
-using FSH.Modules.Catalog.Domain;
+using DES.Framework.Eventing.Abstractions;
+using DES.Framework.Eventing.Outbox;
+using DES.Framework.Eventing.Persistence;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Billing.Contracts.Events;
+using DES.Modules.Catalog.Data;
+using DES.Modules.Catalog.Domain;
 using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Eventing;
@@ -20,12 +20,12 @@ namespace Integration.Tests.Tests.Eventing;
 /// directly here too: it is the load-bearing precondition, and a silent regression to
 /// per-context connections would leave these rollbacks passing for the wrong reason.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class OutboxAtomicityTests
 {
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
 
-    public OutboxAtomicityTests(FshWebApplicationFactory factory)
+    public OutboxAtomicityTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
     }

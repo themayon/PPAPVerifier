@@ -1,4 +1,4 @@
-{
+﻿{
     "$schema": "http://json.schemastore.org/template",
     "author": "Mukesh Murugan",
     "classifications": [
@@ -20,7 +20,7 @@
     "name": "FullStack .NET Starter Kit",
     "description": "A production-ready full-stack starter: modular .NET 10 monolith (VSA, CQRS, multitenancy, Identity, Aspire) + two React 19 apps + Docker/Terraform.",
     "shortName": "fsh",
-    "sourceName": "FSH.Starter",
+    "sourceName": "DES.Starter",
     "preferNameDirectory": true,
     "symbols": {
         "aspire": {
@@ -44,7 +44,7 @@
         "includeTools": {
             "type": "parameter",
             "datatype": "bool",
-            "description": "Internal: keep the fsh CLI project in the solution (FSH repo only).",
+            "description": "Internal: keep the fsh CLI project in the solution (DES repo only).",
             "defaultValue": "false"
         },
         "contactEmail": {
@@ -78,7 +78,7 @@
             "type": "derived",
             "valueSource": "name",
             "valueTransform": "underscoreForm",
-            "replaces": "FSH_Starter"
+            "replaces": "DES_Starter"
         },
         "issuerSlug": {
             "type": "derived",
@@ -102,7 +102,7 @@
             "type": "derived",
             "valueSource": "name",
             "valueTransform": "displayForm",
-            "replaces": "FSH PlayGround"
+            "replaces": "DES PlayGround"
         }
     },
     "forms": {
@@ -162,7 +162,7 @@
                 {
                     "condition": "(!aspire)",
                     "exclude": [
-                        "src/Host/FSH.Starter.AppHost/**"
+                        "src/Host/DES.Starter.AppHost/**"
                     ]
                 },
                 {

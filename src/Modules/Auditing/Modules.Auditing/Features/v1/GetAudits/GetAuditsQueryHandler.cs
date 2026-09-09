@@ -1,18 +1,18 @@
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Auditing.Contracts;
-using FSH.Modules.Auditing.Contracts.Authorization;
-using FSH.Modules.Auditing.Contracts.Dtos;
-using FSH.Modules.Auditing.Contracts.v1.GetAudits;
-using FSH.Modules.Auditing.Persistence;
-using FSH.Modules.Identity.Contracts.Services;
+﻿using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Persistence;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Auditing.Contracts;
+using DES.Modules.Auditing.Contracts.Authorization;
+using DES.Modules.Auditing.Contracts.Dtos;
+using DES.Modules.Auditing.Contracts.v1.GetAudits;
+using DES.Modules.Auditing.Persistence;
+using DES.Modules.Identity.Contracts.Services;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
-using static FSH.Modules.Auditing.Persistence.AuditJsonbFunctions;
+using static DES.Modules.Auditing.Persistence.AuditJsonbFunctions;
 
-namespace FSH.Modules.Auditing.Features.v1.GetAudits;
+namespace DES.Modules.Auditing.Features.v1.GetAudits;
 
 public sealed class GetAuditsQueryHandler : IQueryHandler<GetAuditsQuery, PagedResponse<AuditSummaryDto>>
 {

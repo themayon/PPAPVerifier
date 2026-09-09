@@ -1,7 +1,7 @@
-using FSH.Modules.Catalog.Contracts.Dtos;
-using FSH.Modules.Catalog.Domain;
+﻿using DES.Modules.Catalog.Contracts.Dtos;
+using DES.Modules.Catalog.Domain;
 
-namespace FSH.Modules.Catalog.Features.v1.Products;
+namespace DES.Modules.Catalog.Features.v1.Products;
 
 internal static class ProductMappings
 {

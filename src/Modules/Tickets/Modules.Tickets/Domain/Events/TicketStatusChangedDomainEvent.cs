@@ -1,7 +1,7 @@
-using FSH.Framework.Core.Domain;
-using FSH.Modules.Tickets.Contracts.Dtos;
+﻿using DES.Framework.Core.Domain;
+using DES.Modules.Tickets.Contracts.Dtos;
 
-namespace FSH.Modules.Tickets.Domain.Events;
+namespace DES.Modules.Tickets.Domain.Events;
 
 public sealed record TicketStatusChangedDomainEvent(
     Guid TicketId,

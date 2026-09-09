@@ -1,6 +1,6 @@
-using Mediator;
+﻿using Mediator;
 
-namespace FSH.Modules.Billing.Contracts.v1.Subscriptions;
+namespace DES.Modules.Billing.Contracts.v1.Subscriptions;
 
 /// <summary>
 /// Admin command to assign a tenant to a plan, starting now. If the tenant has an existing active

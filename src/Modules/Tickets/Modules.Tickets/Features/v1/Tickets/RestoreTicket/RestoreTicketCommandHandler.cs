@@ -1,11 +1,11 @@
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Persistence;
-using FSH.Modules.Tickets.Contracts.v1.Tickets;
-using FSH.Modules.Tickets.Data;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Framework.Persistence;
+using DES.Modules.Tickets.Contracts.v1.Tickets;
+using DES.Modules.Tickets.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Tickets.Features.v1.Tickets.RestoreTicket;
+namespace DES.Modules.Tickets.Features.v1.Tickets.RestoreTicket;
 
 public sealed class RestoreTicketCommandHandler(TicketsDbContext dbContext)
     : ICommandHandler<RestoreTicketCommand, Guid>

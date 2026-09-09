@@ -1,9 +1,9 @@
-using FSH.Framework.Eventing.Abstractions;
-using FSH.Framework.Mailing.Services;
-using FSH.Modules.Multitenancy.Contracts.Events;
+﻿using DES.Framework.Eventing.Abstractions;
+using DES.Framework.Mailing.Services;
+using DES.Modules.Multitenancy.Contracts.Events;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Notifications.IntegrationEventHandlers;
+namespace DES.Modules.Notifications.IntegrationEventHandlers;
 
 /// <summary>Emails the tenant admin that their subscription is nearing expiry.</summary>
 public sealed class TenantNearingExpiryEmailHandler(

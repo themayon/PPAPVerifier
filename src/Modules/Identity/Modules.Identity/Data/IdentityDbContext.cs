@@ -1,23 +1,23 @@
-using Finbuckle.MultiTenant.Abstractions;
+﻿using Finbuckle.MultiTenant.Abstractions;
 using Finbuckle.MultiTenant.Identity.EntityFrameworkCore;
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Identity.Domain;
+using DES.Framework.Persistence;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Identity.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace FSH.Modules.Identity.Data;
+namespace DES.Modules.Identity.Data;
 
-public class IdentityDbContext : MultiTenantIdentityDbContext<FshUser,
-    FshRole,
+public class IdentityDbContext : MultiTenantIdentityDbContext<DesUser,
+    DesRole,
     string,
     IdentityUserClaim<string>,
     IdentityUserRole<string>,
     IdentityUserLogin<string>,
-    FshRoleClaim,
+    DesRoleClaim,
     IdentityUserToken<string>,
     IdentityUserPasskey<string>>
 {

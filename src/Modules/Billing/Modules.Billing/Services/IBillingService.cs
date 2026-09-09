@@ -1,6 +1,6 @@
-using FSH.Modules.Billing.Domain;
+﻿using DES.Modules.Billing.Domain;
 
-namespace FSH.Modules.Billing.Services;
+namespace DES.Modules.Billing.Services;
 
 /// <summary>
 /// Core billing workflow: snapshot usage, price it, issue the invoice, track payment state.

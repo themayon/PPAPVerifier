@@ -1,13 +1,13 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Billing.Contracts;
-using FSH.Modules.Billing.Contracts.Dtos;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Domain;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Billing.Contracts;
+using DES.Modules.Billing.Contracts.Dtos;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Domain;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
@@ -19,7 +19,7 @@ namespace Integration.Tests.Tests.Billing;
 /// Void). Invoice state-machine tests seed Draft invoices directly via the DbContext so each test
 /// can exercise its own transition without depending on Generate setup.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class BillingEndpointTests
 {
     private const string BillingBasePath = "/api/v1/billing";
@@ -35,10 +35,10 @@ public sealed class BillingEndpointTests
     // unique index; the factory is collection-shared, so a process-wide counter keeps periods distinct.
     private static int s_periodCounter;
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public BillingEndpointTests(FshWebApplicationFactory factory)
+    public BillingEndpointTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

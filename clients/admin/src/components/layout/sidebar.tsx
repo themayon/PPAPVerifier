@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronDown, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -13,7 +13,7 @@ import {
   type NavSpec,
 } from "@/components/layout/nav-items";
 
-const COLLAPSED_KEY = "fsh.admin.sidebar.collapsed";
+const COLLAPSED_KEY = "des.admin.sidebar.collapsed";
 
 /** Persisted collapsed state, reads localStorage on mount. */
 function useCollapsedSidebar() {

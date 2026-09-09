@@ -1,11 +1,11 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Eventing.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Webhooks.Data;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Eventing.Abstractions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Webhooks.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Webhooks.Services;
+namespace DES.Modules.Webhooks.Services;
 
 /// <summary>
 /// Open-generic bridge that fans every published integration event out to the

@@ -1,11 +1,11 @@
-using FSH.Modules.Billing.Contracts;
-using FSH.Modules.Billing.Contracts.v1.Invoices;
+﻿using DES.Modules.Billing.Contracts;
+using DES.Modules.Billing.Contracts.v1.Invoices;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Billing.Features.v1.Invoices.GetMyInvoices;
+namespace DES.Modules.Billing.Features.v1.Invoices.GetMyInvoices;
 
 public static class GetMyInvoicesEndpoint
 {

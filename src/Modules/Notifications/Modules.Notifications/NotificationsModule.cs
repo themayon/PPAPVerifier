@@ -1,15 +1,15 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using FluentValidation;
-using FSH.Framework.Eventing;
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Constants;
-using FSH.Framework.Web.Modules;
-using FSH.Modules.Notifications.Contracts.Authorization;
-using FSH.Modules.Notifications.Data;
-using FSH.Modules.Notifications.Features.v1.GetUnreadCount;
-using FSH.Modules.Notifications.Features.v1.ListNotifications;
-using FSH.Modules.Notifications.Features.v1.MarkAllNotificationsRead;
-using FSH.Modules.Notifications.Features.v1.MarkNotificationRead;
+using DES.Framework.Eventing;
+using DES.Framework.Persistence;
+using DES.Framework.Shared.Constants;
+using DES.Framework.Web.Modules;
+using DES.Modules.Notifications.Contracts.Authorization;
+using DES.Modules.Notifications.Data;
+using DES.Modules.Notifications.Features.v1.GetUnreadCount;
+using DES.Modules.Notifications.Features.v1.ListNotifications;
+using DES.Modules.Notifications.Features.v1.MarkAllNotificationsRead;
+using DES.Modules.Notifications.Features.v1.MarkNotificationRead;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -17,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
-namespace FSH.Modules.Notifications;
+namespace DES.Modules.Notifications;
 
 /// <summary>
 /// Notifications module: per-user inbox driven by integration events from other modules. Module

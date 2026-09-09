@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Integration.Tests.Infrastructure;
 
@@ -10,9 +10,9 @@ public sealed class AuthHelper
         PropertyNameCaseInsensitive = true
     };
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
 
-    public AuthHelper(FshWebApplicationFactory factory)
+    public AuthHelper(DesWebApplicationFactory factory)
     {
         _factory = factory;
     }

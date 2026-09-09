@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Identity.Contracts.v1.Users.ResendConfirmationEmail;
+﻿using FluentValidation;
+using DES.Modules.Identity.Contracts.v1.Users.ResendConfirmationEmail;
 
-namespace FSH.Modules.Identity.Features.v1.Users.ResendConfirmationEmail;
+namespace DES.Modules.Identity.Features.v1.Users.ResendConfirmationEmail;
 
 public sealed class ResendConfirmationEmailCommandValidator : AbstractValidator<ResendConfirmationEmailCommand>
 {

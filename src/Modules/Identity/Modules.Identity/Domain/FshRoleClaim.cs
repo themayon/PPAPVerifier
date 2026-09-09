@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace FSH.Modules.Identity.Domain;
+namespace DES.Modules.Identity.Domain;
 
-public class FshRoleClaim : IdentityRoleClaim<string>
+public class DesRoleClaim : IdentityRoleClaim<string>
 {
     public string? CreatedBy { get; init; }
     public DateTimeOffset CreatedOn { get; init; }

@@ -1,9 +1,9 @@
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Multitenancy.Domain;
+﻿using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Multitenancy.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FSH.Modules.Multitenancy.Data.Configurations;
+namespace DES.Modules.Multitenancy.Data.Configurations;
 
 public class TenantThemeConfiguration : IEntityTypeConfiguration<TenantTheme>
 {

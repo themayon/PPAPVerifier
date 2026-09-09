@@ -1,17 +1,17 @@
-using FSH.Modules.Chat.Contracts.v1.DTOs;
+﻿using DES.Modules.Chat.Contracts.v1.DTOs;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Chat;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class ChatChannelsTests
 {
     private const string ChatBasePath = "/api/v1/chat";
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public ChatChannelsTests(FshWebApplicationFactory factory)
+    public ChatChannelsTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

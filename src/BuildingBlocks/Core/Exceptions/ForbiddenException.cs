@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace FSH.Framework.Core.Exceptions;
+namespace DES.Framework.Core.Exceptions;
 /// <summary>
 /// Exception representing a 403 Forbidden error.
 /// </summary>

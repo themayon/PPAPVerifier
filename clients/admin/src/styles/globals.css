@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -975,7 +975,7 @@
   /* ── CHAT TOASTS — opt out of the console-card treatment.
         Sonner appends per-toast `className` to the toaster's global
         classNames.toast, so the wrapper li carries BOTH .fsh-toast (from
-        FshToaster) AND .fsh-chat-toast-wrapper (per-toast). The rules
+        DesToaster) AND .fsh-chat-toast-wrapper (per-toast). The rules
         below neutralise every piece of console-card chrome — the
         gradient border, the frosted surface, the atmospheric glow, the
         icon disc, the drain bar, the close button — so the chat card

@@ -1,6 +1,6 @@
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace FSH.CLI.Infrastructure;
+namespace DES.CLI.Infrastructure;
 
 /// <summary>
 /// Validates project names for use as C# identifiers, folder names, and NuGet package names.
@@ -27,7 +27,7 @@ internal static partial class ProjectNameValidator
         if (name.Contains("..", StringComparison.Ordinal))
             return "Project name cannot contain consecutive dots.";
 
-        if (FshConstants.ReservedNames.Contains(name))
+        if (DesConstants.ReservedNames.Contains(name))
             return $"'{name}' is a reserved name and cannot be used.";
 
         // Check for C# reserved keywords (common ones)

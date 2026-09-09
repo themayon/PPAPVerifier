@@ -1,13 +1,13 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Tickets.Contracts.Authorization;
-using FSH.Modules.Tickets.Contracts.Dtos;
-using FSH.Modules.Tickets.Contracts.v1.Tickets;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Tickets.Contracts.Authorization;
+using DES.Modules.Tickets.Contracts.Dtos;
+using DES.Modules.Tickets.Contracts.v1.Tickets;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Tickets.Features.v1.Tickets.SearchTickets;
+namespace DES.Modules.Tickets.Features.v1.Tickets.SearchTickets;
 
 public static class SearchTicketsEndpoint
 {

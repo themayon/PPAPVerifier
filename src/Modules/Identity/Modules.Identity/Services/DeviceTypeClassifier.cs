@@ -1,4 +1,4 @@
-namespace FSH.Modules.Identity.Services;
+﻿namespace DES.Modules.Identity.Services;
 
 /// <summary>
 /// Classifies device types based on user agent device family strings.

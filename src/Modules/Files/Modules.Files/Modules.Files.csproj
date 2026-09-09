@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<RootNamespace>FSH.Modules.Files</RootNamespace>
-		<AssemblyName>FSH.Modules.Files</AssemblyName>
+		<RootNamespace>DES.Modules.Files</RootNamespace>
+		<AssemblyName>DES.Modules.Files</AssemblyName>
 		<NoWarn>$(NoWarn);CA1031;CA1812;CA1859;CA1002;CA2227;S3267</NoWarn>
 	</PropertyGroup>
 

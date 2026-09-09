@@ -1,10 +1,10 @@
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Contracts.v1.Users.SetProfileImage;
+﻿using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Contracts.v1.Users.SetProfileImage;
 using Mediator;
 
-namespace FSH.Modules.Identity.Features.v1.Users.SetProfileImage;
+namespace DES.Modules.Identity.Features.v1.Users.SetProfileImage;
 
 public sealed class SetProfileImageCommandHandler(
     IUserProfileService profileService,

@@ -1,13 +1,13 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Quota;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Quota;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Domain;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Quota;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Quota;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Billing.Services;
+namespace DES.Modules.Billing.Services;
 
 public sealed class UsageReporter : IUsageReporter
 {

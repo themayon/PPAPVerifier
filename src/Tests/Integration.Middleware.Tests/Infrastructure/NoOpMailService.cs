@@ -1,5 +1,5 @@
-using FSH.Framework.Mailing;
-using FSH.Framework.Mailing.Services;
+﻿using DES.Framework.Mailing;
+using DES.Framework.Mailing.Services;
 
 namespace Integration.Middleware.Tests.Infrastructure;
 

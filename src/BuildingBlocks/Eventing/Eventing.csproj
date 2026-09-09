@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>FSH.Framework.Eventing</RootNamespace>
-    <AssemblyName>FSH.Framework.Eventing</AssemblyName>
+    <RootNamespace>DES.Framework.Eventing</RootNamespace>
+    <AssemblyName>DES.Framework.Eventing</AssemblyName>
     <NoWarn>$(NoWarn);CA1711;CA1716;CA1031;S2139;S1066</NoWarn>
   </PropertyGroup>
 

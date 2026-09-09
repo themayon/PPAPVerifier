@@ -1,4 +1,4 @@
-namespace FSH.Framework.Shared.Constants;
+﻿namespace DES.Framework.Shared.Constants;
 
 /// <summary>
 /// Central permission registry. Each module/component contributes its own permissions
@@ -7,14 +7,14 @@ namespace FSH.Framework.Shared.Constants;
 /// </summary>
 public static class PermissionConstants
 {
-    private static readonly List<FshPermission> _all = new();
+    private static readonly List<DesPermission> _all = new();
 
     public const string RequiredPermissionPolicyName = "RequiredPermission";
 
     /// <summary>
     /// Registers permissions from a module/component. Duplicates (by Name) are skipped.
     /// </summary>
-    public static void Register(IEnumerable<FshPermission> additionalPermissions)
+    public static void Register(IEnumerable<DesPermission> additionalPermissions)
     {
         ArgumentNullException.ThrowIfNull(additionalPermissions);
         _all.AddRange(from permission in additionalPermissions
@@ -22,13 +22,13 @@ public static class PermissionConstants
                       select permission);
     }
 
-    public static IReadOnlyList<FshPermission> All => _all.AsReadOnly();
-    public static IReadOnlyList<FshPermission> Root => [.. _all.Where(p => p.IsRoot)];
-    public static IReadOnlyList<FshPermission> Admin => [.. _all.Where(p => !p.IsRoot)];
-    public static IReadOnlyList<FshPermission> Basic => [.. _all.Where(p => p.IsBasic)];
+    public static IReadOnlyList<DesPermission> All => _all.AsReadOnly();
+    public static IReadOnlyList<DesPermission> Root => [.. _all.Where(p => p.IsRoot)];
+    public static IReadOnlyList<DesPermission> Admin => [.. _all.Where(p => !p.IsRoot)];
+    public static IReadOnlyList<DesPermission> Basic => [.. _all.Where(p => p.IsBasic)];
 }
 
-public record FshPermission(string Description, string Action, string Resource, bool IsBasic = false, bool IsRoot = false)
+public record DesPermission(string Description, string Action, string Resource, bool IsBasic = false, bool IsRoot = false)
 {
     public string Name => NameFor(Action, Resource);
     public static string NameFor(string action, string resource)

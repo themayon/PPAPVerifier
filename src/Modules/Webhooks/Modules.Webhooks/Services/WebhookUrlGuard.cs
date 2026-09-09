@@ -1,8 +1,8 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 
-namespace FSH.Modules.Webhooks.Services;
+namespace DES.Modules.Webhooks.Services;
 
 /// <summary>
 /// SSRF guard for outbound webhook delivery. A tenant registers the destination URL, so the

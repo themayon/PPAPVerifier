@@ -1,6 +1,6 @@
-using FSH.Framework.Core.Domain;
+﻿using DES.Framework.Core.Domain;
 
-namespace FSH.Modules.Catalog.Domain;
+namespace DES.Modules.Catalog.Domain;
 
 /// <summary>
 /// A product image. Owned by <see cref="Product"/> (cascade-deleted with the parent).

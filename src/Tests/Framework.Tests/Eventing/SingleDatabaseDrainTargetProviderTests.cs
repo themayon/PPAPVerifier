@@ -1,4 +1,4 @@
-using FSH.Framework.Eventing;
+﻿using DES.Framework.Eventing;
 using Shouldly;
 using Xunit;
 

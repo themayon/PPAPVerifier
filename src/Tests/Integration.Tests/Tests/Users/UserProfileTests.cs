@@ -1,4 +1,4 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 using Integration.Tests.Tests.Sessions;
 
@@ -9,13 +9,13 @@ namespace Integration.Tests.Tests.Users;
 /// SetProfileImage (PUT /profile/image). Both force the target id to the
 /// authenticated user, so any signed-in user may edit their own profile.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class UserProfileTests
 {
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public UserProfileTests(FshWebApplicationFactory factory)
+    public UserProfileTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

@@ -1,14 +1,14 @@
-using Finbuckle.MultiTenant.EntityFrameworkCore.Extensions;
-using FSH.Modules.Identity.Domain;
+﻿using Finbuckle.MultiTenant.EntityFrameworkCore.Extensions;
+using DES.Modules.Identity.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FSH.Modules.Identity.Data;
+namespace DES.Modules.Identity.Data;
 
-public class ApplicationUserConfig : IEntityTypeConfiguration<FshUser>
+public class ApplicationUserConfig : IEntityTypeConfiguration<DesUser>
 {
-    public void Configure(EntityTypeBuilder<FshUser> builder)
+    public void Configure(EntityTypeBuilder<DesUser> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -22,9 +22,9 @@ public class ApplicationUserConfig : IEntityTypeConfiguration<FshUser>
     }
 }
 
-public class ApplicationRoleConfig : IEntityTypeConfiguration<FshRole>
+public class ApplicationRoleConfig : IEntityTypeConfiguration<DesRole>
 {
-    public void Configure(EntityTypeBuilder<FshRole> builder)
+    public void Configure(EntityTypeBuilder<DesRole> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 
@@ -35,9 +35,9 @@ public class ApplicationRoleConfig : IEntityTypeConfiguration<FshRole>
     }
 }
 
-public class ApplicationRoleClaimConfig : IEntityTypeConfiguration<FshRoleClaim>
+public class ApplicationRoleClaimConfig : IEntityTypeConfiguration<DesRoleClaim>
 {
-    public void Configure(EntityTypeBuilder<FshRoleClaim> builder)
+    public void Configure(EntityTypeBuilder<DesRoleClaim> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
 

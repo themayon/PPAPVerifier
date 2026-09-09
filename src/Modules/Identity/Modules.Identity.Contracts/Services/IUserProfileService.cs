@@ -1,7 +1,7 @@
-using FSH.Framework.Shared.Storage;
-using FSH.Modules.Identity.Contracts.DTOs;
+﻿using DES.Framework.Shared.Storage;
+using DES.Modules.Identity.Contracts.DTOs;
 
-namespace FSH.Modules.Identity.Contracts.Services;
+namespace DES.Modules.Identity.Contracts.Services;
 
 /// <summary>
 /// Service for user profile operations.

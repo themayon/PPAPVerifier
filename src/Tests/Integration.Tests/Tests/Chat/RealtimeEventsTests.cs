@@ -1,22 +1,22 @@
-using System.Net.Http.Json;
-using FSH.Modules.Chat.Contracts.v1.DTOs;
+﻿using System.Net.Http.Json;
+using DES.Modules.Chat.Contracts.v1.DTOs;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Integration.Tests.Tests.Chat;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class RealtimeEventsTests
 {
     private const string ChatBasePath = "/api/v1/chat";
     private const string HubPath = "/api/v1/realtime/hub";
     private static readonly TimeSpan EventTimeout = TimeSpan.FromSeconds(5);
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public RealtimeEventsTests(FshWebApplicationFactory factory)
+    public RealtimeEventsTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

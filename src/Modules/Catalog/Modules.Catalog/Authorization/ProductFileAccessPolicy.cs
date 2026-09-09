@@ -1,6 +1,6 @@
-using FSH.Modules.Files.Contracts;
+﻿using DES.Modules.Files.Contracts;
 
-namespace FSH.Modules.Catalog.Authorization;
+namespace DES.Modules.Catalog.Authorization;
 
 /// <summary>
 /// IFileAccessPolicy for product images (OwnerType=Product).

@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Billing.Contracts.v1.Subscriptions;
+﻿using FluentValidation;
+using DES.Modules.Billing.Contracts.v1.Subscriptions;
 
-namespace FSH.Modules.Billing.Features.v1.Subscriptions.AssignSubscription;
+namespace DES.Modules.Billing.Features.v1.Subscriptions.AssignSubscription;
 
 public sealed class AssignSubscriptionCommandValidator : AbstractValidator<AssignSubscriptionCommand>
 {

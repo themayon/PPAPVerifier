@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace FSH.Modules.Multitenancy.Data;
+namespace DES.Modules.Multitenancy.Data;
 
 public sealed class TenantDbContextFactory : IDesignTimeDbContextFactory<TenantDbContext>
 {
@@ -20,7 +20,7 @@ public sealed class TenantDbContextFactory : IDesignTimeDbContextFactory<TenantD
         var connectionString = configuration["DatabaseOptions:ConnectionString"]
             ?? "Host=localhost;Database=fsh-tenant;Username=postgres;Password=postgres";
         var migrationsAssembly = configuration["DatabaseOptions:MigrationsAssembly"]
-            ?? "FSH.Starter.Migrations.PostgreSQL";
+            ?? "DES.Starter.Migrations.PostgreSQL";
         var optionsBuilder = new DbContextOptionsBuilder<TenantDbContext>();
 
         switch (provider.ToUpperInvariant())

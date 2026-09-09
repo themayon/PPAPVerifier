@@ -1,9 +1,9 @@
 ﻿using System.Data.Common;
-using FSH.Framework.Shared.Persistence;
+using DES.Framework.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace FSH.Framework.Persistence;
+namespace DES.Framework.Persistence;
 
 /// <summary>
 /// Extension methods for configuring Entity Framework DbContextOptionsBuilder.

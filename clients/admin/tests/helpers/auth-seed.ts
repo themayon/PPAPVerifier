@@ -1,9 +1,9 @@
-import type { Page } from "@playwright/test";
+﻿import type { Page } from "@playwright/test";
 
-const ACCESS_KEY = "fsh.admin.accessToken";
-const REFRESH_KEY = "fsh.admin.refreshToken";
-const TENANT_KEY = "fsh.admin.tenant";
-const PERMS_KEY = "fsh.admin.permissions";
+const ACCESS_KEY = "des.admin.accessToken";
+const REFRESH_KEY = "des.admin.refreshToken";
+const TENANT_KEY = "des.admin.tenant";
+const PERMS_KEY = "des.admin.permissions";
 
 export type SeededUser = {
   sub: string;

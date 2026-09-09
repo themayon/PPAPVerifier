@@ -1,4 +1,4 @@
-namespace FSH.Framework.Persistence;
+﻿namespace DES.Framework.Persistence;
 
 /// <summary>
 /// Extension methods to apply specifications to <see cref="IQueryable{T}"/> instances.

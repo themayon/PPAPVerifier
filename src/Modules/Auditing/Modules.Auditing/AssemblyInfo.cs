@@ -1,3 +1,3 @@
-using FSH.Framework.Web.Modules;
+﻿using DES.Framework.Web.Modules;
 
-[assembly: FshModule(typeof(FSH.Modules.Auditing.AuditingModule), 300)]
+[assembly: DesModule(typeof(DES.Modules.Auditing.AuditingModule), 300)]

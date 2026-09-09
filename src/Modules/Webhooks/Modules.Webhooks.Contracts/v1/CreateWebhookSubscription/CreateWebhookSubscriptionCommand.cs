@@ -1,6 +1,6 @@
-using Mediator;
+﻿using Mediator;
 
-namespace FSH.Modules.Webhooks.Contracts.v1.CreateWebhookSubscription;
+namespace DES.Modules.Webhooks.Contracts.v1.CreateWebhookSubscription;
 
 public sealed record CreateWebhookSubscriptionCommand(
     string Url,

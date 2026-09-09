@@ -1,7 +1,7 @@
-import { expect, test } from "@playwright/test";
+﻿import { expect, test } from "@playwright/test";
 import { mockJsonResponse, mockProblemDetails } from "../helpers/api-mocks";
 
-// The dashboard login page (rebuilt to the dentalOS card layout): FSH logo
+// The dashboard login page (rebuilt to the dentalOS card layout): DES logo
 // lockup + ".NET 10 Starter Kit" caption, tenant/email/password card, and a
 // demoMode-gated "Step into any role" picker that signs in instantly.
 
@@ -28,7 +28,7 @@ test.describe("login — page chrome", () => {
     await setConfig(page, true);
   });
 
-  test("renders the FSH logo lockup with the .NET 10 caption", async ({ page }) => {
+  test("renders the DES logo lockup with the .NET 10 caption", async ({ page }) => {
     await page.goto("/login");
     await expect(page.getByRole("img", { name: /FullStack/i })).toBeVisible();
     await expect(page.getByText(/\.NET 10 Starter Kit/i)).toBeVisible();

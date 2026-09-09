@@ -1,4 +1,4 @@
-# FullStack — Dashboard
+﻿# FullStack — Dashboard
 
 Tenant-facing dashboard for the FullStack .NET Starter Kit. Shows realtime telemetry over Server-Sent Events, current-period usage vs. plan limits (Recharts), and billing history.
 
@@ -19,7 +19,7 @@ The AppHost launches Postgres, Redis, MinIO, the API, the admin app, **and** thi
 
 ```bash
 npm install --prefix clients/dashboard   # one-time
-dotnet run --project src/Host/FSH.Starter.AppHost
+dotnet run --project src/Host/DES.Starter.AppHost
 ```
 
 Aspire dashboard exposes `fsh-dashboard` on <http://localhost:5174>.
@@ -57,7 +57,7 @@ The dev server proxies `/api`, `/openapi`, and `/scalar` to `VITE_API_BASE_URL` 
 ```
 src/
 ├── api/                  # Typed API clients (billing, usage, subscription)
-├── auth/                 # JWT-backed auth (own localStorage prefix: fsh.dashboard.*)
+├── auth/                 # JWT-backed auth (own localStorage prefix: des.dashboard.*)
 ├── components/
 │   ├── layout/           # Sidebar, Topbar, AppShell
 │   ├── sse/              # SseStatusBadge, LiveFeed
@@ -94,7 +94,7 @@ The `SseProvider` in `src/sse/sse-context.tsx` is mounted inside `AppShell`, so 
 
 ## Authentication flow
 
-Identical to the admin app: JWT in `localStorage`, `Authorization: Bearer` + `tenant` headers, single-flight refresh on 401 via `POST /api/v1/identity/token/refresh`. Keys are namespaced `fsh.dashboard.*` so both apps can run side-by-side without clobbering each other's session.
+Identical to the admin app: JWT in `localStorage`, `Authorization: Bearer` + `tenant` headers, single-flight refresh on 401 via `POST /api/v1/identity/token/refresh`. Keys are namespaced `des.dashboard.*` so both apps can run side-by-side without clobbering each other's session.
 
 ## Production build
 

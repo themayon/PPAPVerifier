@@ -1,16 +1,16 @@
-using System.Collections.ObjectModel;
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Storage.Services;
-using FSH.Modules.Files.Contracts.v1.DTOs;
-using FSH.Modules.Files.Contracts.v1.Queries;
-using FSH.Modules.Files.Data;
-using FSH.Modules.Files.Domain;
-using FSH.Modules.Files.Features.v1.Internal;
+﻿using System.Collections.ObjectModel;
+using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Storage.Services;
+using DES.Modules.Files.Contracts.v1.DTOs;
+using DES.Modules.Files.Contracts.v1.Queries;
+using DES.Modules.Files.Data;
+using DES.Modules.Files.Domain;
+using DES.Modules.Files.Features.v1.Internal;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Files.Features.v1.ListMyFiles;
+namespace DES.Modules.Files.Features.v1.ListMyFiles;
 
 public sealed class ListMyFilesQueryHandler(
     FilesDbContext db,

@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Catalog.Contracts.v1.Products.RemoveProductImage;
+﻿using FluentValidation;
+using DES.Modules.Catalog.Contracts.v1.Products.RemoveProductImage;
 
-namespace FSH.Modules.Catalog.Features.v1.Products.RemoveProductImage;
+namespace DES.Modules.Catalog.Features.v1.Products.RemoveProductImage;
 
 public sealed class RemoveProductImageCommandValidator : AbstractValidator<RemoveProductImageCommand>
 {

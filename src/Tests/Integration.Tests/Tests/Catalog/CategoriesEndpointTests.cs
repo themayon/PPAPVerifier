@@ -1,4 +1,4 @@
-using FSH.Modules.Catalog.Contracts.Dtos;
+﻿using DES.Modules.Catalog.Contracts.Dtos;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
@@ -10,13 +10,13 @@ namespace Integration.Tests.Tests.Catalog;
 /// leg of the catalog API has parity with Brands and Products. Category-specific behaviour
 /// — the parent/child hierarchy, cycle detection, and tree retrieval — gets its own group.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class CategoriesEndpointTests
 {
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public CategoriesEndpointTests(FshWebApplicationFactory factory)
+    public CategoriesEndpointTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

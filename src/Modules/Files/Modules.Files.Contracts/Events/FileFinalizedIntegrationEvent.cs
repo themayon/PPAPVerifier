@@ -1,6 +1,6 @@
-using FSH.Framework.Eventing.Abstractions;
+﻿using DES.Framework.Eventing.Abstractions;
 
-namespace FSH.Modules.Files.Contracts.Events;
+namespace DES.Modules.Files.Contracts.Events;
 
 /// <summary>
 /// Raised when a FileAsset transitions from PendingUpload to Available (or Quarantined). Owning

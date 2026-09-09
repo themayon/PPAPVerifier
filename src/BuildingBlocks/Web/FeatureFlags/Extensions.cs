@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
 
-namespace FSH.Framework.Web.FeatureFlags;
+namespace DES.Framework.Web.FeatureFlags;
 
 public static class Extensions
 {

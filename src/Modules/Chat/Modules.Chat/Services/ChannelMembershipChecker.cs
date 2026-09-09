@@ -1,8 +1,8 @@
-using FSH.Framework.Web.Realtime;
-using FSH.Modules.Chat.Data;
+﻿using DES.Framework.Web.Realtime;
+using DES.Modules.Chat.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Chat.Services;
+namespace DES.Modules.Chat.Services;
 
 /// <summary>
 /// Chat module's adapter that satisfies the realtime hub's membership probe. Scoped — the

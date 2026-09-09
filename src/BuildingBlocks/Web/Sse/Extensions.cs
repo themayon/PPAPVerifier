@@ -1,6 +1,6 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace FSH.Framework.Web.Sse;
+namespace DES.Framework.Web.Sse;
 
 public static class Extensions
 {

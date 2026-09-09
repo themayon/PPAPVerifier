@@ -1,6 +1,6 @@
-using FSH.Modules.Tickets.Contracts.Dtos;
+﻿using DES.Modules.Tickets.Contracts.Dtos;
 
-namespace FSH.Modules.Tickets.Domain;
+namespace DES.Modules.Tickets.Domain;
 
 internal static class TicketMappings
 {

@@ -1,8 +1,8 @@
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Contracts.v1.Users.ToggleUserStatus;
+﻿using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Contracts.v1.Users.ToggleUserStatus;
 using Mediator;
 
-namespace FSH.Modules.Identity.Features.v1.Users.ToggleUserStatus;
+namespace DES.Modules.Identity.Features.v1.Users.ToggleUserStatus;
 
 public sealed class ToggleUserStatusCommandHandler : ICommandHandler<ToggleUserStatusCommand, Unit>
 {

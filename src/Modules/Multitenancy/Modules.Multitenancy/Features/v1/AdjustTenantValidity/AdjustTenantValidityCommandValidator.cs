@@ -1,8 +1,8 @@
-using FluentValidation;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Multitenancy.Contracts.v1.AdjustTenantValidity;
+﻿using FluentValidation;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Multitenancy.Contracts.v1.AdjustTenantValidity;
 
-namespace FSH.Modules.Multitenancy.Features.v1.AdjustTenantValidity;
+namespace DES.Modules.Multitenancy.Features.v1.AdjustTenantValidity;
 
 public sealed class AdjustTenantValidityCommandValidator : AbstractValidator<AdjustTenantValidityCommand>
 {

@@ -1,17 +1,17 @@
-using System.Net;
+﻿using System.Net;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Eventing.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Quota;
-using FSH.Modules.Billing.Contracts;
-using FSH.Modules.Billing.Contracts.Events;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Domain;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Eventing.Abstractions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Quota;
+using DES.Modules.Billing.Contracts;
+using DES.Modules.Billing.Contracts.Events;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Billing.Services;
+namespace DES.Modules.Billing.Services;
 
 public sealed class BillingService : IBillingService
 {

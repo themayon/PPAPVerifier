@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Storage;
+﻿namespace DES.Framework.Storage;
 
 public enum FileType
 {

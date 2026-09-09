@@ -1,4 +1,4 @@
-# Contributing
+﻿# Contributing
 
 Thanks for helping out. The conventions below keep PRs reviewable.
 
@@ -13,9 +13,9 @@ Thanks for helping out. The conventions below keep PRs reviewable.
 Prerequisites: .NET 10 SDK, Docker, Node.js 20+.
 
 ```bash
-dotnet build src/FSH.Starter.slnx
-dotnet run --project src/Host/FSH.Starter.AppHost   # full Aspire stack
-dotnet test src/FSH.Starter.slnx                    # tests (integration suite needs Docker)
+dotnet build src/DES.Starter.slnx
+dotnet run --project src/Host/DES.Starter.AppHost   # full Aspire stack
+dotnet test src/DES.Starter.slnx                    # tests (integration suite needs Docker)
 ```
 
 Client apps live under `clients/admin` and `clients/dashboard` — `npm install && npm run dev` in each.

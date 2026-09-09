@@ -1,4 +1,4 @@
-namespace FSH.Modules.Identity.Contracts.Services;
+﻿namespace DES.Modules.Identity.Contracts.Services;
 
 /// <summary>
 /// Service for user password operations.

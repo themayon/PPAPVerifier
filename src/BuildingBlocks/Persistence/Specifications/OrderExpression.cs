@@ -1,6 +1,6 @@
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
-namespace FSH.Framework.Persistence;
+namespace DES.Framework.Persistence;
 
 /// <summary>
 /// Normalized representation of an ordering expression for specifications.

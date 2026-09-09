@@ -1,12 +1,12 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Notifications.Contracts.Authorization;
-using FSH.Modules.Notifications.Contracts.v1.Commands;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Notifications.Contracts.Authorization;
+using DES.Modules.Notifications.Contracts.v1.Commands;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Notifications.Features.v1.MarkAllNotificationsRead;
+namespace DES.Modules.Notifications.Features.v1.MarkAllNotificationsRead;
 
 public static class MarkAllNotificationsReadEndpoint
 {

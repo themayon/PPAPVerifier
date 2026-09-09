@@ -1,6 +1,6 @@
-using FSH.Framework.Eventing.Abstractions;
+﻿using DES.Framework.Eventing.Abstractions;
 
-namespace FSH.Framework.Eventing;
+namespace DES.Framework.Eventing;
 
 /// <summary>
 /// No-op <see cref="IEventTenantScope"/> used when no multitenancy provider is wired.

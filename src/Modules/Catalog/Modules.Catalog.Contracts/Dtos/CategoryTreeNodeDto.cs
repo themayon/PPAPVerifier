@@ -1,4 +1,4 @@
-namespace FSH.Modules.Catalog.Contracts.Dtos;
+﻿namespace DES.Modules.Catalog.Contracts.Dtos;
 
 public sealed record CategoryTreeNodeDto(
     Guid Id,

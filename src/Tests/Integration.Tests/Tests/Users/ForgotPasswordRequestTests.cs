@@ -1,4 +1,4 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 using Integration.Tests.Tests.Sessions;
 
 namespace Integration.Tests.Tests.Users;
@@ -9,13 +9,13 @@ namespace Integration.Tests.Tests.Users;
 /// dispatch is a no-op in tests (NoOpMailService), so we assert the HTTP contract,
 /// not the email contents.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class ForgotPasswordRequestTests
 {
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public ForgotPasswordRequestTests(FshWebApplicationFactory factory)
+    public ForgotPasswordRequestTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Selectable appearance options — fonts and accent palettes.
  *
  * Fonts are applied by setting `--font-sans` on :root.
@@ -117,14 +117,14 @@ export const accents: AccentOption[] = [
 export const DEFAULT_ACCENT = "rose";
 export const CUSTOM_ACCENT_ID = "custom";
 
-export const FONT_STORAGE_KEY = "fsh.font";
-export const ACCENT_STORAGE_KEY = "fsh.accent";
+export const FONT_STORAGE_KEY = "des.font";
+export const ACCENT_STORAGE_KEY = "des.accent";
 /** Stores `{ h, c }` for the custom accent — h = hue (0-360),
  *  c = chroma scale (0.6 → 1.2 of the indigo template). */
-export const CUSTOM_ACCENT_STORAGE_KEY = "fsh.accent.custom";
+export const CUSTOM_ACCENT_STORAGE_KEY = "des.accent.custom";
 
 export type DensityMode = "comfortable" | "compact";
-export const DENSITY_STORAGE_KEY = "fsh.density";
+export const DENSITY_STORAGE_KEY = "des.density";
 export const DEFAULT_DENSITY: DensityMode = "comfortable";
 
 // ────────────────────────────────────────────────────────────────────────

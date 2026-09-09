@@ -1,17 +1,17 @@
-using System.Net.Http.Json;
-using FSH.Modules.Chat.Contracts.v1.DTOs;
+﻿using System.Net.Http.Json;
+using DES.Modules.Chat.Contracts.v1.DTOs;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Chat;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class ThreadAndReactionTests
 {
     private const string ChatBasePath = "/api/v1/chat";
     private readonly AuthHelper _auth;
 
-    public ThreadAndReactionTests(FshWebApplicationFactory factory)
+    public ThreadAndReactionTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

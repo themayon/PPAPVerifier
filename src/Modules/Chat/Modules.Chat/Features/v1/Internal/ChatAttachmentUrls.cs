@@ -1,8 +1,8 @@
-using FSH.Modules.Chat.Contracts.v1.DTOs;
-using FSH.Modules.Files.Contracts.v1.Queries;
+﻿using DES.Modules.Chat.Contracts.v1.DTOs;
+using DES.Modules.Files.Contracts.v1.Queries;
 using Mediator;
 
-namespace FSH.Modules.Chat.Features.v1.Internal;
+namespace DES.Modules.Chat.Features.v1.Internal;
 
 /// <summary>
 /// Resolves message attachment URLs at <b>read</b> time. Chat files are uploaded Private, so the URL

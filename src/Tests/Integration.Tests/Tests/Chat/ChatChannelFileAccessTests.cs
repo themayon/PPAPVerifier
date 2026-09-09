@@ -1,9 +1,9 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Identity.Domain;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Identity.Domain;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -11,16 +11,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Integration.Tests.Tests.Chat;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class ChatChannelFileAccessTests
 {
     private const string ChatBasePath = "/api/v1/chat";
     private const string FilesBasePath = "/api/v1/files";
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public ChatChannelFileAccessTests(FshWebApplicationFactory factory)
+    public ChatChannelFileAccessTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);
@@ -128,7 +128,7 @@ public sealed class ChatChannelFileAccessTests
             .GetAsync(TestConstants.RootTenantId);
         scope.ServiceProvider.GetRequiredService<IMultiTenantContextSetter>().MultiTenantContext =
             new MultiTenantContext<AppTenantInfo>(tenant);
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<FshUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DesUser>>();
         var user = await userManager.FindByIdAsync(registered.UserId);
         user.ShouldNotBeNull();
         if (!user!.EmailConfirmed)

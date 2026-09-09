@@ -1,9 +1,9 @@
-using Integration.Middleware.Tests.Infrastructure;
+﻿using Integration.Middleware.Tests.Infrastructure;
 
 namespace Integration.Middleware.Tests.Tests;
 
 /// <summary>
-/// Exercises the production <see cref="FSH.Framework.Web.Security.SecurityHeadersMiddleware"/>.
+/// Exercises the production <see cref="DES.Framework.Web.Security.SecurityHeadersMiddleware"/>.
 /// The factory enables SecurityHeadersOptions, so a request to a non-excluded path must carry the
 /// standard hardening headers.
 /// </summary>

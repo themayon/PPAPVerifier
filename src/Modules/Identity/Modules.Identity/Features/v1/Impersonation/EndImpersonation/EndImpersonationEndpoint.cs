@@ -1,5 +1,5 @@
-using FSH.Modules.Identity.Contracts.DTOs;
-using FSH.Modules.Identity.Contracts.v1.Impersonation.EndImpersonation;
+﻿using DES.Modules.Identity.Contracts.DTOs;
+using DES.Modules.Identity.Contracts.v1.Impersonation.EndImpersonation;
 using Mediator;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Identity.Features.v1.Impersonation.EndImpersonation;
+namespace DES.Modules.Identity.Features.v1.Impersonation.EndImpersonation;
 
 public static class EndImpersonationEndpoint
 {

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import { BrandMarkXL } from "@/components/brand-mark";
 import { cn } from "@/lib/cn";
 
@@ -13,7 +13,7 @@ import { cn } from "@/lib/cn";
 //   right pane:       focused form column with the // SECTION-RULE chip.
 //
 // The brand stage stays consistent across all auth pages so the operator
-// always knows they're on the FSH Console surface. The right pane carries
+// always knows they're on the DES Console surface. The right pane carries
 // the page-specific content.
 // ────────────────────────────────────────────────────────────────────────
 
@@ -60,7 +60,7 @@ export function AuthShell({
         <CornerTicks />
         <div className="relative flex flex-1 flex-col justify-between p-12 xl:p-16">
           <div className="meta text-[var(--color-muted-foreground)] fsh-enter">
-            // FSH / CONSOLE / RECOVER
+            // DES / CONSOLE / RECOVER
           </div>
           <BrandMarkXL className="fsh-enter fsh-enter-2 max-w-lg" />
           <div className="fsh-enter fsh-enter-4 flex items-end justify-between gap-6">

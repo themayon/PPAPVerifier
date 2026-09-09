@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Chat.Contracts.v1.Commands;
+﻿using FluentValidation;
+using DES.Modules.Chat.Contracts.v1.Commands;
 
-namespace FSH.Modules.Chat.Features.v1.Reactions.RemoveReaction;
+namespace DES.Modules.Chat.Features.v1.Reactions.RemoveReaction;
 
 public sealed class RemoveReactionCommandValidator : AbstractValidator<RemoveReactionCommand>
 {

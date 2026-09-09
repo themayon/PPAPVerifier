@@ -1,4 +1,4 @@
-import { cn } from "@/lib/cn";
+﻿import { cn } from "@/lib/cn";
 
 /**
  * BrandMark — the compact inline lockup used in the sidebar brand row and
@@ -36,7 +36,7 @@ export function BrandMark({ className }: { className?: string }) {
 }
 
 /**
- * BrandMarkXL — splash version for the Login page. Leads with the FSH logo
+ * BrandMarkXL — splash version for the Login page. Leads with the DES logo
  * mark + "FullStack" wordmark, then a display monogram and a one-line
  * system blurb.
  */

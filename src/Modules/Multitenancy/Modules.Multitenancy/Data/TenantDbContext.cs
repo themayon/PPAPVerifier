@@ -1,10 +1,10 @@
-using Finbuckle.MultiTenant.EntityFrameworkCore.Stores;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Multitenancy.Domain;
-using FSH.Modules.Multitenancy.Provisioning;
+﻿using Finbuckle.MultiTenant.EntityFrameworkCore.Stores;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Multitenancy.Domain;
+using DES.Modules.Multitenancy.Provisioning;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Multitenancy.Data;
+namespace DES.Modules.Multitenancy.Data;
 
 public class TenantDbContext : EFCoreStoreDbContext<AppTenantInfo>
 {

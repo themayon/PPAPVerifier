@@ -1,9 +1,9 @@
-using FluentValidation;
-using FSH.Modules.Multitenancy.Contracts.Dtos;
-using FSH.Modules.Multitenancy.Contracts.v1.UpdateTenantTheme;
+﻿using FluentValidation;
+using DES.Modules.Multitenancy.Contracts.Dtos;
+using DES.Modules.Multitenancy.Contracts.v1.UpdateTenantTheme;
 using System.Text.RegularExpressions;
 
-namespace FSH.Modules.Multitenancy.Features.v1.UpdateTenantTheme;
+namespace DES.Modules.Multitenancy.Features.v1.UpdateTenantTheme;
 
 public partial class UpdateTenantThemeCommandValidator : AbstractValidator<UpdateTenantThemeCommand>
 {

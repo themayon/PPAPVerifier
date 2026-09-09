@@ -1,13 +1,13 @@
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Identity.Contracts.DTOs;
-using FSH.Modules.Identity.Contracts.v1.Groups.CreateGroup;
-using FSH.Modules.Identity.Data;
-using FSH.Modules.Identity.Domain;
+﻿using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Identity.Contracts.DTOs;
+using DES.Modules.Identity.Contracts.v1.Groups.CreateGroup;
+using DES.Modules.Identity.Data;
+using DES.Modules.Identity.Domain;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Identity.Features.v1.Groups.CreateGroup;
+namespace DES.Modules.Identity.Features.v1.Groups.CreateGroup;
 
 public sealed class CreateGroupCommandHandler : ICommandHandler<CreateGroupCommand, GroupDto>
 {

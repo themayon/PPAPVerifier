@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
-namespace FSH.Framework.Persistence;
+namespace DES.Framework.Persistence;
 
 /// <summary>
 /// Internal extension methods for Entity Framework ModelBuilder configuration.

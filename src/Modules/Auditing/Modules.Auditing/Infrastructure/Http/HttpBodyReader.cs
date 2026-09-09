@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Text;
 using System.Text.Json;
 
-namespace FSH.Modules.Auditing;
+namespace DES.Modules.Auditing;
 
 internal static class HttpBodyReader
 {

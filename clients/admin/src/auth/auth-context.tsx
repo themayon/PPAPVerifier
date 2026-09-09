@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+﻿import { createContext, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { tokenStore } from "@/auth/token-store";
 import { decodeJwt, isTokenExpired, type JwtClaims } from "@/auth/jwt";
@@ -145,13 +145,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // a `storage` event fires when ANOTHER tab logs in/out (e.g. inactivity
   // sign-out). Rebuild from the (now changed) tokens so a logout in one tab
   // drops every tab to /login. Scoped to the token keys so the inactivity
-  // heartbeat ("fsh.lastActivity") doesn't trigger a rebuild every second.
+  // heartbeat ("des.lastActivity") doesn't trigger a rebuild every second.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (
         e.key !== null &&
-        e.key !== "fsh.admin.accessToken" &&
-        e.key !== "fsh.admin.refreshToken"
+        e.key !== "des.admin.accessToken" &&
+        e.key !== "des.admin.refreshToken"
       ) {
         return;
       }

@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<RootNamespace>FSH.Framework.Web</RootNamespace>
-		<AssemblyName>FSH.Framework.Web</AssemblyName>
+		<RootNamespace>DES.Framework.Web</RootNamespace>
+		<AssemblyName>DES.Framework.Web</AssemblyName>
 		<NoWarn>$(NoWarn);CA1805;CA1307;CA1308;S1854;CA1812;CA1305;CA2000</NoWarn>
 	</PropertyGroup>
 

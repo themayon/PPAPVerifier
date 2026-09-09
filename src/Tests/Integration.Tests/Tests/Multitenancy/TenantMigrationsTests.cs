@@ -1,4 +1,4 @@
-#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
+﻿#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
 #pragma warning disable S3459 // Unassigned members — populated by JSON deserialization
 using System.Text.Json;
 using Integration.Tests.Infrastructure;
@@ -13,7 +13,7 @@ namespace Integration.Tests.Tests.Multitenancy;
 /// provisioned tenant appear in the report with provider info and no pending
 /// migrations, plus the authentication contract.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class TenantMigrationsTests
 {
     private static readonly JsonSerializerOptions Json = new()
@@ -24,10 +24,10 @@ public sealed class TenantMigrationsTests
 
     private const string MigrationsPath = $"{TestConstants.TenantsBasePath}/migrations";
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public TenantMigrationsTests(FshWebApplicationFactory factory)
+    public TenantMigrationsTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

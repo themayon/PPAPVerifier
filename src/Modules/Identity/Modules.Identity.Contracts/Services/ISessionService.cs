@@ -1,6 +1,6 @@
-using FSH.Modules.Identity.Contracts.DTOs;
+﻿using DES.Modules.Identity.Contracts.DTOs;
 
-namespace FSH.Modules.Identity.Contracts.Services;
+namespace DES.Modules.Identity.Contracts.Services;
 
 public interface ISessionService
 {

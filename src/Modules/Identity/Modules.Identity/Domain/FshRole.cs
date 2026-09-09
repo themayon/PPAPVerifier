@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace FSH.Modules.Identity.Domain;
+namespace DES.Modules.Identity.Domain;
 
-public class FshRole : IdentityRole
+public class DesRole : IdentityRole
 {
     public string? Description { get; set; }
 
-    public FshRole(string name, string? description = null)
+    public DesRole(string name, string? description = null)
         : base(name)
     {
         ArgumentNullException.ThrowIfNull(name);

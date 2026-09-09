@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api-client";
+﻿import { apiFetch } from "@/lib/api-client";
 
 export type TokenResponse = {
   accessToken: string;
@@ -15,9 +15,9 @@ export function issueToken(input: {
   return apiFetch<TokenResponse>("/api/v1/identity/token/issue", {
     method: "POST",
     body: JSON.stringify({ email: input.email, password: input.password }),
-    // X-FSH-App marks this client as the platform-admin app. Used by the
+    // X-DES-App marks this client as the platform-admin app. Used by the
     // API to enforce the SuperAdmin / dashboard boundary.
-    headers: { tenant: input.tenant, "X-FSH-App": "admin" },
+    headers: { tenant: input.tenant, "X-DES-App": "admin" },
     skipAuth: true,
   });
 }

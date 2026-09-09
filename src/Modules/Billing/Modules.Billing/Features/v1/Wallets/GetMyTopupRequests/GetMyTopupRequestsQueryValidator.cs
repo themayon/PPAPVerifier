@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Billing.Contracts.v1.Wallets;
+﻿using FluentValidation;
+using DES.Modules.Billing.Contracts.v1.Wallets;
 
-namespace FSH.Modules.Billing.Features.v1.Wallets.GetMyTopupRequests;
+namespace DES.Modules.Billing.Features.v1.Wallets.GetMyTopupRequests;
 
 public sealed class GetMyTopupRequestsQueryValidator : AbstractValidator<GetMyTopupRequestsQuery>
 {

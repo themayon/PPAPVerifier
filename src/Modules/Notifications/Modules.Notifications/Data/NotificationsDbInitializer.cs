@@ -1,8 +1,8 @@
-using FSH.Framework.Persistence;
+﻿using DES.Framework.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Notifications.Data;
+namespace DES.Modules.Notifications.Data;
 
 public sealed class NotificationsDbInitializer(
     NotificationsDbContext dbContext,

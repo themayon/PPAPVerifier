@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Files.Contracts.v1.Commands;
+﻿using FluentValidation;
+using DES.Modules.Files.Contracts.v1.Commands;
 
-namespace FSH.Modules.Files.Features.v1.DeleteFile;
+namespace DES.Modules.Files.Features.v1.DeleteFile;
 
 public sealed class DeleteFileCommandValidator : AbstractValidator<DeleteFileCommand>
 {

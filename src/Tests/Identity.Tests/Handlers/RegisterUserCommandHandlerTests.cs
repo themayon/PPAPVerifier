@@ -1,7 +1,7 @@
-using AutoFixture;
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Contracts.v1.Users.RegisterUser;
-using FSH.Modules.Identity.Features.v1.Users.RegisterUser;
+﻿using AutoFixture;
+using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Contracts.v1.Users.RegisterUser;
+using DES.Modules.Identity.Features.v1.Users.RegisterUser;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 

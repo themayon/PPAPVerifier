@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<RootNamespace>FSH.Framework.Jobs</RootNamespace>
-		<AssemblyName>FSH.Framework.Jobs</AssemblyName>
+		<RootNamespace>DES.Framework.Jobs</RootNamespace>
+		<AssemblyName>DES.Framework.Jobs</AssemblyName>
 		<NoWarn>$(NoWarn);CA1031;S3376;S3993</NoWarn>
 	</PropertyGroup>
 	

@@ -1,16 +1,16 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Multitenancy.Contracts.Authorization;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Multitenancy.Contracts.Dtos;
-using FSH.Modules.Multitenancy.Contracts.v1.GetTenants;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Multitenancy.Contracts.Authorization;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Multitenancy.Contracts.Dtos;
+using DES.Modules.Multitenancy.Contracts.v1.GetTenants;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Multitenancy.Features.v1.GetTenants;
+namespace DES.Modules.Multitenancy.Features.v1.GetTenants;
 
 public static class GetTenantsEndpoint
 {

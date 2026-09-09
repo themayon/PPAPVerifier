@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace FSH.Framework.Core.Context;
+namespace DES.Framework.Core.Context;
 
 /// <summary>
 /// Provides methods to initialize and set the current user context.

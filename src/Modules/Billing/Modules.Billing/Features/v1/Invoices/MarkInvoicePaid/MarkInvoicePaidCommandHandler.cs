@@ -1,8 +1,8 @@
-using FSH.Modules.Billing.Contracts.v1.Invoices;
-using FSH.Modules.Billing.Services;
+﻿using DES.Modules.Billing.Contracts.v1.Invoices;
+using DES.Modules.Billing.Services;
 using Mediator;
 
-namespace FSH.Modules.Billing.Features.v1.Invoices.MarkInvoicePaid;
+namespace DES.Modules.Billing.Features.v1.Invoices.MarkInvoicePaid;
 
 public sealed class MarkInvoicePaidCommandHandler(IBillingService billing)
     : ICommandHandler<MarkInvoicePaidCommand, Guid>

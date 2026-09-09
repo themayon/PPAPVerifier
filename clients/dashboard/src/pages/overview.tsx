@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -774,7 +774,7 @@ function LiveFeedBody({ events }: { events: SseEvent[] }) {
 // picks a plan; users can also opt out per-tenant via localStorage.
 // ────────────────────────────────────────────────────────────────────────
 
-const FIRST_RUN_DISMISSED_KEY = "fsh.firstrun.dismissed";
+const FIRST_RUN_DISMISSED_KEY = "des.firstrun.dismissed";
 
 function dismissedKeyFor(tenantId: string | undefined): string {
   return `${FIRST_RUN_DISMISSED_KEY}:${tenantId ?? "_default"}`;

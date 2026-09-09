@@ -1,13 +1,13 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Billing.Contracts.Dtos;
-using FSH.Modules.Billing.Contracts.v1.Wallets;
-using FSH.Modules.Billing.Mappings;
-using FSH.Modules.Billing.Services;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Billing.Contracts.Dtos;
+using DES.Modules.Billing.Contracts.v1.Wallets;
+using DES.Modules.Billing.Mappings;
+using DES.Modules.Billing.Services;
 using Mediator;
 
-namespace FSH.Modules.Billing.Features.v1.Wallets.GetMyWallet;
+namespace DES.Modules.Billing.Features.v1.Wallets.GetMyWallet;
 
 public sealed class GetMyWalletQueryHandler(
     IBillingService billingService,

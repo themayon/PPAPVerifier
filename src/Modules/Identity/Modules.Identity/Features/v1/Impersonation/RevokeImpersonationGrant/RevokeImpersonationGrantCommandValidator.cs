@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Identity.Contracts.v1.Impersonation.RevokeImpersonationGrant;
+﻿using FluentValidation;
+using DES.Modules.Identity.Contracts.v1.Impersonation.RevokeImpersonationGrant;
 
-namespace FSH.Modules.Identity.Features.v1.Impersonation.RevokeImpersonationGrant;
+namespace DES.Modules.Identity.Features.v1.Impersonation.RevokeImpersonationGrant;
 
 public sealed class RevokeImpersonationGrantCommandValidator : AbstractValidator<RevokeImpersonationGrantCommand>
 {

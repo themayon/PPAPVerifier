@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api-client";
+﻿import { apiFetch } from "@/lib/api-client";
 
 export type TokenResponse = {
   accessToken: string;
@@ -15,11 +15,11 @@ export function issueToken(input: {
   return apiFetch<TokenResponse>("/api/v1/identity/token/issue", {
     method: "POST",
     body: JSON.stringify({ email: input.email, password: input.password }),
-    // X-FSH-App tells the API this credential request originated from the
+    // X-DES-App tells the API this credential request originated from the
     // tenant dashboard. The server uses it to enforce the SuperAdmin / app
-    // boundary — a root-tenant login submitted with X-FSH-App=dashboard is
+    // boundary — a root-tenant login submitted with X-DES-App=dashboard is
     // rejected with 403 instead of receiving a usable token.
-    headers: { tenant: input.tenant, "X-FSH-App": "dashboard" },
+    headers: { tenant: input.tenant, "X-DES-App": "dashboard" },
     skipAuth: true,
   });
 }

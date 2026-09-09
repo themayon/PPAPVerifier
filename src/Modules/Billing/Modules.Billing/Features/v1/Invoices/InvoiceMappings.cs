@@ -1,7 +1,7 @@
-using FSH.Modules.Billing.Contracts.Dtos;
-using FSH.Modules.Billing.Domain;
+﻿using DES.Modules.Billing.Contracts.Dtos;
+using DES.Modules.Billing.Domain;
 
-namespace FSH.Modules.Billing.Features.v1.Invoices;
+namespace DES.Modules.Billing.Features.v1.Invoices;
 
 internal static class InvoiceMappings
 {

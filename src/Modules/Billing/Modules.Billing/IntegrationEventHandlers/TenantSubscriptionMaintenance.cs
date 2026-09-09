@@ -1,9 +1,9 @@
-using FSH.Modules.Billing.Contracts;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Domain;
+﻿using DES.Modules.Billing.Contracts;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Billing.IntegrationEventHandlers;
+namespace DES.Modules.Billing.IntegrationEventHandlers;
 
 /// <summary>
 /// Shared subscription bookkeeping for the tenant-lifecycle integration handlers: at most one active

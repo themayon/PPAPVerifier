@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router-dom";
+﻿import { RouterProvider } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import {
@@ -21,7 +21,7 @@ export function App() {
         <AuthProvider>
           <CommandPaletteProvider>
             <RouterProvider router={router} />
-            <FshToaster />
+            <DesToaster />
           </CommandPaletteProvider>
         </AuthProvider>
       </QueryClientProvider>
@@ -30,7 +30,7 @@ export function App() {
 }
 
 /**
- * FSH toaster — calm warm-paper card with per-type tone-tinted icon.
+ * DES toaster — calm warm-paper card with per-type tone-tinted icon.
  *
  * Per-type Lucide icon, a tone-tinted disc on the left, a plain
  * `bg-card border border-border` surface that matches the rest of the
@@ -39,7 +39,7 @@ export function App() {
  * toast follows the OS prefers-color-scheme instead of the in-app
  * theme toggle.
  */
-function FshToaster() {
+function DesToaster() {
   const { resolved } = useTheme();
   return (
     <Toaster

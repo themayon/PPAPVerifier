@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+﻿import type { Page } from "@playwright/test";
 
 /**
  * Seed an authenticated session on the page BEFORE React boots, so
@@ -27,9 +27,9 @@ export type SeededUser = {
   permissions?: string[];
 };
 
-const ACCESS_KEY = "fsh.dashboard.accessToken";
-const REFRESH_KEY = "fsh.dashboard.refreshToken";
-const TENANT_KEY = "fsh.dashboard.tenant";
+const ACCESS_KEY = "des.dashboard.accessToken";
+const REFRESH_KEY = "des.dashboard.refreshToken";
+const TENANT_KEY = "des.dashboard.tenant";
 
 /**
  * Encode a minimal JWT (header.payload.signature) where every segment is

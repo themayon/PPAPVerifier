@@ -1,7 +1,7 @@
-using FSH.Modules.Billing.Contracts.Dtos;
-using FSH.Modules.Billing.Domain;
+﻿using DES.Modules.Billing.Contracts.Dtos;
+using DES.Modules.Billing.Domain;
 
-namespace FSH.Modules.Billing.Mappings;
+namespace DES.Modules.Billing.Mappings;
 
 internal static class WalletMappings
 {

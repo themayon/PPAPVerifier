@@ -1,10 +1,10 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Security.Cryptography;
-using FSH.CLI.Infrastructure;
+using DES.CLI.Infrastructure;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace FSH.CLI.Commands;
+namespace DES.CLI.Commands;
 
 public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
 {
@@ -61,7 +61,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         string? validationError = ProjectNameValidator.Validate(name);
         if (validationError is not null)
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.ErrorColor}]{validationError.EscapeMarkup()}[/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.ErrorColor}]{validationError.EscapeMarkup()}[/]");
             return 1;
         }
 
@@ -74,11 +74,11 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         // 2. Check for existing directory
         if (Directory.Exists(output) && Directory.EnumerateFileSystemEntries(output).Any())
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.WarningColor}]Directory '{output}' already exists and is not empty.[/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.WarningColor}]Directory '{output}' already exists and is not empty.[/]");
 
             if (settings.NonInteractive)
             {
-                AnsiConsole.MarkupLine($"[{FshConstants.ErrorColor}]Use --output to specify a different directory, or delete the existing one.[/]");
+                AnsiConsole.MarkupLine($"[{DesConstants.ErrorColor}]Use --output to specify a different directory, or delete the existing one.[/]");
                 return 1;
             }
 
@@ -93,7 +93,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
 
         if (settings.DryRun)
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.DimColor}]Dry run — no files were created.[/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.DimColor}]Dry run — no files were created.[/]");
             return 0;
         }
 
@@ -105,7 +105,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         int result = await ScaffoldProjectAsync(name, aspire, frontend, output, cancellationToken).ConfigureAwait(false);
         if (result != 0)
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.ErrorColor}]Scaffolding failed. Check the output above for errors.[/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.ErrorColor}]Scaffolding failed. Check the output above for errors.[/]");
             return 1;
         }
 
@@ -148,7 +148,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         if (settings.NonInteractive)
             throw new InvalidOperationException("Project name is required in non-interactive mode. Pass it as: fsh new <name>");
 
-        return await new TextPrompt<string>($"[{FshConstants.AccentColor}]Project name:[/]")
+        return await new TextPrompt<string>($"[{DesConstants.AccentColor}]Project name:[/]")
             .Validate(input =>
             {
                 string? error = ProjectNameValidator.Validate(input);
@@ -164,7 +164,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         if (settings.NoAspire) return false;
         if (settings.NonInteractive) return true;
 
-        return await new ConfirmationPrompt($"[{FshConstants.AccentColor}]Include .NET Aspire AppHost?[/]")
+        return await new ConfirmationPrompt($"[{DesConstants.AccentColor}]Include .NET Aspire AppHost?[/]")
             { DefaultValue = true }
             .ShowAsync(AnsiConsole.Console, cancellationToken).ConfigureAwait(false);
     }
@@ -174,7 +174,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         if (settings.NoFrontend) return false;
         if (settings.NonInteractive) return true;
 
-        return await new ConfirmationPrompt($"[{FshConstants.AccentColor}]Include the React admin + dashboard apps?[/]")
+        return await new ConfirmationPrompt($"[{DesConstants.AccentColor}]Include the React admin + dashboard apps?[/]")
             { DefaultValue = true }
             .ShowAsync(AnsiConsole.Console, cancellationToken).ConfigureAwait(false);
     }
@@ -185,9 +185,9 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
 
         string mode = dryRun ? " [yellow](dry run)[/]" : "";
         AnsiConsole.MarkupLine($"[bold]Creating project:[/] {name.EscapeMarkup()}{mode}");
-        AnsiConsole.MarkupLine($"  [{FshConstants.DimColor}]Aspire:[/]    {(aspire ? "yes" : "no")}");
-        AnsiConsole.MarkupLine($"  [{FshConstants.DimColor}]Frontend:[/]  {(frontend ? "yes (admin + dashboard)" : "no")}");
-        AnsiConsole.MarkupLine($"  [{FshConstants.DimColor}]Output:[/]    {output.EscapeMarkup()}");
+        AnsiConsole.MarkupLine($"  [{DesConstants.DimColor}]Aspire:[/]    {(aspire ? "yes" : "no")}");
+        AnsiConsole.MarkupLine($"  [{DesConstants.DimColor}]Frontend:[/]  {(frontend ? "yes (admin + dashboard)" : "no")}");
+        AnsiConsole.MarkupLine($"  [{DesConstants.DimColor}]Output:[/]    {output.EscapeMarkup()}");
         AnsiConsole.WriteLine();
     }
 
@@ -196,28 +196,28 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         // Check if the template is already available. dotnet new list may return
         // non-zero due to workload warnings, so check stdout content regardless.
         (_, string listOutput) = await ProcessRunner.CaptureAsync(
-            "dotnet", $"new list {FshConstants.TemplateShortName}",
+            "dotnet", $"new list {DesConstants.TemplateShortName}",
             cancellationToken).ConfigureAwait(false);
 
-        bool installed = listOutput.Contains(FshConstants.TemplateShortName, StringComparison.OrdinalIgnoreCase)
+        bool installed = listOutput.Contains(DesConstants.TemplateShortName, StringComparison.OrdinalIgnoreCase)
             && listOutput.Contains("FullStack", StringComparison.OrdinalIgnoreCase);
 
         if (installed) return true;
 
-        AnsiConsole.MarkupLine($"[{FshConstants.WarningColor}]FSH template not found. Installing...[/]");
+        AnsiConsole.MarkupLine($"[{DesConstants.WarningColor}]DES template not found. Installing...[/]");
         await ProcessRunner.RunAsync(
-            "dotnet", $"new install {FshConstants.TemplatePackageId}",
+            "dotnet", $"new install {DesConstants.TemplatePackageId}",
             cancellationToken: cancellationToken).ConfigureAwait(false);
 
         // Verify it actually installed (ignore exit code — workload warnings cause non-zero)
         (_, string verifyOutput) = await ProcessRunner.CaptureAsync(
-            "dotnet", $"new list {FshConstants.TemplateShortName}",
+            "dotnet", $"new list {DesConstants.TemplateShortName}",
             cancellationToken).ConfigureAwait(false);
 
         bool nowInstalled = verifyOutput.Contains("FullStack", StringComparison.OrdinalIgnoreCase);
         if (!nowInstalled)
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.ErrorColor}]Failed to install template. Run manually:[/] dotnet new install {FshConstants.TemplatePackageId}");
+            AnsiConsole.MarkupLine($"[{DesConstants.ErrorColor}]Failed to install template. Run manually:[/] dotnet new install {DesConstants.TemplatePackageId}");
         }
 
         return nowInstalled;
@@ -228,12 +228,12 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
     {
         return await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
-            .SpinnerStyle(Style.Parse(FshConstants.AccentColor))
+            .SpinnerStyle(Style.Parse(DesConstants.AccentColor))
             .StartAsync("Scaffolding project...", async _ =>
             {
                 string aspireFlag = aspire ? "true" : "false";
                 string frontendFlag = frontend ? "true" : "false";
-                string args = $"new {FshConstants.TemplateShortName} -n {name} -o \"{output}\" --aspire {aspireFlag} --frontend {frontendFlag} --force";
+                string args = $"new {DesConstants.TemplateShortName} -n {name} -o \"{output}\" --aspire {aspireFlag} --frontend {frontendFlag} --force";
                 await ProcessRunner.RunAsync("dotnet", args, showOutput: false, cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
 
@@ -258,7 +258,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
 
         await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
-            .SpinnerStyle(Style.Parse(FshConstants.AccentColor))
+            .SpinnerStyle(Style.Parse(DesConstants.AccentColor))
             .StartAsync("Initializing git repository...", async _ =>
             {
                 await ProcessRunner.RunAsync("git", "init", output, showOutput: false, cancellationToken: cancellationToken)
@@ -283,7 +283,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
 
             await AnsiConsole.Status()
                 .Spinner(Spinner.Known.Dots)
-                .SpinnerStyle(Style.Parse(FshConstants.AccentColor))
+                .SpinnerStyle(Style.Parse(DesConstants.AccentColor))
                 .StartAsync($"Installing {app} dependencies (npm install)...", async _ =>
                 {
                     try
@@ -291,11 +291,11 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
                         int code = await RunNpmAsync("install --no-audit --no-fund", appDir, cancellationToken)
                             .ConfigureAwait(false);
                         if (code != 0)
-                            AnsiConsole.MarkupLine($"[{FshConstants.WarningColor}]npm install failed for clients/{app}. Run it manually before 'npm run dev'.[/]");
+                            AnsiConsole.MarkupLine($"[{DesConstants.WarningColor}]npm install failed for clients/{app}. Run it manually before 'npm run dev'.[/]");
                     }
                     catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or FileNotFoundException)
                     {
-                        AnsiConsole.MarkupLine($"[{FshConstants.WarningColor}]npm not found — skipped clients/{app}. Install Node.js, then run 'npm install' there.[/]");
+                        AnsiConsole.MarkupLine($"[{DesConstants.WarningColor}]npm not found — skipped clients/{app}. Install Node.js, then run 'npm install' there.[/]");
                     }
                 }).ConfigureAwait(false);
         }
@@ -345,9 +345,9 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
             ["MINIO_ROOT_USER"] = "minioadmin",
             ["MINIO_ROOT_PASSWORD"] = GenerateSecret(24),
             // Local-working defaults: the compose stack publishes these host ports.
-            ["FSH_API_URL"] = "http://localhost:8080",
-            ["FSH_ADMIN_URL"] = "http://localhost:8081",
-            ["FSH_DASHBOARD_URL"] = "http://localhost:8082"
+            ["DES_API_URL"] = "http://localhost:8080",
+            ["DES_ADMIN_URL"] = "http://localhost:8081",
+            ["DES_DASHBOARD_URL"] = "http://localhost:8082"
         };
 
         string[] lines = File.ReadAllLines(examplePath);
@@ -399,15 +399,15 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         try
         {
             string? latest = await NuGetClient.GetLatestVersionAsync(
-                FshConstants.CliPackageId, cancellationToken).ConfigureAwait(false);
+                DesConstants.CliPackageId, cancellationToken).ConfigureAwait(false);
 
             string currentVersion = typeof(NewCommand).Assembly.GetName().Version?.ToString(3) ?? "0.0.0";
 
             if (VersionComparer.IsNewer(latest, currentVersion))
             {
                 AnsiConsole.WriteLine();
-                AnsiConsole.MarkupLine($"[{FshConstants.WarningColor}]A newer version of FSH CLI is available: {latest} (current: {currentVersion})[/]");
-                AnsiConsole.MarkupLine($"[{FshConstants.DimColor}]Run 'fsh update' to upgrade.[/]");
+                AnsiConsole.MarkupLine($"[{DesConstants.WarningColor}]A newer version of DES CLI is available: {latest} (current: {currentVersion})[/]");
+                AnsiConsole.MarkupLine($"[{DesConstants.DimColor}]Run 'fsh update' to upgrade.[/]");
             }
         }
         catch
@@ -419,22 +419,22 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
     private static void PrintNextSteps(string name, bool aspire, bool frontend, bool skipInstall, bool dockerEnvReady)
     {
         AnsiConsole.WriteLine();
-        AnsiConsole.Write(new Rule($"[{FshConstants.SuccessColor}]Project created successfully![/]").RuleStyle(FshConstants.SuccessColor));
+        AnsiConsole.Write(new Rule($"[{DesConstants.SuccessColor}]Project created successfully![/]").RuleStyle(DesConstants.SuccessColor));
         AnsiConsole.WriteLine();
 
         string runProject = aspire
             ? $"src/Host/{name}.AppHost"
             : $"src/Host/{name}.Api";
 
-        var tree = new Tree($"[bold {FshConstants.AccentColor}]Next Steps[/]");
+        var tree = new Tree($"[bold {DesConstants.AccentColor}]Next Steps[/]");
         tree.AddNode($"[bold]cd[/] {name.EscapeMarkup()}");
         tree.AddNode($"[bold]dotnet run[/] --project {runProject.EscapeMarkup()}");
 
         if (aspire)
         {
-            tree.AddNode($"[{FshConstants.DimColor}]Aspire dashboard:[/] https://localhost:{FshConstants.AspireDashboardPort}");
+            tree.AddNode($"[{DesConstants.DimColor}]Aspire dashboard:[/] https://localhost:{DesConstants.AspireDashboardPort}");
             if (frontend)
-                tree.AddNode($"[{FshConstants.DimColor}]Aspire launches the admin + dashboard apps automatically.[/]");
+                tree.AddNode($"[{DesConstants.DimColor}]Aspire launches the admin + dashboard apps automatically.[/]");
         }
         else if (frontend)
         {
@@ -443,15 +443,15 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
         }
 
         if (frontend && skipInstall)
-            tree.AddNode($"[{FshConstants.WarningColor}]Run 'npm install' in clients/admin and clients/dashboard first.[/]");
+            tree.AddNode($"[{DesConstants.WarningColor}]Run 'npm install' in clients/admin and clients/dashboard first.[/]");
 
-        tree.AddNode($"[{FshConstants.DimColor}]API docs:[/]         https://localhost:{FshConstants.ApiHttpsPort}/scalar");
-        tree.AddNode($"[{FshConstants.DimColor}]Health check:[/]     https://localhost:{FshConstants.ApiHttpsPort}/health/live");
+        tree.AddNode($"[{DesConstants.DimColor}]API docs:[/]         https://localhost:{DesConstants.ApiHttpsPort}/scalar");
+        tree.AddNode($"[{DesConstants.DimColor}]Health check:[/]     https://localhost:{DesConstants.ApiHttpsPort}/health/live");
 
         if (dockerEnvReady)
-            tree.AddNode($"[{FshConstants.DimColor}]Self-host:[/]        cd deploy/docker && docker compose up -d --build  [{FshConstants.DimColor}](secrets pre-generated in .env)[/]");
+            tree.AddNode($"[{DesConstants.DimColor}]Self-host:[/]        cd deploy/docker && docker compose up -d --build  [{DesConstants.DimColor}](secrets pre-generated in .env)[/]");
 
-        tree.AddNode($"[{FshConstants.DimColor}]Documentation:[/]    {FshConstants.DocsUrl}");
+        tree.AddNode($"[{DesConstants.DimColor}]Documentation:[/]    {DesConstants.DocsUrl}");
 
         AnsiConsole.Write(tree);
         AnsiConsole.WriteLine();

@@ -1,4 +1,4 @@
-namespace FSH.Framework.Shared.Auditing;
+﻿namespace DES.Framework.Shared.Auditing;
 
 /// <summary>
 /// Well-known <c>HttpContext.Items</c> keys for cross-cutting middleware signals that the audit

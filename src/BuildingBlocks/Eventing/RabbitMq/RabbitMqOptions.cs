@@ -1,4 +1,4 @@
-namespace FSH.Framework.Eventing.RabbitMq;
+﻿namespace DES.Framework.Eventing.RabbitMq;
 
 /// <summary>
 /// Configuration options for RabbitMQ event bus.

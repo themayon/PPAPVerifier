@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Auditing.Contracts.v1.GetSecurityAudits;
+﻿using FluentValidation;
+using DES.Modules.Auditing.Contracts.v1.GetSecurityAudits;
 
-namespace FSH.Modules.Auditing.Features.v1.GetSecurityAudits;
+namespace DES.Modules.Auditing.Features.v1.GetSecurityAudits;
 
 public sealed class GetSecurityAuditsQueryValidator : AbstractValidator<GetSecurityAuditsQuery>
 {

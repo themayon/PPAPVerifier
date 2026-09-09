@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!--
     Template pack project. Packs the repository (with its root .template.config)
@@ -10,7 +10,7 @@
 
     Build/test locally:
         dotnet pack templates/FullStackHero.NET.StarterKit.csproj -o ./nupkgs
-    This project is intentionally NOT part of FSH.Starter.slnx (it has no code to
+    This project is intentionally NOT part of DES.Starter.slnx (it has no code to
     build) and is excluded from scaffolded output via template.json (templates/**).
   -->
 

@@ -1,4 +1,4 @@
-#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
+﻿#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
 #pragma warning disable S3459 // Unassigned members — populated by JSON deserialization
 using System.Text.Json;
 using Integration.Tests.Infrastructure;
@@ -13,7 +13,7 @@ namespace Integration.Tests.Tests.Multitenancy;
 /// can't connect). Retry must then start a fresh provisioning attempt with a new
 /// correlation id. Also covers authentication and the not-found path.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class RetryTenantProvisioningTests
 {
     private static readonly JsonSerializerOptions Json = new()
@@ -27,10 +27,10 @@ public sealed class RetryTenantProvisioningTests
     private const string UnreachableConnectionString =
         "Host=127.0.0.1;Port=59999;Database=fsh_unreachable;Username=nope;Password=nope;Timeout=2;Command Timeout=2";
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public RetryTenantProvisioningTests(FshWebApplicationFactory factory)
+    public RetryTenantProvisioningTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

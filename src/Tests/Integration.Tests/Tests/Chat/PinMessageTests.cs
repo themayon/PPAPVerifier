@@ -1,10 +1,10 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Chat.Contracts.v1.DTOs;
-using FSH.Modules.Identity.Domain;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Chat.Contracts.v1.DTOs;
+using DES.Modules.Identity.Domain;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.Connections;
@@ -13,17 +13,17 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Integration.Tests.Tests.Chat;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class PinMessageTests
 {
     private const string ChatBasePath = "/api/v1/chat";
     private const string HubPath = "/api/v1/realtime/hub";
     private static readonly TimeSpan EventTimeout = TimeSpan.FromSeconds(5);
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public PinMessageTests(FshWebApplicationFactory factory)
+    public PinMessageTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);
@@ -316,7 +316,7 @@ public sealed class PinMessageTests
         scope.ServiceProvider.GetRequiredService<IMultiTenantContextSetter>().MultiTenantContext =
             new MultiTenantContext<AppTenantInfo>(tenant);
 
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<FshUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DesUser>>();
         var user = await userManager.FindByIdAsync(userId);
         user.ShouldNotBeNull();
         if (!user!.EmailConfirmed)

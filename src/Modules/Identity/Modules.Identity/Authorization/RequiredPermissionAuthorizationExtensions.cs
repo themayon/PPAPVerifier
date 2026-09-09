@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace FSH.Modules.Identity.Authorization;
+namespace DES.Modules.Identity.Authorization;
 
 public static class RequiredPermissionDefaults
 {

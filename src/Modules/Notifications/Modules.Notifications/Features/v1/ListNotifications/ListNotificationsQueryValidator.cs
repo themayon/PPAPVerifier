@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Notifications.Contracts.v1.Queries;
+﻿using FluentValidation;
+using DES.Modules.Notifications.Contracts.v1.Queries;
 
-namespace FSH.Modules.Notifications.Features.v1.ListNotifications;
+namespace DES.Modules.Notifications.Features.v1.ListNotifications;
 
 public sealed class ListNotificationsQueryValidator : AbstractValidator<ListNotificationsQuery>
 {

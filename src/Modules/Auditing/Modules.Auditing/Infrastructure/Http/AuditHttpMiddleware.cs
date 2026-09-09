@@ -1,10 +1,10 @@
-using FSH.Framework.Shared.Auditing;
-using FSH.Modules.Auditing.Contracts;
+﻿using DES.Framework.Shared.Auditing;
+using DES.Modules.Auditing.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
-namespace FSH.Modules.Auditing;
+namespace DES.Modules.Auditing;
 
 public sealed class AuditHttpMiddleware
 {

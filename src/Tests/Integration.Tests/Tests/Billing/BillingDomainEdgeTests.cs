@@ -1,11 +1,11 @@
-using Finbuckle.MultiTenant;
+﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Quota;
-using FSH.Modules.Billing.Contracts;
-using FSH.Modules.Billing.Contracts.Dtos;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Domain;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Quota;
+using DES.Modules.Billing.Contracts;
+using DES.Modules.Billing.Contracts.Dtos;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Domain;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
@@ -19,17 +19,17 @@ namespace Integration.Tests.Tests.Billing;
 /// subscription and line-item edges are exercised through the domain aggregates inside a tenant-scoped
 /// DbContext and verified by reading the persisted state back.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class BillingDomainEdgeTests
 {
     private const string BillingBasePath = "/api/v1/billing";
 
     private static int s_periodCounter;
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public BillingDomainEdgeTests(FshWebApplicationFactory factory)
+    public BillingDomainEdgeTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

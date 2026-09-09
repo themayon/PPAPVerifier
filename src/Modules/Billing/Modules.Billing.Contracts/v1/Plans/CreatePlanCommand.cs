@@ -1,7 +1,7 @@
-using FSH.Framework.Shared.Quota;
+﻿using DES.Framework.Shared.Quota;
 using Mediator;
 
-namespace FSH.Modules.Billing.Contracts.v1.Plans;
+namespace DES.Modules.Billing.Contracts.v1.Plans;
 
 public sealed record CreatePlanCommand(
     string Key,

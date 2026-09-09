@@ -1,6 +1,6 @@
 ﻿using Mediator;
 
-namespace FSH.Framework.Core.Domain;
+namespace DES.Framework.Core.Domain;
 
 /// <summary>
 /// Represents a domain event with correlation and tenant context.

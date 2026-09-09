@@ -1,4 +1,4 @@
-// E2E coverage for the impersonation-revoked terminal flow.
+﻿// E2E coverage for the impersonation-revoked terminal flow.
 //
 // When an operator's impersonation grant is revoked (or its short-lived token
 // expires) mid-session, the server starts rejecting the impersonation token
@@ -14,9 +14,9 @@ import { expect, test, type Page } from "@playwright/test";
 import { mockProblemDetails } from "../helpers/api-mocks";
 import { installShellMocks } from "../helpers/shell-mocks";
 
-const ACCESS_KEY = "fsh.dashboard.accessToken";
-const REFRESH_KEY = "fsh.dashboard.refreshToken";
-const TENANT_KEY = "fsh.dashboard.tenant";
+const ACCESS_KEY = "des.dashboard.accessToken";
+const REFRESH_KEY = "des.dashboard.refreshToken";
+const TENANT_KEY = "des.dashboard.tenant";
 
 /**
  * Seed an IMPERSONATION session into localStorage before React boots: an

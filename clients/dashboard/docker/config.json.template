@@ -1,4 +1,4 @@
-{
-  "apiBase": "${FSH_API_URL}",
-  "defaultTenant": "${FSH_DEFAULT_TENANT}"
+﻿{
+  "apiBase": "${DES_API_URL}",
+  "defaultTenant": "${DES_DEFAULT_TENANT}"
 }

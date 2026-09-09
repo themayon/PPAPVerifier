@@ -1,13 +1,13 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Multitenancy;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class TenantIsolationTests
 {
     private readonly AuthHelper _auth;
 
-    public TenantIsolationTests(FshWebApplicationFactory factory)
+    public TenantIsolationTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

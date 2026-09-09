@@ -1,4 +1,4 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Auditing;
 
@@ -9,12 +9,12 @@ namespace Integration.Tests.Tests.Auditing;
 /// on Finbuckle's anonymous tenant query filter rather than an explicit
 /// predicate) also refuse to surface another tenant's audit rows.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class AuditQueryTenantIsolationTests
 {
     private readonly AuthHelper _auth;
 
-    public AuditQueryTenantIsolationTests(FshWebApplicationFactory factory)
+    public AuditQueryTenantIsolationTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }
@@ -60,7 +60,7 @@ public sealed class AuditQueryTenantIsolationTests
         byTrace.ShouldBeEmpty();
     }
 
-    private static async Task<FSH.Modules.Auditing.Contracts.Dtos.AuditSummaryDto> PollForOtherTenantAuditAsync(
+    private static async Task<DES.Modules.Auditing.Contracts.Dtos.AuditSummaryDto> PollForOtherTenantAuditAsync(
         HttpClient otherClient, string tenantId)
     {
         // The other tenant authenticated (Security audit) and now hits an

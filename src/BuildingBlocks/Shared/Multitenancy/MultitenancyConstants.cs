@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Shared.Multitenancy;
+﻿namespace DES.Framework.Shared.Multitenancy;
 
 public static class MultitenancyConstants
 {

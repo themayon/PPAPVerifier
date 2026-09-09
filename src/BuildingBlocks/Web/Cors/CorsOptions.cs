@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Web.Cors;
+﻿namespace DES.Framework.Web.Cors;
 
 public sealed class CorsOptions
 {

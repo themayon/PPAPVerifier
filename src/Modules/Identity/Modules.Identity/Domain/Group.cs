@@ -1,6 +1,6 @@
-using FSH.Framework.Core.Domain;
+﻿using DES.Framework.Core.Domain;
 
-namespace FSH.Modules.Identity.Domain;
+namespace DES.Modules.Identity.Domain;
 
 public class Group : IAuditableEntity, ISoftDeletable
 {

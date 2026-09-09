@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+﻿import { useEffect, useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
   AlertCircle,
@@ -22,8 +22,8 @@ import { env } from "@/env";
 import type { DemoAccount } from "@/pages/login.demo-accounts";
 
 // ────────────────────────────────────────────────────────────────────────
-// Login — FSH Admin operator sign-in.
-// Chrome mirrors the dashboard's AuthShell: atmospheric orbs, FSH logo
+// Login — DES Admin operator sign-in.
+// Chrome mirrors the dashboard's AuthShell: atmospheric orbs, DES logo
 // lockup, warm-paper card with backdrop blur.
 // The dev demo button ("Sign in with a demo account") opens the same
 // popup dialog UX the dashboard uses — pick an account → fills

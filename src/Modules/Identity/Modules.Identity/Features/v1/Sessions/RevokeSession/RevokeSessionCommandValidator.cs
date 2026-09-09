@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Identity.Contracts.v1.Sessions.RevokeSession;
+﻿using FluentValidation;
+using DES.Modules.Identity.Contracts.v1.Sessions.RevokeSession;
 
-namespace FSH.Modules.Identity.Features.v1.Sessions.RevokeSession;
+namespace DES.Modules.Identity.Features.v1.Sessions.RevokeSession;
 
 public sealed class RevokeSessionCommandValidator : AbstractValidator<RevokeSessionCommand>
 {

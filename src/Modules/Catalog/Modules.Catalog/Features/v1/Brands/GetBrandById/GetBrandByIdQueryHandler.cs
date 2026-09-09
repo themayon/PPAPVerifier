@@ -1,11 +1,11 @@
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Catalog.Contracts.Dtos;
-using FSH.Modules.Catalog.Contracts.v1.Brands;
-using FSH.Modules.Catalog.Data;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Modules.Catalog.Contracts.Dtos;
+using DES.Modules.Catalog.Contracts.v1.Brands;
+using DES.Modules.Catalog.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Brands.GetBrandById;
+namespace DES.Modules.Catalog.Features.v1.Brands.GetBrandById;
 
 public sealed class GetBrandByIdQueryHandler(CatalogDbContext dbContext)
     : IQueryHandler<GetBrandByIdQuery, BrandDto>

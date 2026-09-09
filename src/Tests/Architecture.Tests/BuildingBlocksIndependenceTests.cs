@@ -1,7 +1,7 @@
-using FSH.Framework.Core;
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Web;
+﻿using DES.Framework.Core;
+using DES.Framework.Persistence;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Web;
 using NetArchTest.Rules;
 using Shouldly;
 using System.Reflection;
@@ -20,10 +20,10 @@ public class BuildingBlocksIndependenceTests
 
     private static readonly Assembly[] BuildingBlockAssemblies =
     [
-        typeof(IFshCore).Assembly,               // Core
+        typeof(IDesCore).Assembly,               // Core
         typeof(IConnectionStringValidator).Assembly,  // Persistence
         typeof(IAppTenantInfo).Assembly,         // Shared
-        typeof(IFshWeb).Assembly                 // Web
+        typeof(IDesWeb).Assembly                 // Web
     ];
 
     [Fact]
@@ -35,9 +35,9 @@ public class BuildingBlocksIndependenceTests
                 .InAssembly(assembly)
                 .ShouldNot()
                 .HaveDependencyOnAny(
-                    "FSH.Modules.Auditing",
-                    "FSH.Modules.Identity",
-                    "FSH.Modules.Multitenancy")
+                    "DES.Modules.Auditing",
+                    "DES.Modules.Identity",
+                    "DES.Modules.Multitenancy")
                 .GetResult();
 
             var failingTypes = result.FailingTypeNames ?? [];
@@ -57,8 +57,8 @@ public class BuildingBlocksIndependenceTests
                 .InAssembly(assembly)
                 .ShouldNot()
                 .HaveDependencyOnAny(
-                    "FSH.Starter",
-                    "FSH.Starter.Api")
+                    "DES.Starter",
+                    "DES.Starter.Api")
                 .GetResult();
 
             var failingTypes = result.FailingTypeNames ?? [];
@@ -105,7 +105,7 @@ public class BuildingBlocksIndependenceTests
 
                 // Check if it references a Host project
                 if (referencedName.Contains("AppHost", StringComparison.OrdinalIgnoreCase) ||
-                    referencedName.StartsWith("FSH.Starter.Api", StringComparison.OrdinalIgnoreCase))
+                    referencedName.StartsWith("DES.Starter.Api", StringComparison.OrdinalIgnoreCase))
                 {
                     violations.Add($"{projectName} -> {referencedName}");
                 }
