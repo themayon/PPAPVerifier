@@ -20,10 +20,10 @@ test.describe("admin login", () => {
   test("renders the FSH brand lockup + the welcome form", async ({ page }) => {
     await page.goto("/login");
 
-    // Brand lockup: logo image, the fullstack wordmark, and the
+    // Brand lockup: logo image, the FullStack wordmark, and the
     // "Platform Admin" divider label that marks this as the operator app.
     await expect(page.getByRole("img", { name: /fullstack/i }).first()).toBeVisible();
-    await expect(page.getByText("fullstack").first()).toBeVisible();
+    await expect(page.getByText("FullStack").first()).toBeVisible();
     await expect(page.getByText("Platform Admin").first()).toBeVisible();
 
     // Card heading.

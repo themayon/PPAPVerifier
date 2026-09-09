@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  One-command deploy of the FullStackHero Starter Kit to AWS.
+  One-command deploy of the FullStack Starter Kit to AWS.
 
 .EXAMPLE
   ./deploy.ps1 -Environment dev -Region us-east-1

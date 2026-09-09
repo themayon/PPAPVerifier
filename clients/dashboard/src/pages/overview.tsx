@@ -560,6 +560,8 @@ function recentEventTypeIcon(eventType: AuditEventType): React.ComponentType<{ c
 }
 
 function RecentAuditsBody() {
+  const { user, permissionsHydrated } = useAuth();
+  const canViewAudits = user?.permissions.includes("Permissions.AuditTrails.View") ?? false;
   const recentAudits = useQuery({
     queryKey: ["audits", "recent", "overview"],
     queryFn: ({ signal }) => {
@@ -571,6 +573,7 @@ function RecentAuditsBody() {
         signal,
       );
     },
+    enabled: permissionsHydrated && canViewAudits,
     staleTime: 30_000,
   });
 
@@ -940,13 +943,15 @@ function SetupTile({ spec }: { spec: SetupTileSpec }) {
 // ────────────────────────────────────────────────────────────────────────
 
 export function OverviewPage() {
-  const { user } = useAuth();
+  const { user, permissionsHydrated } = useAuth();
+  const canViewBilling = user?.permissions.includes("Permissions.Billing.View") ?? false;
   const { status: sseStatus, eventCount } = useSseStatus();
   const { events } = useSseEvents();
 
   const usage = useQuery({
     queryKey: ["billing", "usage"],
     queryFn: () => getUsageSnapshots(),
+    enabled: permissionsHydrated && canViewBilling,
     staleTime: 60_000,
   });
 

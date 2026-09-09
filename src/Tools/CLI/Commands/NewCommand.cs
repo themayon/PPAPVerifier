@@ -137,7 +137,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
     private static void PrintBanner()
     {
         AnsiConsole.Write(new FigletText("fsh").Color(Color.DodgerBlue1));
-        AnsiConsole.MarkupLine("[bold]FullStackHero .NET Starter Kit[/]");
+        AnsiConsole.MarkupLine("[bold]FullStack .NET Starter Kit[/]");
         AnsiConsole.WriteLine();
     }
 
@@ -200,7 +200,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
             cancellationToken).ConfigureAwait(false);
 
         bool installed = listOutput.Contains(FshConstants.TemplateShortName, StringComparison.OrdinalIgnoreCase)
-            && listOutput.Contains("FullStackHero", StringComparison.OrdinalIgnoreCase);
+            && listOutput.Contains("FullStack", StringComparison.OrdinalIgnoreCase);
 
         if (installed) return true;
 
@@ -214,7 +214,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
             "dotnet", $"new list {FshConstants.TemplateShortName}",
             cancellationToken).ConfigureAwait(false);
 
-        bool nowInstalled = verifyOutput.Contains("FullStackHero", StringComparison.OrdinalIgnoreCase);
+        bool nowInstalled = verifyOutput.Contains("FullStack", StringComparison.OrdinalIgnoreCase);
         if (!nowInstalled)
         {
             AnsiConsole.MarkupLine($"[{FshConstants.ErrorColor}]Failed to install template. Run manually:[/] dotnet new install {FshConstants.TemplatePackageId}");
@@ -269,7 +269,7 @@ public sealed class NewCommand : AsyncCommand<NewCommand.Settings>
                     .ConfigureAwait(false);
                 await ProcessRunner.RunAsync("git", "add -A", output, showOutput: false, cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
-                await ProcessRunner.RunAsync("git", "commit -m \"Initial project from FullStackHero .NET Starter Kit\"", output, showOutput: false, cancellationToken: cancellationToken)
+                await ProcessRunner.RunAsync("git", "commit -m \"Initial project from FullStack .NET Starter Kit\"", output, showOutput: false, cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
             }).ConfigureAwait(false);
     }

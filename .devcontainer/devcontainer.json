@@ -1,5 +1,5 @@
 {
-    "name": "FullStackHero .NET Starter Kit",
+    "name": "FullStack .NET Starter Kit",
     "image": "mcr.microsoft.com/dotnet/sdk:10.0",
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2": {}

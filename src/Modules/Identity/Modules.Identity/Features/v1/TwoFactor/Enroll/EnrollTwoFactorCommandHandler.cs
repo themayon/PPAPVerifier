@@ -12,7 +12,7 @@ namespace FSH.Modules.Identity.Features.v1.TwoFactor.Enroll;
 public sealed class EnrollTwoFactorCommandHandler
     : ICommandHandler<EnrollTwoFactorCommand, TwoFactorEnrollmentResponse>
 {
-    private const string IssuerName = "FullStackHero";
+    private const string IssuerName = "FullStack";
 
     private readonly UserManager<FshUser> _userManager;
     private readonly ICurrentUser _currentUser;

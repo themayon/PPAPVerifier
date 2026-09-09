@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ FullStackHero .NET 10 Starter Kit
+# ⚡ FullStack .NET 10 Starter Kit
 
 **A production-ready, modular .NET 10 monolith + two React 19 apps — the fastest way to ship a multi-tenant SaaS.**
 
@@ -19,7 +19,7 @@ Identity, multitenancy, billing, auditing, webhooks, files, chat, real-time, cac
 
 ---
 
-## Why FullStackHero?
+## Why FullStack?
 
 Most starter kits give you a login page and a TODO list. This one gives you the **boring, hard parts already done right** — multitenancy, auth, billing, auditing, background jobs, real-time, file storage, observability — across a clean **Vertical Slice** backend *and* two polished **React 19** front-ends, orchestrated locally with one command via **.NET Aspire**, and deployable to Docker or AWS.
 
@@ -184,7 +184,7 @@ Issues and PRs are welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md). Branch 
 
 ## 📄 License
 
-MIT — see [`LICENSE`](LICENSE). Built and maintained by [**Mukesh Murugan**](https://codewithmukesh.com) and the FullStackHero community, for teams that want to ship fast without sacrificing architectural discipline.
+MIT — see [`LICENSE`](LICENSE). Built and maintained by [**Mukesh Murugan**](https://codewithmukesh.com) and the FullStack community, for teams that want to ship fast without sacrificing architectural discipline.
 
 <div align="center">
 

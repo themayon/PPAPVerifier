@@ -17,7 +17,7 @@
         "type": "solution"
     },
     "identity": "FullStackHero.NET.StarterKit",
-    "name": "FullStackHero .NET Starter Kit",
+    "name": "FullStack .NET Starter Kit",
     "description": "A production-ready full-stack starter: modular .NET 10 monolith (VSA, CQRS, multitenancy, Identity, Aspire) + two React 19 apps + Docker/Terraform.",
     "shortName": "fsh",
     "sourceName": "FSH.Starter",

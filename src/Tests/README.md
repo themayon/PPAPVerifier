@@ -1,6 +1,6 @@
 # Architecture Tests
 
-This folder contains solution-wide architecture tests for the FullStackHero .NET 10 Starter Kit. The goal is to automatically enforce layering, dependency, and naming rules as the codebase evolves.
+This folder contains solution-wide architecture tests for the FullStack .NET 10 Starter Kit. The goal is to automatically enforce layering, dependency, and naming rules as the codebase evolves.
 
 ## Project
 

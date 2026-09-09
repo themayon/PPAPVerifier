@@ -17,10 +17,10 @@
   <PropertyGroup>
     <PackageType>Template</PackageType>
     <PackageId>FullStackHero.NET.StarterKit</PackageId>
-    <Title>FullStackHero .NET Starter Kit</Title>
+    <Title>FullStack .NET Starter Kit</Title>
     <PackageVersion>10.0.0</PackageVersion>
     <Authors>Mukesh Murugan</Authors>
-    <Company>FullStackHero</Company>
+    <Company>FullStack</Company>
     <Description>A production-ready full-stack starter: a modular .NET 10 monolith (Vertical Slice, CQRS, multitenancy, Identity, Aspire) plus two React 19 apps, Docker Compose, and Terraform. Scaffolds full, owned source — no per-module NuGet dependencies.</Description>
     <PackageTags>dotnet-new;templates;template;webapi;modular-monolith;vertical-slice;multitenancy;aspire;react;fullstack;starter-kit</PackageTags>
     <PackageProjectUrl>https://fullstack.net</PackageProjectUrl>

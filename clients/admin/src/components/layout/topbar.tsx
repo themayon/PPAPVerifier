@@ -308,7 +308,7 @@ export function Topbar() {
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Sign out of fullstack?</DialogTitle>
+            <DialogTitle>Sign out of FullStack?</DialogTitle>
             <DialogDescription>
               You'll need to sign in again to access this admin. Any unsaved
               work in this session will be lost.

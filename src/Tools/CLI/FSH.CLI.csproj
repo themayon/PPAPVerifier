@@ -8,7 +8,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>fsh</ToolCommandName>
     <PackageId>FullStackHero.CLI</PackageId>
-    <Description>CLI tool for scaffolding and managing FullStackHero .NET projects.</Description>
+    <Description>CLI tool for scaffolding and managing FullStack .NET projects.</Description>
     <PackageIcon>icon.png</PackageIcon>
     <!-- The CLI exposes no public API surface; an empty XML doc file is dead weight. -->
     <GenerateDocumentationFile>false</GenerateDocumentationFile>

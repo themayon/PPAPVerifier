@@ -3,7 +3,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================================
-   FullStackHero Dashboard — Design Tokens
+   FullStack Dashboard — Design Tokens
    ----------------------------------------------------------------------------
    Architecture (read top-down):
      1. PRIMITIVES — raw oklch scales. Never reference these in components.

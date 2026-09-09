@@ -1,6 +1,6 @@
-# FullStackHero — Dashboard
+# FullStack — Dashboard
 
-Tenant-facing dashboard for the FullStackHero .NET Starter Kit. Shows realtime telemetry over Server-Sent Events, current-period usage vs. plan limits (Recharts), and billing history.
+Tenant-facing dashboard for the FullStack .NET Starter Kit. Shows realtime telemetry over Server-Sent Events, current-period usage vs. plan limits (Recharts), and billing history.
 
 Built with React 19, Vite 7, TypeScript, TanStack Query, React Router, Tailwind 4 + shadcn/ui, and Recharts. Standalone — not part of a pnpm workspace — so it plugs into .NET Aspire as a plain `ExecutableResource`.
 

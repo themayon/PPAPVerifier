@@ -79,11 +79,11 @@ export function ForgotPasswordPage() {
           <div className="flex items-center gap-2.5">
             <img
               src="/logo-fullstackhero.png"
-              alt="fullstack"
+              alt="FullStack"
               className="size-9 object-contain"
             />
             <span className="font-display text-[26px] font-semibold tracking-tight text-[var(--color-foreground)]">
-              fullstack<span className="text-[var(--color-primary)]">hero</span>
+              Full<span className="text-[var(--color-primary)]">Stack</span>
             </span>
           </div>
           <div className="mt-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[oklch(from_var(--color-muted-foreground)_l_c_h_/_0.7)]">

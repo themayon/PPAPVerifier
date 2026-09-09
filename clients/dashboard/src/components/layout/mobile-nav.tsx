@@ -104,7 +104,7 @@ export function MobileNavRoot() {
           >
             F
           </span>
-          <span className="font-semibold tracking-tight">fullstack</span>
+          <span className="font-semibold tracking-tight">FullStack</span>
         </div>
 
         <SidebarNavBody

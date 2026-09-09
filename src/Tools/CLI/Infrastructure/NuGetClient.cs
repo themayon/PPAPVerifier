@@ -91,7 +91,7 @@ internal static class NuGetClient
         }
 
         // A folder install lists a path rather than the package id — detect via the template entry.
-        if (output.Contains("FullStackHero", StringComparison.OrdinalIgnoreCase)
+        if (output.Contains("FullStack", StringComparison.OrdinalIgnoreCase)
             && output.Contains($"({FshConstants.TemplateShortName})", StringComparison.OrdinalIgnoreCase))
             return "local";
 

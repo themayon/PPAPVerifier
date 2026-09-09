@@ -16,7 +16,7 @@ app.Configure(config =>
     config.SetApplicationVersion(cliVersion);
 
     config.AddCommand<NewCommand>("new")
-        .WithDescription("Create a new FullStackHero .NET project.")
+        .WithDescription("Create a new FullStack .NET project.")
         .WithExample("new", "MyApp")
         .WithExample("new", "MyApp", "--no-aspire", "--no-frontend");
 

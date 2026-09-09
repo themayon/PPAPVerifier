@@ -14,7 +14,7 @@ public sealed class InfoCommand : AsyncCommand
             ?? Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)
             ?? "unknown";
 
-        AnsiConsole.MarkupLine($"[bold {FshConstants.AccentColor}]FullStackHero .NET Starter Kit CLI[/]");
+        AnsiConsole.MarkupLine($"[bold {FshConstants.AccentColor}]FullStack .NET Starter Kit CLI[/]");
         AnsiConsole.WriteLine();
 
         var table = new Table()

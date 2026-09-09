@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# One-command deploy of the FullStackHero Starter Kit to AWS.
+# One-command deploy of the FullStack Starter Kit to AWS.
 #
 #   ./deploy.sh <dev|staging|prod> <region>
 #
