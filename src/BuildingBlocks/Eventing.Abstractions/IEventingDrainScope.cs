@@ -1,4 +1,4 @@
-namespace FSH.Framework.Eventing.Abstractions;
+﻿namespace DES.Framework.Eventing.Abstractions;
 
 /// <summary>
 /// Installs the ambient tenant context — including the dedicated connection string — for the

@@ -1,9 +1,9 @@
-using FSH.Framework.Core.Context;
+﻿using DES.Framework.Core.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Framework.Web.Sse;
+namespace DES.Framework.Web.Sse;
 
 public static class SseEndpoints
 {

@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 
-namespace FSH.Framework.Caching;
+namespace DES.Framework.Caching;
 
 /// <summary>
 /// DI extensions for the HybridCache-backed caching building block.
@@ -62,7 +62,7 @@ public static class Extensions
             // Redis so multi-instance hosts share a key ring and tokens survive rolling restarts.
             services.AddDataProtection()
                 .PersistKeysToStackExchangeRedis(sharedMultiplexer, "DataProtection-Keys")
-                .SetApplicationName("FSH.Starter");
+                .SetApplicationName("DES.Starter");
         }
 
         // HybridCache auto-composes with whatever IDistributedCache is registered above.

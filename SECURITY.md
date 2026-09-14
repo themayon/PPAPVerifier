@@ -8,7 +8,7 @@ This is a starter kit. Only the current `main` branch receives security fixes fr
 
 **Do not open a public issue.** Use GitHub's private vulnerability reporting:
 
-<https://github.com/fullstackhero/dotnet-starter-kit/security/advisories/new>
+<https://github.com/fullstack/dotnet-starter-kit/security/advisories/new>
 
 Please include:
 
@@ -27,7 +27,7 @@ Fixes ship as a patched commit on `main` plus a GitHub Security Advisory. Report
 
 ## Scope
 
-In scope: `src/` (BuildingBlocks, Modules, Host), default `appsettings.*.json`, the `FullStackHero.CLI`, and the `clients/` apps.
+In scope: `src/` (BuildingBlocks, Modules, Host), default `appsettings.*.json`, the `fsh` CLI, and the `clients/` apps.
 
 Out of scope: third-party NuGet/npm packages (report upstream), the docs site, and issues in downstream forks (contact that fork's maintainer).
 

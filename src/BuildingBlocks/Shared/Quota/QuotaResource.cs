@@ -1,4 +1,4 @@
-namespace FSH.Framework.Shared.Quota;
+﻿namespace DES.Framework.Shared.Quota;
 
 /// <summary>
 /// Resources that can be metered per tenant. Counter-based resources (ApiCalls) are tracked

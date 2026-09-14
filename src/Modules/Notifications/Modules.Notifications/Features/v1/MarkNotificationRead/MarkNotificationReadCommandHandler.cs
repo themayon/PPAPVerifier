@@ -1,11 +1,11 @@
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Notifications.Contracts.v1.Commands;
-using FSH.Modules.Notifications.Data;
+﻿using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Notifications.Contracts.v1.Commands;
+using DES.Modules.Notifications.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Notifications.Features.v1.MarkNotificationRead;
+namespace DES.Modules.Notifications.Features.v1.MarkNotificationRead;
 
 public sealed class MarkNotificationReadCommandHandler(
     NotificationsDbContext db,

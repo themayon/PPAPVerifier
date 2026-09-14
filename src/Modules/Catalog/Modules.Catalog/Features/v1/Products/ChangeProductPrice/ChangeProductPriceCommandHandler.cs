@@ -1,12 +1,12 @@
-using FSH.Framework.Core.Domain;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Catalog.Contracts.v1.Products;
-using FSH.Modules.Catalog.Data;
-using FSH.Modules.Catalog.Domain;
+﻿using DES.Framework.Core.Domain;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Catalog.Contracts.v1.Products;
+using DES.Modules.Catalog.Data;
+using DES.Modules.Catalog.Domain;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Products.ChangeProductPrice;
+namespace DES.Modules.Catalog.Features.v1.Products.ChangeProductPrice;
 
 public sealed class ChangeProductPriceCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<ChangeProductPriceCommand, Guid>

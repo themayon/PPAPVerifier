@@ -1,8 +1,8 @@
-#pragma warning disable S1144, S3459 // members populated by JSON deserialization
+﻿#pragma warning disable S1144, S3459 // members populated by JSON deserialization
 using System.Text.Json;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Billing.Contracts;
-using FSH.Modules.Billing.Contracts.Dtos;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Billing.Contracts;
+using DES.Modules.Billing.Contracts.Dtos;
 using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Billing;
@@ -13,7 +13,7 @@ namespace Integration.Tests.Tests.Billing;
 /// subscription and issue a Subscription-purpose invoice for the plan term, and set the tenant's
 /// validity from the plan interval. A free (zero-price) plan creates the subscription but no invoice.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class TenantBillingLifecycleTests
 {
     private const string BillingBasePath = "/api/v1/billing";
@@ -27,9 +27,9 @@ public sealed class TenantBillingLifecycleTests
     };
 
     private readonly AuthHelper _auth;
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
 
-    public TenantBillingLifecycleTests(FshWebApplicationFactory factory)
+    public TenantBillingLifecycleTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
         _factory = factory;

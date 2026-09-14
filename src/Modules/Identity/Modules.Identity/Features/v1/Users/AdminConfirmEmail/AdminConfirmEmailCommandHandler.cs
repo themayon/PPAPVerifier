@@ -1,8 +1,8 @@
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Contracts.v1.Users.AdminConfirmEmail;
+﻿using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Contracts.v1.Users.AdminConfirmEmail;
 using Mediator;
 
-namespace FSH.Modules.Identity.Features.v1.Users.AdminConfirmEmail;
+namespace DES.Modules.Identity.Features.v1.Users.AdminConfirmEmail;
 
 public sealed class AdminConfirmEmailCommandHandler : ICommandHandler<AdminConfirmEmailCommand, Unit>
 {

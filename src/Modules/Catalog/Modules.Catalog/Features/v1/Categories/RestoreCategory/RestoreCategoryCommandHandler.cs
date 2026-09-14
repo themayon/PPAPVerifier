@@ -1,11 +1,11 @@
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Persistence;
-using FSH.Modules.Catalog.Contracts.v1.Categories;
-using FSH.Modules.Catalog.Data;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Framework.Persistence;
+using DES.Modules.Catalog.Contracts.v1.Categories;
+using DES.Modules.Catalog.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Categories.RestoreCategory;
+namespace DES.Modules.Catalog.Features.v1.Categories.RestoreCategory;
 
 public sealed class RestoreCategoryCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<RestoreCategoryCommand, Guid>

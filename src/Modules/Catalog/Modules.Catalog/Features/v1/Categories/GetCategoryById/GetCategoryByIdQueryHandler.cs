@@ -1,11 +1,11 @@
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Catalog.Contracts.Dtos;
-using FSH.Modules.Catalog.Contracts.v1.Categories;
-using FSH.Modules.Catalog.Data;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Modules.Catalog.Contracts.Dtos;
+using DES.Modules.Catalog.Contracts.v1.Categories;
+using DES.Modules.Catalog.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Categories.GetCategoryById;
+namespace DES.Modules.Catalog.Features.v1.Categories.GetCategoryById;
 
 public sealed class GetCategoryByIdQueryHandler(CatalogDbContext dbContext)
     : IQueryHandler<GetCategoryByIdQuery, CategoryDto>

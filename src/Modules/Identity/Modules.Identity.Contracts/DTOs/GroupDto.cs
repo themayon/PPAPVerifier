@@ -1,4 +1,4 @@
-namespace FSH.Modules.Identity.Contracts.DTOs;
+﻿namespace DES.Modules.Identity.Contracts.DTOs;
 
 public class GroupDto
 {

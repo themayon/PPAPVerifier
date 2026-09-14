@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Chat.Contracts.v1.Commands;
+﻿using FluentValidation;
+using DES.Modules.Chat.Contracts.v1.Commands;
 
-namespace FSH.Modules.Chat.Features.v1.Channels.ArchiveChannel;
+namespace DES.Modules.Chat.Features.v1.Channels.ArchiveChannel;
 
 public sealed class ArchiveChannelCommandValidator : AbstractValidator<ArchiveChannelCommand>
 {

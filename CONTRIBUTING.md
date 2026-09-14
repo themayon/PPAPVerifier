@@ -1,21 +1,21 @@
-# Contributing
+﻿# Contributing
 
 Thanks for helping out. The conventions below keep PRs reviewable.
 
 ## Reporting issues
 
 - **Security:** Use GitHub's private advisories — see [SECURITY.md](SECURITY.md). Do not file public issues for vulnerabilities.
-- **Bugs:** Open a [GitHub issue](https://github.com/fullstackhero/dotnet-starter-kit/issues) with a minimal repro, your .NET SDK version, and the DB provider.
-- **Features:** Start a [Discussion](https://github.com/fullstackhero/dotnet-starter-kit/discussions) before opening a PR for non-trivial work.
+- **Bugs:** Open a [GitHub issue](https://github.com/fullstack/dotnet-starter-kit/issues) with a minimal repro, your .NET SDK version, and the DB provider.
+- **Features:** Start a [Discussion](https://github.com/fullstack/dotnet-starter-kit/discussions) before opening a PR for non-trivial work.
 
 ## Dev setup
 
 Prerequisites: .NET 10 SDK, Docker, Node.js 20+.
 
 ```bash
-dotnet build src/FSH.Starter.slnx
-dotnet run --project src/Host/FSH.Starter.AppHost   # full Aspire stack
-dotnet test src/FSH.Starter.slnx                    # tests (integration suite needs Docker)
+dotnet build src/DES.Starter.slnx
+dotnet run --project src/Host/DES.Starter.AppHost   # full Aspire stack
+dotnet test src/DES.Starter.slnx                    # tests (integration suite needs Docker)
 ```
 
 Client apps live under `clients/admin` and `clients/dashboard` — `npm install && npm run dev` in each.

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+﻿import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 type Theme = "light" | "dark";
 
@@ -8,7 +8,7 @@ type ThemeContextValue = {
   toggle: () => void;
 };
 
-const STORAGE_KEY = "fsh.admin.theme";
+const STORAGE_KEY = "des.admin.theme";
 
 // Console is dark-first. We try storage → system pref → dark, in that order.
 function resolveInitialTheme(): Theme {

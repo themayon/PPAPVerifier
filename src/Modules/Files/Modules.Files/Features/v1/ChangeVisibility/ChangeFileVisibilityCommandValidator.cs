@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Files.Contracts.v1.Commands;
+﻿using FluentValidation;
+using DES.Modules.Files.Contracts.v1.Commands;
 
-namespace FSH.Modules.Files.Features.v1.ChangeVisibility;
+namespace DES.Modules.Files.Features.v1.ChangeVisibility;
 
 public sealed class ChangeFileVisibilityCommandValidator : AbstractValidator<ChangeFileVisibilityCommand>
 {

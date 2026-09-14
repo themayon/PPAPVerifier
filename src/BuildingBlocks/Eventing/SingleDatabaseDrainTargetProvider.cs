@@ -1,6 +1,6 @@
-using FSH.Framework.Eventing.Abstractions;
+﻿using DES.Framework.Eventing.Abstractions;
 
-namespace FSH.Framework.Eventing;
+namespace DES.Framework.Eventing;
 
 /// <summary>
 /// Default provider for single-database deployments: one pass over the configured connection.

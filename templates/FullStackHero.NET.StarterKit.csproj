@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!--
     Template pack project. Packs the repository (with its root .template.config)
@@ -10,21 +10,21 @@
 
     Build/test locally:
         dotnet pack templates/FullStackHero.NET.StarterKit.csproj -o ./nupkgs
-    This project is intentionally NOT part of FSH.Starter.slnx (it has no code to
+    This project is intentionally NOT part of DES.Starter.slnx (it has no code to
     build) and is excluded from scaffolded output via template.json (templates/**).
   -->
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
     <PackageId>FullStackHero.NET.StarterKit</PackageId>
-    <Title>FullStackHero .NET Starter Kit</Title>
+    <Title>FullStack .NET Starter Kit</Title>
     <PackageVersion>10.0.0</PackageVersion>
     <Authors>Mukesh Murugan</Authors>
-    <Company>FullStackHero</Company>
+    <Company>FullStack</Company>
     <Description>A production-ready full-stack starter: a modular .NET 10 monolith (Vertical Slice, CQRS, multitenancy, Identity, Aspire) plus two React 19 apps, Docker Compose, and Terraform. Scaffolds full, owned source — no per-module NuGet dependencies.</Description>
     <PackageTags>dotnet-new;templates;template;webapi;modular-monolith;vertical-slice;multitenancy;aspire;react;fullstack;starter-kit</PackageTags>
-    <PackageProjectUrl>https://fullstackhero.net</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/fullstackhero/dotnet-starter-kit</RepositoryUrl>
+    <PackageProjectUrl>https://fullstack.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/fullstack/dotnet-starter-kit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>icon.png</PackageIcon>

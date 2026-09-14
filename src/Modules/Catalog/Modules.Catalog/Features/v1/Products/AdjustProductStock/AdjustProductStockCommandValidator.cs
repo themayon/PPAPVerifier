@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Catalog.Contracts.v1.Products;
+﻿using FluentValidation;
+using DES.Modules.Catalog.Contracts.v1.Products;
 
-namespace FSH.Modules.Catalog.Features.v1.Products.AdjustProductStock;
+namespace DES.Modules.Catalog.Features.v1.Products.AdjustProductStock;
 
 public sealed class AdjustProductStockCommandValidator : AbstractValidator<AdjustProductStockCommand>
 {

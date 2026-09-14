@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
 
-namespace FSH.Framework.Web.FeatureFlags;
+namespace DES.Framework.Web.FeatureFlags;
 
 /// <summary>
 /// Endpoint filter that gates access behind a feature flag.

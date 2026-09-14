@@ -1,6 +1,6 @@
-<div align="center">
+﻿<div align="center">
 
-# ⚡ FullStackHero .NET 10 Starter Kit
+# ⚡ FullStack .NET 10 Starter Kit
 
 **A production-ready, modular .NET 10 monolith + two React 19 apps — the fastest way to ship a multi-tenant SaaS.**
 
@@ -10,16 +10,16 @@ Identity, multitenancy, billing, auditing, webhooks, files, chat, real-time, cac
 [![template](https://img.shields.io/nuget/v/FullStackHero.NET.StarterKit?label=dotnet%20new%20fsh&color=512BD4)](https://www.nuget.org/packages/FullStackHero.NET.StarterKit)
 [![.NET 10](https://img.shields.io/badge/.NET-10-512BD4)](https://dotnet.microsoft.com/download)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-fullstackhero.net-2563eb)](https://fullstackhero.net)
-[![Stars](https://img.shields.io/github/stars/fullstackhero/dotnet-starter-kit?style=social)](https://github.com/fullstackhero/dotnet-starter-kit)
+[![Docs](https://img.shields.io/badge/docs-fullstack.net-2563eb)](https://fullstack.net)
+[![Stars](https://img.shields.io/github/stars/fullstack/dotnet-starter-kit?style=social)](https://github.com/fullstack/dotnet-starter-kit)
 
-### [📖 Documentation](https://fullstackhero.net) · [🚀 Get Started](https://fullstackhero.net/docs/getting-started/introduction/) · [🧩 Modules](https://fullstackhero.net/docs/modules/) · [🏗️ Architecture](https://fullstackhero.net/docs/architecture/) · [📦 Changelog](https://fullstackhero.net/docs/changelog/)
+### [📖 Documentation](https://fullstack.net) · [🚀 Get Started](https://fullstack.net/docs/getting-started/introduction/) · [🧩 Modules](https://fullstack.net/docs/modules/) · [🏗️ Architecture](https://fullstack.net/docs/architecture/) · [📦 Changelog](https://fullstack.net/docs/changelog/)
 
 </div>
 
 ---
 
-## Why FullStackHero?
+## Why FullStack?
 
 Most starter kits give you a login page and a TODO list. This one gives you the **boring, hard parts already done right** — multitenancy, auth, billing, auditing, background jobs, real-time, file storage, observability — across a clean **Vertical Slice** backend *and* two polished **React 19** front-ends, orchestrated locally with one command via **.NET Aspire**, and deployable to Docker or AWS.
 
@@ -92,13 +92,13 @@ dotnet new fsh -n MyApp
 ### Option 3 — clone the repo
 
 ```bash
-git clone https://github.com/fullstackhero/dotnet-starter-kit.git MyApp && cd MyApp
-dotnet run --project src/Host/FSH.Starter.AppHost
+git clone https://github.com/fullstack/dotnet-starter-kit.git MyApp && cd MyApp
+dotnet run --project src/Host/DES.Starter.AppHost
 ```
 
 > **Prerequisites:** [.NET 10 SDK](https://dotnet.microsoft.com/download) · [Docker](https://www.docker.com/) (Postgres/Valkey/MinIO via Aspire) · [Node 20+](https://nodejs.org/) (for the React apps).
 
-**`fsh` commands:** `new` · `doctor` · `info` · `update` · `--version`. Full reference → [fullstackhero.net/docs/cli](https://fullstackhero.net/docs/cli/).
+**`fsh` commands:** `new` · `doctor` · `info` · `update` · `--version`. Full reference → [fullstack.net/docs/cli](https://fullstack.net/docs/cli/).
 
 ---
 
@@ -126,15 +126,15 @@ dotnet run --project src/Host/FSH.Starter.AppHost
 |---|---|
 | `src/BuildingBlocks/` | Shared framework libraries (Core, Persistence, Web, Caching, Eventing, Storage, Quota…) |
 | `src/Modules/{Name}/` | Bounded contexts — each with a runtime project + a `.Contracts` project (its public API) |
-| `src/Host/FSH.Starter.Api` | Composition-root Web API host |
-| `src/Host/FSH.Starter.AppHost` | .NET Aspire orchestrator (Postgres, Valkey, MinIO, migrator, API, both React apps) |
-| `src/Host/FSH.Starter.DbMigrator` | One-shot migrate/seed runner (DB is **not** migrated at API startup) |
+| `src/Host/DES.Starter.Api` | Composition-root Web API host |
+| `src/Host/DES.Starter.AppHost` | .NET Aspire orchestrator (Postgres, Valkey, MinIO, migrator, API, both React apps) |
+| `src/Host/DES.Starter.DbMigrator` | One-shot migrate/seed runner (DB is **not** migrated at API startup) |
 | `src/Tools/CLI` | The `fsh` CLI (Spectre.Console) |
 | `clients/admin`, `clients/dashboard` | The two React apps |
 | `deploy/` | Docker Compose, Terraform (AWS), Dokploy |
 | `src/Tests/` | Unit, Architecture (NetArchTest), Integration (Testcontainers) |
 
-Architecture deep-dive → [fullstackhero.net/docs/architecture](https://fullstackhero.net/docs/architecture/).
+Architecture deep-dive → [fullstack.net/docs/architecture](https://fullstack.net/docs/architecture/).
 
 ---
 
@@ -150,14 +150,14 @@ docker compose up -d --build
 
 **AWS via Terraform** (ECS Fargate + RDS + ElastiCache + S3/CloudFront) lives in `deploy/terraform`.
 
-Guides → [Local orchestration](https://fullstackhero.net/docs/deployment/aspire/) · [Docker](https://fullstackhero.net/docs/deployment/) · [AWS / Terraform](https://fullstackhero.net/docs/deployment/aws-terraform/) · [Database migrations](https://fullstackhero.net/docs/deployment/database-migrations/).
+Guides → [Local orchestration](https://fullstack.net/docs/deployment/aspire/) · [Docker](https://fullstack.net/docs/deployment/) · [AWS / Terraform](https://fullstack.net/docs/deployment/aws-terraform/) · [Database migrations](https://fullstack.net/docs/deployment/database-migrations/).
 
 ---
 
 ## 🧪 Testing
 
 ```bash
-dotnet test src/FSH.Starter.slnx        # backend: unit + architecture + Testcontainers integration
+dotnet test src/DES.Starter.slnx        # backend: unit + architecture + Testcontainers integration
 cd clients/admin     && npm run test:e2e # Playwright (operator app)
 cd clients/dashboard && npm run test:e2e # Playwright (tenant app)
 ```
@@ -168,13 +168,13 @@ cd clients/dashboard && npm run test:e2e # Playwright (tenant app)
 
 ## 📖 Documentation
 
-Full guides, module references, and architecture decisions live at **[fullstackhero.net](https://fullstackhero.net)**:
+Full guides, module references, and architecture decisions live at **[fullstack.net](https://fullstack.net)**:
 
-- [Getting started](https://fullstackhero.net/docs/getting-started/introduction/) — scaffold, run, and the default credentials
-- [Architecture](https://fullstackhero.net/docs/architecture/) — modular monolith + vertical slices, multitenancy deep-dive
-- [Modules](https://fullstackhero.net/docs/modules/) — Identity, Catalog, Tickets, Chat, and more
-- [Local orchestration with Aspire](https://fullstackhero.net/docs/deployment/aspire/)
-- [CLI reference](https://fullstackhero.net/docs/cli/) · [Changelog](https://fullstackhero.net/docs/changelog/)
+- [Getting started](https://fullstack.net/docs/getting-started/introduction/) — scaffold, run, and the default credentials
+- [Architecture](https://fullstack.net/docs/architecture/) — modular monolith + vertical slices, multitenancy deep-dive
+- [Modules](https://fullstack.net/docs/modules/) — Identity, Catalog, Tickets, Chat, and more
+- [Local orchestration with Aspire](https://fullstack.net/docs/deployment/aspire/)
+- [CLI reference](https://fullstack.net/docs/cli/) · [Changelog](https://fullstack.net/docs/changelog/)
 
 ---
 
@@ -184,10 +184,10 @@ Issues and PRs are welcome — see [`CONTRIBUTING.md`](CONTRIBUTING.md). Branch 
 
 ## 📄 License
 
-MIT — see [`LICENSE`](LICENSE). Built and maintained by [**Mukesh Murugan**](https://codewithmukesh.com) and the FullStackHero community, for teams that want to ship fast without sacrificing architectural discipline.
+MIT — see [`LICENSE`](LICENSE). Built and maintained by [**Mukesh Murugan**](https://codewithmukesh.com) and the FullStack community, for teams that want to ship fast without sacrificing architectural discipline.
 
 <div align="center">
 
-**[⭐ Star us on GitHub](https://github.com/fullstackhero/dotnet-starter-kit)** if this saves you time — it genuinely helps.
+**[⭐ Star us on GitHub](https://github.com/fullstack/dotnet-starter-kit)** if this saves you time — it genuinely helps.
 
 </div>

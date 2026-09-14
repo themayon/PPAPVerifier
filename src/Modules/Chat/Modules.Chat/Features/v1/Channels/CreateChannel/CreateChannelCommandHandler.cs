@@ -1,11 +1,11 @@
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Chat.Contracts.v1.Commands;
-using FSH.Modules.Chat.Data;
-using FSH.Modules.Chat.Domain;
+﻿using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Chat.Contracts.v1.Commands;
+using DES.Modules.Chat.Data;
+using DES.Modules.Chat.Domain;
 using Mediator;
 
-namespace FSH.Modules.Chat.Features.v1.Channels.CreateChannel;
+namespace DES.Modules.Chat.Features.v1.Channels.CreateChannel;
 
 public sealed class CreateChannelCommandHandler(
     ChatDbContext db,

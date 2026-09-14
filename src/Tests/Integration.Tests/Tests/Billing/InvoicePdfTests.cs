@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using Integration.Tests.Infrastructure;
 
@@ -10,15 +10,15 @@ namespace Integration.Tests.Tests.Billing;
 /// (non-root) tenant's request for that invoice id resolves to 404 — no cross-tenant leak. (The root
 /// operator's cross-tenant download backs the admin console's "Download PDF" action.)
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class InvoicePdfTests
 {
     private const string BillingBasePath = "/api/v1/billing";
 
     private readonly AuthHelper _auth;
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
 
-    public InvoicePdfTests(FshWebApplicationFactory factory)
+    public InvoicePdfTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
         _factory = factory;

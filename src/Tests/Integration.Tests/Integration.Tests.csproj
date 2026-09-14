@@ -36,4 +36,8 @@
         <PackageReference Include="Shouldly" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\Host\DES.Starter.Api\DES.Starter.Api.csproj" />
+    </ItemGroup>
+
 </Project>

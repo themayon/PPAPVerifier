@@ -1,13 +1,13 @@
-﻿using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Jobs.Services;
-using FSH.Framework.Shared.Persistence;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Framework.Jobs.Services;
+using DES.Framework.Shared.Persistence;
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FSH.Framework.Jobs;
+namespace DES.Framework.Jobs;
 
 public static class Extensions
 {
@@ -51,8 +51,8 @@ public static class Extensions
                     throw new CustomException($"Hangfire storage provider {dbOptions.Provider} is not supported");
             }
 
-            config.UseActivator(new FshJobActivator(provider.GetRequiredService<IServiceScopeFactory>()));
-            config.UseFilter(new FshJobFilter(provider));
+            config.UseActivator(new DesJobActivator(provider.GetRequiredService<IServiceScopeFactory>()));
+            config.UseFilter(new DesJobFilter(provider));
             config.UseFilter(new LogJobFilter());
             config.UseFilter(new HangfireTelemetryFilter());
         });

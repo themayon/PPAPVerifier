@@ -1,9 +1,9 @@
-using FSH.Modules.Billing.Contracts.v1.Plans;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Domain;
+﻿using DES.Modules.Billing.Contracts.v1.Plans;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Domain;
 using Mediator;
 
-namespace FSH.Modules.Billing.Features.v1.Plans.CreatePlan;
+namespace DES.Modules.Billing.Features.v1.Plans.CreatePlan;
 
 public sealed class CreatePlanCommandHandler(BillingDbContext dbContext)
     : ICommandHandler<CreatePlanCommand, Guid>

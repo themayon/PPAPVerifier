@@ -1,12 +1,12 @@
-using System.Net;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Catalog.Contracts.v1.Brands;
-using FSH.Modules.Catalog.Data;
-using FSH.Modules.Catalog.Domain;
+﻿using System.Net;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Catalog.Contracts.v1.Brands;
+using DES.Modules.Catalog.Data;
+using DES.Modules.Catalog.Domain;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Brands.CreateBrand;
+namespace DES.Modules.Catalog.Features.v1.Brands.CreateBrand;
 
 public sealed class CreateBrandCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<CreateBrandCommand, Guid>

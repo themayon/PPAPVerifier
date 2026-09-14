@@ -1,24 +1,24 @@
-using FSH.CLI.Infrastructure;
+﻿using DES.CLI.Infrastructure;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace FSH.CLI.Commands;
+namespace DES.CLI.Commands;
 
 public sealed class UpdateCommand : AsyncCommand
 {
     protected override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken)
     {
-        AnsiConsole.MarkupLine($"[bold {FshConstants.AccentColor}]Updating FSH tools...[/]");
+        AnsiConsole.MarkupLine($"[bold {DesConstants.AccentColor}]Updating DES tools...[/]");
         AnsiConsole.WriteLine();
 
         bool cliSuccess = await RunUpdateStepAsync(
-            "Updating FSH CLI",
-            "dotnet", $"tool update -g {FshConstants.CliPackageId}",
+            "Updating DES CLI",
+            "dotnet", $"tool update -g {DesConstants.CliPackageId}",
             cancellationToken).ConfigureAwait(false);
 
         bool templateSuccess = await RunUpdateStepAsync(
-            "Updating FSH template",
-            "dotnet", $"new install {FshConstants.TemplatePackageId}",
+            "Updating DES template",
+            "dotnet", $"new install {DesConstants.TemplatePackageId}",
             cancellationToken).ConfigureAwait(false);
 
         AnsiConsole.WriteLine();
@@ -26,11 +26,11 @@ public sealed class UpdateCommand : AsyncCommand
         bool allSuccess = cliSuccess && templateSuccess;
         if (allSuccess)
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.SuccessColor}]All updates complete.[/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.SuccessColor}]All updates complete.[/]");
         }
         else
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.WarningColor}]Some updates failed. Check the output above.[/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.WarningColor}]Some updates failed. Check the output above.[/]");
         }
 
         return allSuccess ? 0 : 1;
@@ -41,7 +41,7 @@ public sealed class UpdateCommand : AsyncCommand
     {
         return await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
-            .SpinnerStyle(Style.Parse(FshConstants.AccentColor))
+            .SpinnerStyle(Style.Parse(DesConstants.AccentColor))
             .StartAsync(description, async _ =>
             {
                 int exitCode = await ProcessRunner.RunAsync(
@@ -51,11 +51,11 @@ public sealed class UpdateCommand : AsyncCommand
 
                 if (exitCode == 0)
                 {
-                    AnsiConsole.MarkupLine($"  [{FshConstants.SuccessColor}]{description}: done[/]");
+                    AnsiConsole.MarkupLine($"  [{DesConstants.SuccessColor}]{description}: done[/]");
                     return true;
                 }
 
-                AnsiConsole.MarkupLine($"  [{FshConstants.ErrorColor}]{description}: failed (exit code {exitCode})[/]");
+                AnsiConsole.MarkupLine($"  [{DesConstants.ErrorColor}]{description}: failed (exit code {exitCode})[/]");
                 return false;
             }).ConfigureAwait(false);
     }

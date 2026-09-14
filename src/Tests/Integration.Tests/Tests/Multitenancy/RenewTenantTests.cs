@@ -1,4 +1,4 @@
-#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
+﻿#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
 #pragma warning disable S3459 // Unassigned members — populated by JSON deserialization
 using System.Text.Json;
 using Integration.Tests.Infrastructure;
@@ -10,7 +10,7 @@ namespace Integration.Tests.Tests.Multitenancy;
 /// extends validity by one plan term (stacking on remaining time), switches plan when a different
 /// key is supplied, route/body mismatch and empty-tenant validation, and root-only authorization.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class RenewTenantTests
 {
     private const string BillingBasePath = "/api/v1/billing";
@@ -21,10 +21,10 @@ public sealed class RenewTenantTests
         PropertyNameCaseInsensitive = true,
     };
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public RenewTenantTests(FshWebApplicationFactory factory)
+    public RenewTenantTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

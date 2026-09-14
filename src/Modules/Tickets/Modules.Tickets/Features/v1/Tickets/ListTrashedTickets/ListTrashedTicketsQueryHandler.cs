@@ -1,13 +1,13 @@
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Tickets.Contracts.Dtos;
-using FSH.Modules.Tickets.Contracts.v1.Tickets;
-using FSH.Modules.Tickets.Data;
-using FSH.Modules.Tickets.Domain;
+﻿using DES.Framework.Persistence;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Tickets.Contracts.Dtos;
+using DES.Modules.Tickets.Contracts.v1.Tickets;
+using DES.Modules.Tickets.Data;
+using DES.Modules.Tickets.Domain;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Tickets.Features.v1.Tickets.ListTrashedTickets;
+namespace DES.Modules.Tickets.Features.v1.Tickets.ListTrashedTickets;
 
 public sealed class ListTrashedTicketsQueryHandler(TicketsDbContext dbContext)
     : IQueryHandler<ListTrashedTicketsQuery, PagedResponse<TicketDto>>

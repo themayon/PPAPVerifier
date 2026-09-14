@@ -1,19 +1,19 @@
 ﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Common;
-using FSH.Framework.Core.Context;
-using FSH.Framework.Shared.Multitenancy;
+using DES.Framework.Core.Common;
+using DES.Framework.Core.Context;
+using DES.Framework.Shared.Multitenancy;
 using Hangfire;
 using Hangfire.Server;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FSH.Framework.Jobs;
+namespace DES.Framework.Jobs;
 
-public class FshJobActivator : JobActivator
+public class DesJobActivator : JobActivator
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public FshJobActivator(IServiceScopeFactory scopeFactory) =>
+    public DesJobActivator(IServiceScopeFactory scopeFactory) =>
         _scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
 
     public override JobActivatorScope BeginScope(PerformContext context) =>

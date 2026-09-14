@@ -1,10 +1,10 @@
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Catalog.Contracts.v1.Products.RemoveProductImage;
-using FSH.Modules.Catalog.Data;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Modules.Catalog.Contracts.v1.Products.RemoveProductImage;
+using DES.Modules.Catalog.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Products.RemoveProductImage;
+namespace DES.Modules.Catalog.Features.v1.Products.RemoveProductImage;
 
 public sealed class RemoveProductImageCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<RemoveProductImageCommand, Unit>

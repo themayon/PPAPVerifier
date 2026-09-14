@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Webhooks.Contracts.v1.TestWebhookSubscription;
+﻿using FluentValidation;
+using DES.Modules.Webhooks.Contracts.v1.TestWebhookSubscription;
 
-namespace FSH.Modules.Webhooks.Features.v1.TestWebhookSubscription;
+namespace DES.Modules.Webhooks.Features.v1.TestWebhookSubscription;
 
 public sealed class TestWebhookSubscriptionCommandValidator : AbstractValidator<TestWebhookSubscriptionCommand>
 {

@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Catalog.Contracts.v1.Products.AddProductImage;
+﻿using FluentValidation;
+using DES.Modules.Catalog.Contracts.v1.Products.AddProductImage;
 
-namespace FSH.Modules.Catalog.Features.v1.Products.AddProductImage;
+namespace DES.Modules.Catalog.Features.v1.Products.AddProductImage;
 
 public sealed class AddProductImageCommandValidator : AbstractValidator<AddProductImageCommand>
 {

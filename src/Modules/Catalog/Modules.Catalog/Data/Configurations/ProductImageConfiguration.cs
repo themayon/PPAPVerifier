@@ -1,8 +1,8 @@
-using FSH.Modules.Catalog.Domain;
+﻿using DES.Modules.Catalog.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FSH.Modules.Catalog.Data.Configurations;
+namespace DES.Modules.Catalog.Data.Configurations;
 
 public sealed class ProductImageConfiguration : IEntityTypeConfiguration<ProductImage>
 {

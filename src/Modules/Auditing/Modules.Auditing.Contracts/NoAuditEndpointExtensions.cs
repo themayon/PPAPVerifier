@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 
-namespace FSH.Modules.Auditing.Contracts;
+namespace DES.Modules.Auditing.Contracts;
 
 /// <summary>
 /// Convenience builders for tagging endpoints with <see cref="NoAuditAttribute"/>.

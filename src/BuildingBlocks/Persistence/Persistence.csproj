@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<RootNamespace>FSH.Framework.Persistence</RootNamespace>
-		<AssemblyName>FSH.Framework.Persistence</AssemblyName>
+		<RootNamespace>DES.Framework.Persistence</RootNamespace>
+		<AssemblyName>DES.Framework.Persistence</AssemblyName>
 		<NoWarn>$(NoWarn);S4144;CS0618</NoWarn>
 	</PropertyGroup>
 

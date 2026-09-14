@@ -1,24 +1,24 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using FluentValidation;
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Constants;
-using FSH.Framework.Web.Modules;
-using FSH.Modules.Files.Authorization;
-using FSH.Modules.Files.Contracts;
-using FSH.Modules.Files.Contracts.Authorization;
-using FSH.Modules.Files.Data;
-using FSH.Modules.Files.Features.v1.ChangeVisibility;
-using FSH.Modules.Files.Features.v1.DeleteFile;
-using FSH.Modules.Files.Features.v1.FinalizeUpload;
-using FSH.Modules.Files.Features.v1.GetFileDownloadUrl;
-using FSH.Modules.Files.Features.v1.GetFileMetadata;
-using FSH.Modules.Files.Features.v1.ListMyFiles;
-using FSH.Modules.Files.Features.v1.ListSharedFiles;
-using FSH.Modules.Files.Features.v1.ListTrashedFiles;
-using FSH.Modules.Files.Features.v1.RequestUploadUrl;
-using FSH.Modules.Files.Features.v1.RestoreFile;
-using FSH.Modules.Files.Jobs;
-using FSH.Modules.Files.Services;
+using DES.Framework.Persistence;
+using DES.Framework.Shared.Constants;
+using DES.Framework.Web.Modules;
+using DES.Modules.Files.Authorization;
+using DES.Modules.Files.Contracts;
+using DES.Modules.Files.Contracts.Authorization;
+using DES.Modules.Files.Data;
+using DES.Modules.Files.Features.v1.ChangeVisibility;
+using DES.Modules.Files.Features.v1.DeleteFile;
+using DES.Modules.Files.Features.v1.FinalizeUpload;
+using DES.Modules.Files.Features.v1.GetFileDownloadUrl;
+using DES.Modules.Files.Features.v1.GetFileMetadata;
+using DES.Modules.Files.Features.v1.ListMyFiles;
+using DES.Modules.Files.Features.v1.ListSharedFiles;
+using DES.Modules.Files.Features.v1.ListTrashedFiles;
+using DES.Modules.Files.Features.v1.RequestUploadUrl;
+using DES.Modules.Files.Features.v1.RestoreFile;
+using DES.Modules.Files.Jobs;
+using DES.Modules.Files.Services;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -27,9 +27,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
-[assembly: FshModule(typeof(FSH.Modules.Files.FilesModule), 350)]
+[assembly: DesModule(typeof(DES.Modules.Files.FilesModule), 350)]
 
-namespace FSH.Modules.Files;
+namespace DES.Modules.Files;
 
 /// <summary>
 /// Files module: presigned-URL file lifecycle (upload, finalize, serve, delete) shared across the

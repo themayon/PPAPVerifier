@@ -1,20 +1,20 @@
-using System.Net;
+﻿using System.Net;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Shared.Constants;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Identity.Contracts.DTOs;
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Data;
-using FSH.Modules.Identity.Domain;
+using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Shared.Constants;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Identity.Contracts.DTOs;
+using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Data;
+using DES.Modules.Identity.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Identity.Features.v1.Roles;
+namespace DES.Modules.Identity.Features.v1.Roles;
 
-public sealed class RoleService(RoleManager<FshRole> roleManager,
+public sealed class RoleService(RoleManager<DesRole> roleManager,
     IdentityDbContext context,
     IMultiTenantContextAccessor<AppTenantInfo> multiTenantContextAccessor,
     ICurrentUser currentUser,
@@ -57,10 +57,10 @@ public sealed class RoleService(RoleManager<FshRole> roleManager,
         CancellationToken cancellationToken = default)
     {
         if (roleManager is null)
-            throw new NotFoundException("RoleManager<FshRole> not resolved. Check Identity registration.");
+            throw new NotFoundException("RoleManager<DesRole> not resolved. Check Identity registration.");
 
         if (roleManager.Roles is null)
-            throw new NotFoundException("Role store not configured. Ensure .AddRoles<FshRole>() and EF stores.");
+            throw new NotFoundException("Role store not configured. Ensure .AddRoles<DesRole>() and EF stores.");
 
         var page = Math.Max(1, pageNumber);
         var size = Math.Clamp(pageSize, 1, 200);
@@ -95,7 +95,7 @@ public sealed class RoleService(RoleManager<FshRole> roleManager,
 
     public async Task<RoleDto?> GetRoleAsync(string id, CancellationToken cancellationToken = default)
     {
-        FshRole? role = await roleManager.FindByIdAsync(id);
+        DesRole? role = await roleManager.FindByIdAsync(id);
 
         _ = role ?? throw new NotFoundException("role not found");
 
@@ -104,7 +104,7 @@ public sealed class RoleService(RoleManager<FshRole> roleManager,
 
     public async Task<RoleDto> CreateOrUpdateRoleAsync(string roleId, string name, string description, CancellationToken cancellationToken = default)
     {
-        FshRole? role = string.IsNullOrEmpty(roleId)
+        DesRole? role = string.IsNullOrEmpty(roleId)
             ? null
             : await roleManager.FindByIdAsync(roleId);
 
@@ -124,7 +124,7 @@ public sealed class RoleService(RoleManager<FshRole> roleManager,
             // No new role can be created using a system role's name.
             EnsureNotSystemRole(name, "Cannot create a role using a system role's name.");
 
-            role = new FshRole(name, description);
+            role = new DesRole(name, description);
             await roleManager.CreateAsync(role);
         }
 
@@ -133,7 +133,7 @@ public sealed class RoleService(RoleManager<FshRole> roleManager,
 
     public async Task DeleteRoleAsync(string id, CancellationToken cancellationToken = default)
     {
-        FshRole? role = await roleManager.FindByIdAsync(id);
+        DesRole? role = await roleManager.FindByIdAsync(id);
 
         _ = role ?? throw new NotFoundException("role not found");
 
@@ -203,7 +203,7 @@ public sealed class RoleService(RoleManager<FshRole> roleManager,
         permissions.RemoveAll(rootOnly.Contains);
     }
 
-    private async Task RemoveRevokedPermissionsAsync(FshRole role, IList<System.Security.Claims.Claim> currentClaims, List<string> permissions, CancellationToken cancellationToken = default)
+    private async Task RemoveRevokedPermissionsAsync(DesRole role, IList<System.Security.Claims.Claim> currentClaims, List<string> permissions, CancellationToken cancellationToken = default)
     {
         var claimsToRemove = currentClaims.Where(c => !permissions.Exists(p => p == c.Value));
 
@@ -219,7 +219,7 @@ public sealed class RoleService(RoleManager<FshRole> roleManager,
         }
     }
 
-    private async Task AddNewPermissionsAsync(FshRole role, IList<System.Security.Claims.Claim> currentClaims, List<string> permissions, CancellationToken cancellationToken = default)
+    private async Task AddNewPermissionsAsync(DesRole role, IList<System.Security.Claims.Claim> currentClaims, List<string> permissions, CancellationToken cancellationToken = default)
     {
         var newPermissions = permissions
             .Where(p => !string.IsNullOrEmpty(p) && !currentClaims.Any(c => c.Value == p))
@@ -227,7 +227,7 @@ public sealed class RoleService(RoleManager<FshRole> roleManager,
 
         foreach (string permission in newPermissions)
         {
-            context.RoleClaims.Add(new FshRoleClaim
+            context.RoleClaims.Add(new DesRoleClaim
             {
                 RoleId = role.Id,
                 ClaimType = ClaimConstants.Permission,

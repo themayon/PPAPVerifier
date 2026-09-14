@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>fullstackhero - Dashboard</title>
+    <title>FullStack - Dashboard</title>
 
     <!-- Fonts — only the steady-state three are loaded eagerly:
          Figtree (body), Outfit (display), JetBrains Mono (mono/code).
@@ -67,7 +67,7 @@
 
         try {
           // Theme.
-          var stored = localStorage.getItem("fsh.theme");
+          var stored = localStorage.getItem("des.theme");
           var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
           var resolved = stored === "dark" || stored === "light"
             ? stored
@@ -75,7 +75,7 @@
           if (resolved === "dark") document.documentElement.classList.add("dark");
 
           // Font — set --font-sans on :root.
-          var savedFont = localStorage.getItem("fsh.font");
+          var savedFont = localStorage.getItem("des.font");
           if (savedFont && FONT_FAMILIES[savedFont]) {
             document.documentElement.style.setProperty("--font-sans", FONT_FAMILIES[savedFont]);
             // Inject the lazy font bundle synchronously if the user has
@@ -92,13 +92,13 @@
 
           // Accent — toggle accent-{id} class on :root. Rose is the
           // baseline (no class needed) and matches the warm-paper default.
-          var savedAccent = localStorage.getItem("fsh.accent");
+          var savedAccent = localStorage.getItem("des.accent");
           if (savedAccent && savedAccent !== "rose" && ACCENTS.indexOf(savedAccent) !== -1) {
             document.documentElement.classList.add("accent-" + savedAccent);
           }
 
           // Density — toggle density-compact class on :root.
-          if (localStorage.getItem("fsh.density") === "compact") {
+          if (localStorage.getItem("des.density") === "compact") {
             document.documentElement.classList.add("density-compact");
           }
         } catch (_) {

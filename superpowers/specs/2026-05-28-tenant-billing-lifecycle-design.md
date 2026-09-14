@@ -236,7 +236,7 @@ Dialog, Table, Form (react-hook-form + zod), Select, Badge, Button — not inven
 
 ## Docs (golden rule #10)
 
-Update the separate docs repo (`github.com/fullstackhero/docs`) + add a changelog entry once the
+Update the separate docs repo (`github.com/fullstack/docs`) + add a changelog entry once the
 user-facing behavior lands. New/changed config keys: `BillingOptions.DefaultPlanKey`,
 `BillingOptions.GraceWindowDays`, expiry-notification lead time.
 

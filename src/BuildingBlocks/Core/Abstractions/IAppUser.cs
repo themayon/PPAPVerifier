@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Core.Abstractions;
+﻿namespace DES.Framework.Core.Abstractions;
 
 /// <summary>
 /// Represents a basic application user with common properties.

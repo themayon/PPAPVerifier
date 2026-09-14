@@ -1,4 +1,4 @@
-namespace FSH.Modules.Webhooks.Services;
+﻿namespace DES.Modules.Webhooks.Services;
 
 public interface IWebhookDeliveryService
 {

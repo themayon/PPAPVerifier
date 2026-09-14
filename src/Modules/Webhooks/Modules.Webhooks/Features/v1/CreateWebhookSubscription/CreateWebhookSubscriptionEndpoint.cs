@@ -1,13 +1,13 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Framework.Web.Idempotency;
-using FSH.Modules.Webhooks.Contracts.Authorization;
-using FSH.Modules.Webhooks.Contracts.v1.CreateWebhookSubscription;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Framework.Web.Idempotency;
+using DES.Modules.Webhooks.Contracts.Authorization;
+using DES.Modules.Webhooks.Contracts.v1.CreateWebhookSubscription;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Webhooks.Features.v1.CreateWebhookSubscription;
+namespace DES.Modules.Webhooks.Features.v1.CreateWebhookSubscription;
 
 public static class CreateWebhookSubscriptionEndpoint
 {

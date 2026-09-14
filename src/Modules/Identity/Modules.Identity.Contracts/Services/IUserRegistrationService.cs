@@ -1,6 +1,6 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
-namespace FSH.Modules.Identity.Contracts.Services;
+namespace DES.Modules.Identity.Contracts.Services;
 
 /// <summary>
 /// Service for user registration and external authentication.

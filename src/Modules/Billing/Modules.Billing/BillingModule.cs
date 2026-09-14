@@ -1,30 +1,30 @@
-using Asp.Versioning;
-using FSH.Framework.Eventing;
-using FSH.Framework.Persistence;
-using FSH.Framework.Web.Modules;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Features.v1.Invoices.GenerateInvoices;
-using FSH.Modules.Billing.Features.v1.Invoices.GetInvoiceById;
-using FSH.Modules.Billing.Features.v1.Invoices.GetInvoices;
-using FSH.Modules.Billing.Features.v1.Invoices.GetInvoicePdf;
-using FSH.Modules.Billing.Features.v1.Invoices.GetMyInvoices;
-using FSH.Modules.Billing.Features.v1.Invoices.IssueInvoice;
-using FSH.Modules.Billing.Features.v1.Invoices.MarkInvoicePaid;
-using FSH.Modules.Billing.Features.v1.Invoices.VoidInvoice;
-using FSH.Modules.Billing.Features.v1.Plans.CreatePlan;
-using FSH.Modules.Billing.Features.v1.Plans.GetPlans;
-using FSH.Modules.Billing.Features.v1.Plans.UpdatePlan;
-using FSH.Modules.Billing.Features.v1.Subscriptions.AssignSubscription;
-using FSH.Modules.Billing.Features.v1.Subscriptions.GetSubscription;
-using FSH.Modules.Billing.Features.v1.Usage.CaptureUsageSnapshots;
-using FSH.Modules.Billing.Features.v1.Usage.GetUsageSnapshots;
-using FSH.Modules.Billing.Features.v1.Wallets.ApproveTopupRequest;
-using FSH.Modules.Billing.Features.v1.Wallets.CreateTopupRequest;
-using FSH.Modules.Billing.Features.v1.Wallets.GetMyTopupRequests;
-using FSH.Modules.Billing.Features.v1.Wallets.GetMyWallet;
-using FSH.Modules.Billing.Features.v1.Wallets.GetTopupRequests;
-using FSH.Modules.Billing.Features.v1.Wallets.RejectTopupRequest;
-using FSH.Modules.Billing.Services;
+﻿using Asp.Versioning;
+using DES.Framework.Eventing;
+using DES.Framework.Persistence;
+using DES.Framework.Web.Modules;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Features.v1.Invoices.GenerateInvoices;
+using DES.Modules.Billing.Features.v1.Invoices.GetInvoiceById;
+using DES.Modules.Billing.Features.v1.Invoices.GetInvoices;
+using DES.Modules.Billing.Features.v1.Invoices.GetInvoicePdf;
+using DES.Modules.Billing.Features.v1.Invoices.GetMyInvoices;
+using DES.Modules.Billing.Features.v1.Invoices.IssueInvoice;
+using DES.Modules.Billing.Features.v1.Invoices.MarkInvoicePaid;
+using DES.Modules.Billing.Features.v1.Invoices.VoidInvoice;
+using DES.Modules.Billing.Features.v1.Plans.CreatePlan;
+using DES.Modules.Billing.Features.v1.Plans.GetPlans;
+using DES.Modules.Billing.Features.v1.Plans.UpdatePlan;
+using DES.Modules.Billing.Features.v1.Subscriptions.AssignSubscription;
+using DES.Modules.Billing.Features.v1.Subscriptions.GetSubscription;
+using DES.Modules.Billing.Features.v1.Usage.CaptureUsageSnapshots;
+using DES.Modules.Billing.Features.v1.Usage.GetUsageSnapshots;
+using DES.Modules.Billing.Features.v1.Wallets.ApproveTopupRequest;
+using DES.Modules.Billing.Features.v1.Wallets.CreateTopupRequest;
+using DES.Modules.Billing.Features.v1.Wallets.GetMyTopupRequests;
+using DES.Modules.Billing.Features.v1.Wallets.GetMyWallet;
+using DES.Modules.Billing.Features.v1.Wallets.GetTopupRequests;
+using DES.Modules.Billing.Features.v1.Wallets.RejectTopupRequest;
+using DES.Modules.Billing.Services;
 using Hangfire;
 using Hangfire.Common;
 using Microsoft.AspNetCore.Builder;
@@ -34,9 +34,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
-[assembly: FshModule(typeof(FSH.Modules.Billing.BillingModule), 500)]
+[assembly: DesModule(typeof(DES.Modules.Billing.BillingModule), 500)]
 
-namespace FSH.Modules.Billing;
+namespace DES.Modules.Billing;
 
 public sealed class BillingModule : IModule
 {
@@ -44,8 +44,8 @@ public sealed class BillingModule : IModule
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        FSH.Framework.Shared.Constants.PermissionConstants.Register(
-            FSH.Modules.Billing.Contracts.Authorization.BillingPermissions.All);
+        DES.Framework.Shared.Constants.PermissionConstants.Register(
+            DES.Modules.Billing.Contracts.Authorization.BillingPermissions.All);
 
         builder.Services.AddHeroDbContext<BillingDbContext>();
         builder.Services.AddScoped<IDbInitializer, BillingDbInitializer>();

@@ -1,6 +1,6 @@
-# FSH.Starter
+﻿# DES.Starter
 
-Your application, generated from the **FSH .NET Starter Kit** — a production-ready modular
+Your application, generated from the **DES .NET Starter Kit** — a production-ready modular
 .NET 10 monolith with two React 19 apps, multitenancy, identity, background jobs, and
 cloud-native deploy.
 
@@ -18,7 +18,7 @@ the shared code lives in `src/BuildingBlocks` and is yours to change.
 ### Everything at once (recommended) — .NET Aspire
 
 ```bash
-dotnet run --project src/Host/FSH.Starter.AppHost
+dotnet run --project src/Host/DES.Starter.AppHost
 ```
 
 Aspire starts Postgres, Redis, and MinIO, runs database migrations, then launches the API
@@ -34,7 +34,7 @@ Aspire starts Postgres, Redis, and MinIO, runs database migrations, then launche
 ### Backend only
 
 ```bash
-dotnet run --project src/Host/FSH.Starter.Api      # needs external Postgres + Redis
+dotnet run --project src/Host/DES.Starter.Api      # needs external Postgres + Redis
 ```
 
 ### Frontend only (against a running API)
@@ -54,10 +54,10 @@ src/
   Modules/             Bounded contexts: Identity, Multitenancy, Auditing, Billing,
                        Catalog, Chat, Files, Notifications, Tickets, Webhooks
   Host/
-    FSH.Starter.Api/                    API composition root
-    FSH.Starter.AppHost/                .NET Aspire orchestrator
-    FSH.Starter.DbMigrator/             One-shot migrate / seed runner
-    FSH.Starter.Migrations.PostgreSQL/  EF Core migrations
+    DES.Starter.Api/                    API composition root
+    DES.Starter.AppHost/                .NET Aspire orchestrator
+    DES.Starter.DbMigrator/             One-shot migrate / seed runner
+    DES.Starter.Migrations.PostgreSQL/  EF Core migrations
   Tests/               Unit, integration (Testcontainers), and architecture tests
 clients/
   admin/               Operator console (React 19 + Vite + Tailwind)
@@ -72,7 +72,7 @@ deploy/
 Migrations run automatically under Aspire. To apply them yourself:
 
 ```bash
-dotnet run --project src/Host/FSH.Starter.DbMigrator -- apply --seed
+dotnet run --project src/Host/DES.Starter.DbMigrator -- apply --seed
 ```
 
 ## Make it yours — first-run checklist
@@ -85,7 +85,7 @@ This project shipped with sensible defaults. Before production:
 - [ ] **Logo** — replace `clients/admin/public/logo-fullstackhero.png` and
       `clients/dashboard/public/logo-fullstackhero.png` with your own.
 - [ ] **Mail** — configure SMTP / SendGrid under `MailOptions` in
-      `src/Host/FSH.Starter.Api/appsettings.json`.
+      `src/Host/DES.Starter.Api/appsettings.json`.
 - [ ] **OpenAPI contact** — update `OpenApiOptions.Contact` in `appsettings.json`.
 - [ ] **Container registry & infra** — set your registry and review bucket / database names
       in `deploy/terraform/apps/starter/**/variables.tf` and `terraform.tfvars`.
@@ -111,10 +111,10 @@ Sign in to the admin console as `admin@root.com` using the `SEED_ADMIN_PASSWORD`
 ## Running tests
 
 ```bash
-dotnet test src/FSH.Starter.slnx       # integration tests require Docker
+dotnet test src/DES.Starter.slnx       # integration tests require Docker
 ```
 
 ## Learn more
 
-- [FSH Documentation](https://fullstackhero.net)
-- [Source & issues](https://github.com/fullstackhero/dotnet-starter-kit)
+- [DES Documentation](https://fullstack.net)
+- [Source & issues](https://github.com/fullstack/dotnet-starter-kit)

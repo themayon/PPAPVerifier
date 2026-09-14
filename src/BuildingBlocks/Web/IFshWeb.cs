@@ -1,5 +1,5 @@
-﻿namespace FSH.Framework.Web;
+﻿namespace DES.Framework.Web;
 
-public interface IFshWeb
+public interface IDesWeb
 {
 }

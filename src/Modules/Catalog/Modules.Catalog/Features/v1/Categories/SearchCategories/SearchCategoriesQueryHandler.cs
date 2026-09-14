@@ -1,12 +1,12 @@
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Catalog.Contracts.Dtos;
-using FSH.Modules.Catalog.Contracts.v1.Categories;
-using FSH.Modules.Catalog.Data;
-using FSH.Modules.Catalog.Domain;
+﻿using DES.Framework.Shared.Persistence;
+using DES.Modules.Catalog.Contracts.Dtos;
+using DES.Modules.Catalog.Contracts.v1.Categories;
+using DES.Modules.Catalog.Data;
+using DES.Modules.Catalog.Domain;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Categories.SearchCategories;
+namespace DES.Modules.Catalog.Features.v1.Categories.SearchCategories;
 
 public sealed class SearchCategoriesQueryHandler(CatalogDbContext dbContext)
     : IQueryHandler<SearchCategoriesQuery, PagedResponse<CategoryDto>>

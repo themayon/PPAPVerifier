@@ -1,4 +1,4 @@
-import { ExternalLink, KeyRound } from "lucide-react";
+﻿import { ExternalLink, KeyRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SettingsSection } from "@/pages/settings/settings-layout";
 
@@ -15,7 +15,7 @@ export function ApiKeysSettings() {
       <SettingsSection
         title="API keys"
         icon={KeyRound}
-        description="Long-lived credentials used by services to call the FSH API. Treat them like passwords."
+        description="Long-lived credentials used by services to call the DES API. Treat them like passwords."
       >
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <div className="mb-4 grid size-14 place-items-center rounded-2xl bg-[var(--color-muted)]">
@@ -34,7 +34,7 @@ export function ApiKeysSettings() {
             variant="outline"
             onClick={() => {
               window.open(
-                "https://github.com/fullstackhero/dotnet-starter-kit",
+                "https://github.com/fullstack/dotnet-starter-kit",
                 "_blank",
                 "noopener,noreferrer",
               );

@@ -1,8 +1,8 @@
-using System.Collections.ObjectModel;
-using FSH.Modules.Chat.Contracts.v1.DTOs;
+﻿using System.Collections.ObjectModel;
+using DES.Modules.Chat.Contracts.v1.DTOs;
 using Mediator;
 
-namespace FSH.Modules.Chat.Contracts.v1.Queries;
+namespace DES.Modules.Chat.Contracts.v1.Queries;
 
 /// <summary>
 /// Full-text message search scoped to channels the caller is a member of. Results ranked by

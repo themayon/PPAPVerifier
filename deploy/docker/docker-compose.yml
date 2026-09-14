@@ -1,10 +1,10 @@
-# fullstackhero — production docker-compose.
+﻿# fullstack — production docker-compose.
 # Run from this directory:
 #   cp .env.example .env && $EDITOR .env
 #   docker compose up -d --build
 #
 # Operator owns the edge (TLS / subdomain routing). This file publishes
-# only the FSH services on host ports; the data plane (postgres/redis/
+# only the DES services on host ports; the data plane (postgres/redis/
 # minio) stays compose-internal unless you uncomment their ports blocks.
 
 name: fsh
@@ -97,7 +97,7 @@ services:
   migrator:
     build:
       context: ../..
-      dockerfile: src/Host/FSH.Starter.DbMigrator/Dockerfile
+      dockerfile: src/Host/DES.Starter.DbMigrator/Dockerfile
     image: fsh/dbmigrator:local
     container_name: fsh-migrator
     restart: "no"
@@ -114,7 +114,7 @@ services:
   api:
     build:
       context: ../..
-      dockerfile: src/Host/FSH.Starter.Api/Dockerfile
+      dockerfile: src/Host/DES.Starter.Api/Dockerfile
     image: fsh/api:local
     container_name: fsh-api
     restart: unless-stopped
@@ -140,11 +140,11 @@ services:
       AllowedHosts: "*"
       HangfireOptions__UserName: ${HANGFIRE_USERNAME:?HANGFIRE_USERNAME is required}
       HangfireOptions__Password: ${HANGFIRE_PASSWORD:?HANGFIRE_PASSWORD is required}
-      CorsOptions__AllowedOrigins__0: ${FSH_ADMIN_URL:?FSH_ADMIN_URL is required}
-      CorsOptions__AllowedOrigins__1: ${FSH_DASHBOARD_URL:?FSH_DASHBOARD_URL is required}
+      CorsOptions__AllowedOrigins__0: ${DES_ADMIN_URL:?DES_ADMIN_URL is required}
+      CorsOptions__AllowedOrigins__1: ${DES_DASHBOARD_URL:?DES_DASHBOARD_URL is required}
       OpenTelemetryOptions__Exporter__Otlp__Endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
     ports:
-      - "${FSH_API_PORT:-8080}:8080"
+      - "${DES_API_PORT:-8080}:8080"
 
   admin:
     build:
@@ -155,11 +155,11 @@ services:
     depends_on:
       migrator: { condition: service_completed_successfully }
     environment:
-      FSH_API_URL: ${FSH_API_URL:?FSH_API_URL is required}
-      FSH_DASHBOARD_URL: ${FSH_DASHBOARD_URL}
-      FSH_DEFAULT_TENANT: ${FSH_DEFAULT_TENANT:-root}
+      DES_API_URL: ${DES_API_URL:?DES_API_URL is required}
+      DES_DASHBOARD_URL: ${DES_DASHBOARD_URL}
+      DES_DEFAULT_TENANT: ${DES_DEFAULT_TENANT:-root}
     ports:
-      - "${FSH_ADMIN_PORT:-8081}:80"
+      - "${DES_ADMIN_PORT:-8081}:80"
 
   dashboard:
     build:
@@ -170,10 +170,10 @@ services:
     depends_on:
       migrator: { condition: service_completed_successfully }
     environment:
-      FSH_API_URL: ${FSH_API_URL}
-      FSH_DEFAULT_TENANT: ${FSH_DEFAULT_TENANT:-root}
+      DES_API_URL: ${DES_API_URL}
+      DES_DEFAULT_TENANT: ${DES_DEFAULT_TENANT:-root}
     ports:
-      - "${FSH_DASHBOARD_PORT:-8082}:80"
+      - "${DES_DASHBOARD_PORT:-8082}:80"
 
 volumes:
   pg_data:

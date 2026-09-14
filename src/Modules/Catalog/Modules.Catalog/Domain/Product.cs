@@ -1,7 +1,7 @@
-using FSH.Framework.Core.Domain;
-using FSH.Modules.Catalog.Domain.Events;
+﻿using DES.Framework.Core.Domain;
+using DES.Modules.Catalog.Domain.Events;
 
-namespace FSH.Modules.Catalog.Domain;
+namespace DES.Modules.Catalog.Domain;
 
 public sealed class Product : AggregateRoot<Guid>, ISoftDeletable
 {

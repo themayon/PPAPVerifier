@@ -1,12 +1,12 @@
-using FSH.Modules.Identity.Contracts.Authorization;
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Identity.Contracts.v1.Users.DeleteUser;
+﻿using DES.Modules.Identity.Contracts.Authorization;
+using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Identity.Contracts.v1.Users.DeleteUser;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Identity.Features.v1.Users.DeleteUser;
+namespace DES.Modules.Identity.Features.v1.Users.DeleteUser;
 
 public static class DeleteUserEndpoint
 {

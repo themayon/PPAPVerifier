@@ -1,8 +1,8 @@
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Contracts.v1.Users.ResendConfirmationEmail;
+﻿using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Contracts.v1.Users.ResendConfirmationEmail;
 using Mediator;
 
-namespace FSH.Modules.Identity.Features.v1.Users.ResendConfirmationEmail;
+namespace DES.Modules.Identity.Features.v1.Users.ResendConfirmationEmail;
 
 public sealed class ResendConfirmationEmailCommandHandler : ICommandHandler<ResendConfirmationEmailCommand, Unit>
 {

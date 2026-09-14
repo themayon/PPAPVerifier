@@ -1,6 +1,6 @@
-﻿using FSH.Framework.Shared.Quota;
+﻿using DES.Framework.Shared.Quota;
 
-namespace FSH.Framework.Shared.Multitenancy;
+namespace DES.Framework.Shared.Multitenancy;
 
 public interface IAppTenantInfo
 {

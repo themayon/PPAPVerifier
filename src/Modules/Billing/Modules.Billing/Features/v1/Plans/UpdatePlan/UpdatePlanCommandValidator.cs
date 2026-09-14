@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Billing.Contracts.v1.Plans;
+﻿using FluentValidation;
+using DES.Modules.Billing.Contracts.v1.Plans;
 
-namespace FSH.Modules.Billing.Features.v1.Plans.UpdatePlan;
+namespace DES.Modules.Billing.Features.v1.Plans.UpdatePlan;
 
 public sealed class UpdatePlanCommandValidator : AbstractValidator<UpdatePlanCommand>
 {

@@ -1,13 +1,13 @@
-using FSH.Modules.Auditing.Contracts.Authorization;
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Auditing.Contracts.Dtos;
-using FSH.Modules.Auditing.Contracts.v1.GetAuditsByCorrelation;
+﻿using DES.Modules.Auditing.Contracts.Authorization;
+using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Auditing.Contracts.Dtos;
+using DES.Modules.Auditing.Contracts.v1.GetAuditsByCorrelation;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Auditing.Features.v1.GetAuditsByCorrelation;
+namespace DES.Modules.Auditing.Features.v1.GetAuditsByCorrelation;
 
 public static class GetAuditsByCorrelationEndpoint
 {

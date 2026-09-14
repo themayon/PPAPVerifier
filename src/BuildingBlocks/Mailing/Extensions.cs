@@ -1,9 +1,9 @@
-﻿using FSH.Framework.Mailing.Services;
+﻿using DES.Framework.Mailing.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SendGrid;
 
-namespace FSH.Framework.Mailing;
+namespace DES.Framework.Mailing;
 
 public static class Extensions
 {

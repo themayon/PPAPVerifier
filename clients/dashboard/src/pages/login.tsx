@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+﻿import { useEffect, useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { AlertCircle, ArrowRight, Eye, EyeOff, Loader2, Sparkles, TimerOff } from "lucide-react";
 import { useAuth } from "@/auth/use-auth";
@@ -18,7 +18,7 @@ type LocationState = { from?: { pathname: string } };
 // ────────────────────────────────────────────────────────────────────────
 // Login — dentalOS "welcome back" card on rose+saffron atmospheric orbs
 // (chrome supplied by AuthShell, shared with the rest of the auth flow).
-// FSH stays multi-tenant, so the Tenant field leads the form; Email +
+// DES stays multi-tenant, so the Tenant field leads the form; Email +
 // Password follow. The demo picker ("Step into any role") signs in
 // instantly and is gated on the runtime demoMode flag — on in staging,
 // off in production.
@@ -111,7 +111,7 @@ export function LoginPage() {
           noValidate
           aria-describedby={error ? "login-error" : undefined}
         >
-          {/* Tenant — FSH stays multi-tenant, so this leads the form. */}
+          {/* Tenant — DES stays multi-tenant, so this leads the form. */}
           <div className="space-y-1.5">
             <Label
               htmlFor="tenant"

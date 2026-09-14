@@ -1,10 +1,10 @@
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Framework.Web.Realtime;
+namespace DES.Framework.Web.Realtime;
 
 /// <summary>
 /// Single shared SignalR hub for app-wide realtime: chat messages, typing indicators, presence,

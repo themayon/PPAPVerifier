@@ -3,6 +3,13 @@ import { mockJsonResponse } from "../helpers/api-mocks";
 import { installShellMocks, paged } from "../helpers/shell-mocks";
 import { seedAuthedSession, TEST_USER } from "../helpers/auth-seed";
 
+const SHELL_PERMISSIONS = [
+  "Permissions.Billing.View",
+  "Permissions.AuditTrails.View",
+  "Permissions.Chat.Channels.View",
+  "Permissions.Notifications.Inbox.View",
+];
+
 const SUBSCRIPTION = {
   id: "sub-1",
   tenantId: "acme",
@@ -35,6 +42,7 @@ test.describe("overview (/)", () => {
   test.beforeEach(async ({ page }) => {
     await seedAuthedSession(page, TEST_USER);
     await installShellMocks(page);
+    await mockJsonResponse(page, "**/api/v1/identity/permissions", SHELL_PERMISSIONS);
     await mockJsonResponse(page, "**/api/v1/billing/usage**", []);
     await mockJsonResponse(page, "**/api/v1/billing/subscriptions/me**", SUBSCRIPTION);
     await mockJsonResponse(page, "**/api/v1/audits**", paged([]));
@@ -93,6 +101,30 @@ test.describe("overview (/)", () => {
     await expect(page.getByText("Valid for", { exact: true })).toBeVisible();
     // The stat card reads "Expired" rather than a healthy day count.
     await expect(page.getByText("Expired", { exact: true })).toBeVisible();
+  });
+
+  test("does not request permission-protected shell data for a manager without access", async ({ page }) => {
+    await mockJsonResponse(page, "**/api/v1/identity/permissions", [
+      "Permissions.Users.View",
+      "Permissions.Catalog.Products.View",
+      "Permissions.Tickets.View",
+    ]);
+    const protectedRequests: string[] = [];
+    for (const url of [
+      "**/api/v1/billing/usage**",
+      "**/api/v1/audits**",
+      "**/api/v1/chat/channels**",
+      "**/api/v1/notifications/unread-count**",
+    ]) {
+      await page.route(url, async (route) => {
+        protectedRequests.push(route.request().url());
+        await route.fulfill({ status: 403 });
+      });
+    }
+
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: /good (morning|afternoon|evening), alice/i })).toBeVisible();
+    await expect.poll(() => protectedRequests).toEqual([]);
   });
 });
 

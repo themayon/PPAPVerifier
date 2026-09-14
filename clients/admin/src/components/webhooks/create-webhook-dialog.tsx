@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -139,7 +139,7 @@ export function CreateWebhookDialog({
           </div>
           <DialogDescription>
             Your endpoint receives a JSON payload with the event details. We sign each request
-            with HMAC-SHA256 in the <code className="code-chip">X-FSH-Signature</code> header
+            with HMAC-SHA256 in the <code className="code-chip">X-DES-Signature</code> header
             using the secret below — store it on your side and verify before trusting the body.
           </DialogDescription>
         </DialogHeader>

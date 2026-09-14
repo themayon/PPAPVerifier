@@ -1,4 +1,4 @@
-namespace FSH.Framework.Storage.DTOs;
+﻿namespace DES.Framework.Storage.DTOs;
 
 public sealed class FileDownloadResponse
 {

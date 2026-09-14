@@ -1,4 +1,4 @@
-// Inactivity auto-logout — shared, app-agnostic primitives.
+﻿// Inactivity auto-logout — shared, app-agnostic primitives.
 //
 // localStorage/sessionStorage is per-origin, so the admin and dashboard apps
 // never share these keys (different hosts). That lets us use short, un-prefixed
@@ -7,9 +7,9 @@
 // listeners on every cross-tab tick.
 
 /** Shared "last user activity" timestamp — one value across every tab of this origin. */
-const LAST_ACTIVITY_KEY = "fsh.lastActivity";
+const LAST_ACTIVITY_KEY = "des.lastActivity";
 /** Ephemeral, per-tab reason stash read once by the login page after a sign-out. */
-const SIGNED_OUT_REASON_KEY = "fsh.signedOutReason";
+const SIGNED_OUT_REASON_KEY = "des.signedOutReason";
 
 export type InactivityPhase = "active" | "warning" | "expired";
 

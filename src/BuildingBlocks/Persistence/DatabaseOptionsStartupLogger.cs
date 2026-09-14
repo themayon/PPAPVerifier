@@ -1,9 +1,9 @@
-using FSH.Framework.Shared.Persistence;
+﻿using DES.Framework.Shared.Persistence;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FSH.Framework.Persistence;
+namespace DES.Framework.Persistence;
 
 /// <summary>
 /// Hosted service that logs database configuration options during application startup.
@@ -37,8 +37,8 @@ public sealed class DatabaseOptionsStartupLogger : IHostedService
         if (_logger.IsEnabled(LogLevel.Information))
         {
             _logger.LogInformation("current db provider: {Provider}", options.Provider);
-            _logger.LogInformation("for docs: https://www.fullstackhero.net");
-            _logger.LogInformation("sponsor: https://opencollective.com/fullstackhero");
+            _logger.LogInformation("for docs: https://www.fullstack.net");
+            _logger.LogInformation("sponsor: https://opencollective.com/fullstack");
         }
         return Task.CompletedTask;
     }

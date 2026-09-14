@@ -1,14 +1,14 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Eventing.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Web.Realtime;
-using FSH.Modules.Chat.Contracts.Events;
-using FSH.Modules.Notifications.Data;
-using FSH.Modules.Notifications.Domain;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Eventing.Abstractions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Web.Realtime;
+using DES.Modules.Chat.Contracts.Events;
+using DES.Modules.Notifications.Data;
+using DES.Modules.Notifications.Domain;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Notifications.IntegrationEventHandlers;
+namespace DES.Modules.Notifications.IntegrationEventHandlers;
 
 /// <summary>
 /// Subscribes to <see cref="MentionedInChannelIntegrationEvent"/> emitted by the Chat module's

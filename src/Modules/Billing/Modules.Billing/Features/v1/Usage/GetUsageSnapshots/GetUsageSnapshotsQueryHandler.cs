@@ -1,13 +1,13 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Billing.Contracts.Dtos;
-using FSH.Modules.Billing.Contracts.v1.Usage;
-using FSH.Modules.Billing.Data;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Billing.Contracts.Dtos;
+using DES.Modules.Billing.Contracts.v1.Usage;
+using DES.Modules.Billing.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Billing.Features.v1.Usage.GetUsageSnapshots;
+namespace DES.Modules.Billing.Features.v1.Usage.GetUsageSnapshots;
 
 public sealed class GetUsageSnapshotsQueryHandler(
     BillingDbContext dbContext,

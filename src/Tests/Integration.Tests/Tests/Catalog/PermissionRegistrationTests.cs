@@ -1,10 +1,10 @@
-using FSH.Framework.Shared.Constants;
-using FSH.Modules.Auditing.Contracts.Authorization;
-using FSH.Modules.Billing.Contracts.Authorization;
-using FSH.Modules.Catalog.Contracts.Authorization;
-using FSH.Modules.Identity.Contracts.Authorization;
-using FSH.Modules.Multitenancy.Contracts.Authorization;
-using FSH.Modules.Tickets.Contracts.Authorization;
+﻿using DES.Framework.Shared.Constants;
+using DES.Modules.Auditing.Contracts.Authorization;
+using DES.Modules.Billing.Contracts.Authorization;
+using DES.Modules.Catalog.Contracts.Authorization;
+using DES.Modules.Identity.Contracts.Authorization;
+using DES.Modules.Multitenancy.Contracts.Authorization;
+using DES.Modules.Tickets.Contracts.Authorization;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
@@ -17,12 +17,12 @@ namespace Integration.Tests.Tests.Catalog;
 ///   1. A new permission added to a module is not registered (registry drift).
 ///   2. The Admin role's claim seeding is not propagating new permissions to existing tenants.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class PermissionRegistrationTests
 {
     private readonly AuthHelper _auth;
 
-    public PermissionRegistrationTests(FshWebApplicationFactory factory)
+    public PermissionRegistrationTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

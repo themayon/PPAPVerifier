@@ -1,12 +1,12 @@
-using FSH.Modules.Auditing;
-using FSH.Modules.Identity;
-using FSH.Modules.Multitenancy;
+﻿using DES.Modules.Auditing;
+using DES.Modules.Identity;
+using DES.Modules.Multitenancy;
 using System.Reflection;
 
 namespace Generic.Tests.Architecture;
 
 /// <summary>
-/// Discovers all FSH module assemblies for use in generic architecture tests.
+/// Discovers all DES module assemblies for use in generic architecture tests.
 /// </summary>
 internal static class ModuleAssemblyDiscovery
 {
@@ -26,7 +26,7 @@ internal static class ModuleAssemblyDiscovery
             .Where(a =>
             {
                 var name = a.GetName().Name ?? string.Empty;
-                return name.StartsWith("FSH.Modules.", StringComparison.Ordinal)
+                return name.StartsWith("DES.Modules.", StringComparison.Ordinal)
                        && !name.EndsWith(".Contracts", StringComparison.Ordinal);
             })
             .OrderBy(a => a.GetName().Name, StringComparer.Ordinal)

@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<RootNamespace>FSH.Framework.Caching</RootNamespace>
-		<AssemblyName>FSH.Framework.Caching</AssemblyName>
+		<RootNamespace>DES.Framework.Caching</RootNamespace>
+		<AssemblyName>DES.Framework.Caching</AssemblyName>
 	</PropertyGroup>
 
 	<ItemGroup>

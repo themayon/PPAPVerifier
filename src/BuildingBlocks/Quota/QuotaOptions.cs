@@ -1,6 +1,6 @@
-using FSH.Framework.Shared.Quota;
+﻿using DES.Framework.Shared.Quota;
 
-namespace FSH.Framework.Quota;
+namespace DES.Framework.Quota;
 
 /// <summary>
 /// Quota plan catalog. Tenants reference a plan by name via <c>AppTenantInfo.Plan</c>; the limits

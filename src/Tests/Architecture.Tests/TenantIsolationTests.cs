@@ -1,9 +1,9 @@
-using Finbuckle.MultiTenant;
+﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Domain;
-using FSH.Framework.Persistence.Context;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
+using DES.Framework.Core.Domain;
+using DES.Framework.Persistence.Context;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -62,7 +62,7 @@ public sealed class TenantIsolationTests
         violations.ShouldBeEmpty(
             "Every entity in a BaseDbContext-derived DbContext must be tenant-isolated. " +
             "Apply via builder.IsMultiTenant() in EF config, OR opt out by implementing " +
-            "FSH.Framework.Core.Domain.IGlobalEntity (only for entities that are genuinely " +
+            "DES.Framework.Core.Domain.IGlobalEntity (only for entities that are genuinely " +
             "platform-wide, like BillingPlan or ImpersonationGrant). " +
             $"Violations:\n  {string.Join("\n  ", violations)}");
     }
@@ -100,7 +100,7 @@ public sealed class TenantIsolationTests
         {
             Provider = "postgresql",
             ConnectionString = string.Empty,
-            MigrationsAssembly = "FSH.Starter.Migrations.PostgreSQL",
+            MigrationsAssembly = "DES.Starter.Migrations.PostgreSQL",
         });
 
         var ctor = dbContextType.GetConstructor([

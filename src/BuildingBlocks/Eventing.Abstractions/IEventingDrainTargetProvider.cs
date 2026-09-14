@@ -1,4 +1,4 @@
-namespace FSH.Framework.Eventing.Abstractions;
+﻿namespace DES.Framework.Eventing.Abstractions;
 
 /// <summary>
 /// Enumerates the distinct databases holding outbox rows.

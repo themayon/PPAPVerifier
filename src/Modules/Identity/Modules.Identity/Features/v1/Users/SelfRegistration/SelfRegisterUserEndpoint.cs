@@ -1,13 +1,13 @@
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Web.Idempotency;
-using FSH.Modules.Identity.Contracts.v1.Users.RegisterUser;
+﻿using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Web.Idempotency;
+using DES.Modules.Identity.Contracts.v1.Users.RegisterUser;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Identity.Features.v1.Users.SelfRegistration;
+namespace DES.Modules.Identity.Features.v1.Users.SelfRegistration;
 
 public static class SelfRegisterUserEndpoint
 {

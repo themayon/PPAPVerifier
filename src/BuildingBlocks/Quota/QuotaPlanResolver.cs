@@ -1,7 +1,7 @@
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Quota;
+﻿using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Quota;
 
-namespace FSH.Framework.Quota;
+namespace DES.Framework.Quota;
 
 /// <summary>
 /// Resolves the effective limit for a given tenant + resource. Tenant-local overrides on

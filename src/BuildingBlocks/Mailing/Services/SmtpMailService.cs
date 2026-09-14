@@ -1,10 +1,10 @@
-using MailKit.Security;
+﻿using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
 
-namespace FSH.Framework.Mailing.Services;
+namespace DES.Framework.Mailing.Services;
 
 public class SmtpMailService(IOptions<MailOptions> settings, ILogger<SmtpMailService> logger) : IMailService
 {

@@ -1,6 +1,6 @@
-using FSH.Framework.Shared.Constants;
+﻿using DES.Framework.Shared.Constants;
 
-namespace FSH.Modules.Identity.Contracts.Authorization;
+namespace DES.Modules.Identity.Contracts.Authorization;
 
 /// <summary>
 /// Identity module permissions. Single source of truth — string literals (used by
@@ -74,7 +74,7 @@ public static class IdentityPermissions
         public const string Revoke = $"Permissions.{Resource}.Revoke";
     }
 
-    public static IReadOnlyList<FshPermission> All { get; } =
+    public static IReadOnlyList<DesPermission> All { get; } =
     [
         new("View Users",          ActionConstants.View,   Users.Resource, IsBasic: true),
         new("Search Users",        ActionConstants.Search, Users.Resource),

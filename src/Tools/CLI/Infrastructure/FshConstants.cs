@@ -1,6 +1,6 @@
-namespace FSH.CLI.Infrastructure;
+﻿namespace DES.CLI.Infrastructure;
 
-internal static class FshConstants
+internal static class DesConstants
 {
     // NuGet package identifiers
     internal const string CliPackageId = "FullStackHero.CLI";
@@ -9,9 +9,9 @@ internal static class FshConstants
 
     // URLs
     internal const string NuGetFlatContainerUrl = "https://api.nuget.org/v3-flatcontainer";
-    internal const string GitHubRepoUrl = "https://github.com/fullstackhero/dotnet-starter-kit";
+    internal const string GitHubRepoUrl = "https://github.com/fullstack/dotnet-starter-kit";
     internal const string ReleaseNotesUrl = $"{GitHubRepoUrl}/releases";
-    internal const string DocsUrl = "https://fullstackhero.net";
+    internal const string DocsUrl = "https://fullstack.net";
 
     // Default ports
     internal const int ApiHttpPort = 5030;
@@ -31,6 +31,6 @@ internal static class FshConstants
         "CON", "PRN", "AUX", "NUL",
         "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
         "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
-        "FSH", "System", "Microsoft", "NuGet"
+        "DES", "System", "Microsoft", "NuGet"
     };
 }

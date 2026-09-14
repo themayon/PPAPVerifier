@@ -1,12 +1,12 @@
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Catalog.Contracts.Dtos;
-using FSH.Modules.Catalog.Contracts.v1.Brands;
-using FSH.Modules.Catalog.Data;
+﻿using DES.Framework.Persistence;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Catalog.Contracts.Dtos;
+using DES.Modules.Catalog.Contracts.v1.Brands;
+using DES.Modules.Catalog.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Brands.ListTrashedBrands;
+namespace DES.Modules.Catalog.Features.v1.Brands.ListTrashedBrands;
 
 public sealed class ListTrashedBrandsQueryHandler(CatalogDbContext dbContext)
     : IQueryHandler<ListTrashedBrandsQuery, PagedResponse<BrandDto>>

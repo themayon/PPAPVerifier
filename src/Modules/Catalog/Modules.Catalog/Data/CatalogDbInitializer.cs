@@ -1,8 +1,8 @@
-using FSH.Framework.Persistence;
+﻿using DES.Framework.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Catalog.Data;
+namespace DES.Modules.Catalog.Data;
 
 public sealed class CatalogDbInitializer(
     CatalogDbContext dbContext,

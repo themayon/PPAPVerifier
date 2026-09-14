@@ -1,6 +1,6 @@
-using FSH.Modules.Auditing;
-using FSH.Modules.Identity;
-using FSH.Modules.Multitenancy;
+﻿using DES.Modules.Auditing;
+using DES.Modules.Identity;
+using DES.Modules.Multitenancy;
 using Shouldly;
 using System.Reflection;
 using Xunit;
@@ -8,7 +8,7 @@ using Xunit;
 namespace Architecture.Tests;
 
 /// <summary>
-/// Discovers all FSH module assemblies for use in architecture tests.
+/// Discovers all DES module assemblies for use in architecture tests.
 /// Uses a seed assembly list to ensure the correct AppDomain is loaded,
 /// then auto-discovers any additional module assemblies that are loaded.
 /// Adding a new module requires only adding its assembly reference to the
@@ -19,7 +19,7 @@ internal static class ModuleAssemblyDiscovery
     private static readonly Assembly[] _cached = Discover();
 
     /// <summary>
-    /// Returns all loaded FSH module assemblies (excluding Contracts assemblies).
+    /// Returns all loaded DES module assemblies (excluding Contracts assemblies).
     /// </summary>
     public static Assembly[] GetModuleAssemblies() => _cached;
 
@@ -28,8 +28,8 @@ internal static class ModuleAssemblyDiscovery
         // Get the directory where the tests are running
         string baseDir = AppContext.BaseDirectory;
 
-        // Scan for FSH.Modules.*.dll files (excluding Contracts)
-        var moduleFiles = Directory.GetFiles(baseDir, "FSH.Modules.*.dll")
+        // Scan for DES.Modules.*.dll files (excluding Contracts)
+        var moduleFiles = Directory.GetFiles(baseDir, "DES.Modules.*.dll")
             .Where(f => !f.EndsWith(".Contracts.dll", StringComparison.OrdinalIgnoreCase))
             .ToList();
 
@@ -70,7 +70,7 @@ public sealed class ModuleAssemblyDiscoveryGuardTests
         if (assemblies.Length == 0)
         {
             throw new InvalidOperationException(
-                "ModuleAssemblyDiscovery found no FSH module assemblies. " +
+                "ModuleAssemblyDiscovery found no DES module assemblies. " +
                 "Ensure Architecture.Tests.csproj references at least one Modules.* project.");
         }
 

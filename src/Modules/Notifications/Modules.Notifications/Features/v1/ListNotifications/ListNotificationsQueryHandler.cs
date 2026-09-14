@@ -1,14 +1,14 @@
-using System.Collections.ObjectModel;
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Notifications.Contracts.v1.DTOs;
-using FSH.Modules.Notifications.Contracts.v1.Queries;
-using FSH.Modules.Notifications.Data;
-using FSH.Modules.Notifications.Features.v1.Internal;
+﻿using System.Collections.ObjectModel;
+using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Notifications.Contracts.v1.DTOs;
+using DES.Modules.Notifications.Contracts.v1.Queries;
+using DES.Modules.Notifications.Data;
+using DES.Modules.Notifications.Features.v1.Internal;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Notifications.Features.v1.ListNotifications;
+namespace DES.Modules.Notifications.Features.v1.ListNotifications;
 
 public sealed class ListNotificationsQueryHandler(
     NotificationsDbContext db,

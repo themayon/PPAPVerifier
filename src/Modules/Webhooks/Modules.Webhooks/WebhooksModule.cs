@@ -1,17 +1,17 @@
-using Asp.Versioning;
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Constants;
-using FSH.Framework.Web.HttpResilience;
-using FSH.Framework.Web.Modules;
-using FSH.Modules.Webhooks.Contracts.Authorization;
-using FSH.Modules.Webhooks.Data;
-using FSH.Modules.Webhooks.Features.v1.CreateWebhookSubscription;
-using FSH.Modules.Webhooks.Features.v1.DeleteWebhookSubscription;
-using FSH.Modules.Webhooks.Features.v1.GetWebhookDeliveries;
-using FSH.Modules.Webhooks.Features.v1.GetWebhookSubscriptions;
-using FSH.Modules.Webhooks.Features.v1.TestWebhookSubscription;
-using FSH.Framework.Eventing.Abstractions;
-using FSH.Modules.Webhooks.Services;
+﻿using Asp.Versioning;
+using DES.Framework.Persistence;
+using DES.Framework.Shared.Constants;
+using DES.Framework.Web.HttpResilience;
+using DES.Framework.Web.Modules;
+using DES.Modules.Webhooks.Contracts.Authorization;
+using DES.Modules.Webhooks.Data;
+using DES.Modules.Webhooks.Features.v1.CreateWebhookSubscription;
+using DES.Modules.Webhooks.Features.v1.DeleteWebhookSubscription;
+using DES.Modules.Webhooks.Features.v1.GetWebhookDeliveries;
+using DES.Modules.Webhooks.Features.v1.GetWebhookSubscriptions;
+using DES.Modules.Webhooks.Features.v1.TestWebhookSubscription;
+using DES.Framework.Eventing.Abstractions;
+using DES.Modules.Webhooks.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -21,9 +21,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using System.Net.Http;
 
-[assembly: FshModule(typeof(FSH.Modules.Webhooks.WebhooksModule), 400)]
+[assembly: DesModule(typeof(DES.Modules.Webhooks.WebhooksModule), 400)]
 
-namespace FSH.Modules.Webhooks;
+namespace DES.Modules.Webhooks;
 
 public sealed class WebhooksModule : IModule
 {

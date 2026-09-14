@@ -1,14 +1,14 @@
-using System.Collections.ObjectModel;
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Chat.Contracts.v1.DTOs;
-using FSH.Modules.Chat.Contracts.v1.Queries;
-using FSH.Modules.Chat.Data;
-using FSH.Modules.Chat.Features.v1.Internal;
+﻿using System.Collections.ObjectModel;
+using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Chat.Contracts.v1.DTOs;
+using DES.Modules.Chat.Contracts.v1.Queries;
+using DES.Modules.Chat.Data;
+using DES.Modules.Chat.Features.v1.Internal;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Chat.Features.v1.Messages.GetPinnedMessages;
+namespace DES.Modules.Chat.Features.v1.Messages.GetPinnedMessages;
 
 public sealed class GetPinnedMessagesQueryHandler(
     ChatDbContext db,

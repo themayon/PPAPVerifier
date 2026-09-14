@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { MessageCircle } from "lucide-react";
 import { listMyChannels } from "@/api/chat";
+import { useAuth } from "@/auth/use-auth";
 import { cn } from "@/lib/cn";
 
 /**
@@ -19,9 +20,12 @@ import { cn } from "@/lib/cn";
  */
 export function ChatUnreadBadge() {
   const navigate = useNavigate();
+  const { user, permissionsHydrated } = useAuth();
+  const canViewChat = user?.permissions.includes("Permissions.Chat.Channels.View") ?? false;
   const { data: channels } = useQuery({
     queryKey: ["chat", "my-channels"],
     queryFn: () => listMyChannels({ pageSize: 100 }),
+    enabled: permissionsHydrated && canViewChat,
     staleTime: 30_000,
   });
 
@@ -29,6 +33,8 @@ export function ChatUnreadBadge() {
     () => (channels ?? []).reduce((sum, c) => sum + (c.unreadCount ?? 0), 0),
     [channels],
   );
+
+  if (permissionsHydrated && !canViewChat) return null;
 
   return (
     <button

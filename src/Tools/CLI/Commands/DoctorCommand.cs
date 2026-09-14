@@ -1,28 +1,28 @@
-using System.Net.NetworkInformation;
-using FSH.CLI.Infrastructure;
+﻿using System.Net.NetworkInformation;
+using DES.CLI.Infrastructure;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace FSH.CLI.Commands;
+namespace DES.CLI.Commands;
 
 public sealed class DoctorCommand : AsyncCommand
 {
     protected override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken)
     {
-        AnsiConsole.MarkupLine($"[bold {FshConstants.AccentColor}]FSH Doctor[/] — checking your development environment");
+        AnsiConsole.MarkupLine($"[bold {DesConstants.AccentColor}]DES Doctor[/] — checking your development environment");
         AnsiConsole.WriteLine();
 
         var checks = new List<DoctorCheck>();
 
         await AnsiConsole.Status()
             .Spinner(Spinner.Known.Dots)
-            .SpinnerStyle(Style.Parse(FshConstants.AccentColor))
+            .SpinnerStyle(Style.Parse(DesConstants.AccentColor))
             .StartAsync("Running checks...", async _ =>
             {
                 checks.Add(await CheckDotNetSdkAsync(cancellationToken).ConfigureAwait(false));
                 checks.Add(await CheckGitAsync(cancellationToken).ConfigureAwait(false));
                 checks.Add(await CheckDockerAsync(cancellationToken).ConfigureAwait(false));
-                checks.Add(await CheckFshTemplateAsync(cancellationToken).ConfigureAwait(false));
+                checks.Add(await CheckDesTemplateAsync(cancellationToken).ConfigureAwait(false));
                 checks.Add(CheckPorts());
             }).ConfigureAwait(false);
 
@@ -37,9 +37,9 @@ public sealed class DoctorCommand : AsyncCommand
         {
             string statusMarkup = check.Status switch
             {
-                CheckStatus.Pass => $"[{FshConstants.SuccessColor}]PASS[/]",
-                CheckStatus.Warn => $"[{FshConstants.WarningColor}]WARN[/]",
-                CheckStatus.Fail => $"[{FshConstants.ErrorColor}]FAIL[/]",
+                CheckStatus.Pass => $"[{DesConstants.SuccessColor}]PASS[/]",
+                CheckStatus.Warn => $"[{DesConstants.WarningColor}]WARN[/]",
+                CheckStatus.Fail => $"[{DesConstants.ErrorColor}]FAIL[/]",
                 _ => "[dim]?[/]"
             };
 
@@ -54,15 +54,15 @@ public sealed class DoctorCommand : AsyncCommand
 
         if (!hasFailures && !hasWarnings)
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.SuccessColor}]All checks passed. You're ready to go![/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.SuccessColor}]All checks passed. You're ready to go![/]");
         }
         else if (hasFailures)
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.ErrorColor}]Some required tools are missing. Install them before continuing.[/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.ErrorColor}]Some required tools are missing. Install them before continuing.[/]");
         }
         else
         {
-            AnsiConsole.MarkupLine($"[{FshConstants.WarningColor}]Some optional checks need attention. See details above.[/]");
+            AnsiConsole.MarkupLine($"[{DesConstants.WarningColor}]Some optional checks need attention. See details above.[/]");
         }
 
         return hasFailures ? 1 : 0;
@@ -106,22 +106,22 @@ public sealed class DoctorCommand : AsyncCommand
         return new("Docker", CheckStatus.Pass, version.Split('\n')[0]);
     }
 
-    private static async Task<DoctorCheck> CheckFshTemplateAsync(CancellationToken cancellationToken)
+    private static async Task<DoctorCheck> CheckDesTemplateAsync(CancellationToken cancellationToken)
     {
         string? version = await NuGetClient.GetInstalledTemplateVersionAsync(cancellationToken)
             .ConfigureAwait(false);
 
         if (version is null)
-            return new("FSH Template", CheckStatus.Warn,
-                $"Not installed. Run: dotnet new install {FshConstants.TemplatePackageId}");
+            return new("DES Template", CheckStatus.Warn,
+                $"Not installed. Run: dotnet new install {DesConstants.TemplatePackageId}");
 
         string detail = char.IsDigit(version[0]) ? $"v{version}" : version;
-        return new("FSH Template", CheckStatus.Pass, detail);
+        return new("DES Template", CheckStatus.Pass, detail);
     }
 
     private static DoctorCheck CheckPorts()
     {
-        int[] ports = [FshConstants.ApiHttpPort, FshConstants.ApiHttpsPort, FshConstants.AspireDashboardPort];
+        int[] ports = [DesConstants.ApiHttpPort, DesConstants.ApiHttpsPort, DesConstants.AspireDashboardPort];
         var inUse = new List<int>();
 
         TcpConnectionInformation[] connections;

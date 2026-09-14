@@ -1,8 +1,8 @@
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Catalog.Contracts.Dtos;
+﻿using DES.Framework.Shared.Persistence;
+using DES.Modules.Catalog.Contracts.Dtos;
 using Mediator;
 
-namespace FSH.Modules.Catalog.Contracts.v1.Brands;
+namespace DES.Modules.Catalog.Contracts.v1.Brands;
 
 /// <summary>
 /// Search for brands with pagination and sorting.

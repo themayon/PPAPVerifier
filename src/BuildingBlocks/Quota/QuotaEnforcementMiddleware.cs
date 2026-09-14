@@ -1,14 +1,14 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Auditing;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Quota;
+using DES.Framework.Shared.Auditing;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Quota;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Framework.Quota;
+namespace DES.Framework.Quota;
 
 /// <summary>
 /// Per-request quota enforcement for <see cref="QuotaResource.ApiCalls"/>. Runs after auth and the

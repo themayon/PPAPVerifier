@@ -1,11 +1,11 @@
-using Finbuckle.MultiTenant;
+﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Auditing.Contracts;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Auditing.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Modules.Auditing.Persistence;
+namespace DES.Modules.Auditing.Persistence;
 
 /// <summary>
 /// Persists audit envelopes into SQL using EF Core.

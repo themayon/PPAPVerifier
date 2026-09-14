@@ -1,7 +1,7 @@
-using FSH.Framework.Core.Domain;
-using FSH.Modules.Catalog.Domain;
+﻿using DES.Framework.Core.Domain;
+using DES.Modules.Catalog.Domain;
 
-namespace FSH.Modules.Catalog.Data;
+namespace DES.Modules.Catalog.Data;
 
 /// <summary>
 /// Demo seed data for the Catalog module — a small "what a catalogue looks like"

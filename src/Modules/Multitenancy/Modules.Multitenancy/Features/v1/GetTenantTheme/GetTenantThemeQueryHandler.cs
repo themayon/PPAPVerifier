@@ -1,9 +1,9 @@
-using FSH.Modules.Multitenancy.Contracts;
-using FSH.Modules.Multitenancy.Contracts.Dtos;
-using FSH.Modules.Multitenancy.Contracts.v1.GetTenantTheme;
+﻿using DES.Modules.Multitenancy.Contracts;
+using DES.Modules.Multitenancy.Contracts.Dtos;
+using DES.Modules.Multitenancy.Contracts.v1.GetTenantTheme;
 using Mediator;
 
-namespace FSH.Modules.Multitenancy.Features.v1.GetTenantTheme;
+namespace DES.Modules.Multitenancy.Features.v1.GetTenantTheme;
 
 public sealed class GetTenantThemeQueryHandler(ITenantThemeService themeService)
     : IQueryHandler<GetTenantThemeQuery, TenantThemeDto>

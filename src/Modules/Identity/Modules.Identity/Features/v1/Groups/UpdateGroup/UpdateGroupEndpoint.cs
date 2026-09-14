@@ -1,14 +1,14 @@
-using FSH.Modules.Identity.Contracts.Authorization;
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Identity.Contracts.DTOs;
-using FSH.Modules.Identity.Contracts.v1.Groups.UpdateGroup;
+﻿using DES.Modules.Identity.Contracts.Authorization;
+using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Identity.Contracts.DTOs;
+using DES.Modules.Identity.Contracts.v1.Groups.UpdateGroup;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Identity.Features.v1.Groups.UpdateGroup;
+namespace DES.Modules.Identity.Features.v1.Groups.UpdateGroup;
 
 public static class UpdateGroupEndpoint
 {

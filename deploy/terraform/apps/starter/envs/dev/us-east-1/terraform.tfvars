@@ -59,14 +59,14 @@ db_manage_master_user_password = true
 # Container Images
 #
 # Final image refs are "<registry>/<image_name>:<tag>", e.g.
-#   ghcr.io/fullstackhero/fsh-api:<tag>
-#   ghcr.io/fullstackhero/fsh-db-migrator:<tag>
+#   ghcr.io/fullstack/fsh-api:<tag>
+#   ghcr.io/fullstack/fsh-db-migrator:<tag>
 # The tag is SHARED by both images (built together from the same commit) and must
 # be immutable. CI publishes "dev-<full-sha>"; `deploy.sh --build-api` publishes a
 # bare 12-char short SHA. Set the tag to whichever was actually pushed to GHCR.
 ################################################################################
 
-container_registry  = "ghcr.io/fullstackhero"
+container_registry  = "ghcr.io/fullstack"
 api_image_name      = "fsh-api"
 migrator_image_name = "fsh-db-migrator"
 container_image_tag = "dev-ba3e9498632df227a04a633e3573b646c9c2aa62"

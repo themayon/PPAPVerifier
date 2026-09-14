@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Auditing.Contracts.v1.GetAuditsByTrace;
+﻿using FluentValidation;
+using DES.Modules.Auditing.Contracts.v1.GetAuditsByTrace;
 
-namespace FSH.Modules.Auditing.Features.v1.GetAuditsByTrace;
+namespace DES.Modules.Auditing.Features.v1.GetAuditsByTrace;
 
 public sealed class GetAuditsByTraceQueryValidator : AbstractValidator<GetAuditsByTraceQuery>
 {

@@ -1,13 +1,13 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Persistence.Context;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Files.Domain;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Persistence.Context;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Files.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace FSH.Modules.Files.Data;
+namespace DES.Modules.Files.Data;
 
 public sealed class FilesDbContext : BaseDbContext
 {

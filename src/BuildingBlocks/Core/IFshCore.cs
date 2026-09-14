@@ -1,5 +1,5 @@
-﻿namespace FSH.Framework.Core;
+﻿namespace DES.Framework.Core;
 
-public interface IFshCore
+public interface IDesCore
 {
 }

@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Billing.Contracts.v1.Usage;
+﻿using FluentValidation;
+using DES.Modules.Billing.Contracts.v1.Usage;
 
-namespace FSH.Modules.Billing.Features.v1.Usage.CaptureUsageSnapshots;
+namespace DES.Modules.Billing.Features.v1.Usage.CaptureUsageSnapshots;
 
 public sealed class CaptureUsageSnapshotsCommandValidator : AbstractValidator<CaptureUsageSnapshotsCommand>
 {

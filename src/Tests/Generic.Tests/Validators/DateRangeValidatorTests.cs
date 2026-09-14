@@ -1,15 +1,15 @@
-using FSH.Modules.Auditing.Contracts.v1.GetAudits;
-using FSH.Modules.Auditing.Contracts.v1.GetAuditsByCorrelation;
-using FSH.Modules.Auditing.Contracts.v1.GetAuditsByTrace;
-using FSH.Modules.Auditing.Contracts.v1.GetAuditSummary;
-using FSH.Modules.Auditing.Contracts.v1.GetExceptionAudits;
-using FSH.Modules.Auditing.Contracts.v1.GetSecurityAudits;
-using FSH.Modules.Auditing.Features.v1.GetAudits;
-using FSH.Modules.Auditing.Features.v1.GetAuditsByCorrelation;
-using FSH.Modules.Auditing.Features.v1.GetAuditsByTrace;
-using FSH.Modules.Auditing.Features.v1.GetAuditSummary;
-using FSH.Modules.Auditing.Features.v1.GetExceptionAudits;
-using FSH.Modules.Auditing.Features.v1.GetSecurityAudits;
+﻿using DES.Modules.Auditing.Contracts.v1.GetAudits;
+using DES.Modules.Auditing.Contracts.v1.GetAuditsByCorrelation;
+using DES.Modules.Auditing.Contracts.v1.GetAuditsByTrace;
+using DES.Modules.Auditing.Contracts.v1.GetAuditSummary;
+using DES.Modules.Auditing.Contracts.v1.GetExceptionAudits;
+using DES.Modules.Auditing.Contracts.v1.GetSecurityAudits;
+using DES.Modules.Auditing.Features.v1.GetAudits;
+using DES.Modules.Auditing.Features.v1.GetAuditsByCorrelation;
+using DES.Modules.Auditing.Features.v1.GetAuditsByTrace;
+using DES.Modules.Auditing.Features.v1.GetAuditSummary;
+using DES.Modules.Auditing.Features.v1.GetExceptionAudits;
+using DES.Modules.Auditing.Features.v1.GetSecurityAudits;
 
 namespace Generic.Tests.Validators;
 

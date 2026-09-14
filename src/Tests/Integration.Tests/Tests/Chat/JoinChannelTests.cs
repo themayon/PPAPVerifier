@@ -1,9 +1,9 @@
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Chat.Contracts.v1.DTOs;
-using FSH.Modules.Identity.Domain;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Chat.Contracts.v1.DTOs;
+using DES.Modules.Identity.Domain;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -13,22 +13,22 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Integration.Tests.Tests.Chat;
 
 /// <summary>
-/// Covers the <c>JoinChannel</c> hub method: <see cref="FSH.Framework.Web.Realtime.AppHub.OnConnectedAsync"/>
+/// Covers the <c>JoinChannel</c> hub method: <see cref="DES.Framework.Web.Realtime.AppHub.OnConnectedAsync"/>
 /// only pre-joins channels that existed (and the user was a member of) at connect time, so a channel that
 /// becomes relevant *after* the socket is live needs an on-demand join or its group broadcasts never arrive
 /// until the page reloads. This is the root cause of "the recipient doesn't see the message until refresh".
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class JoinChannelTests
 {
     private const string ChatBasePath = "/api/v1/chat";
     private const string HubPath = "/api/v1/realtime/hub";
     private static readonly TimeSpan EventTimeout = TimeSpan.FromSeconds(5);
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public JoinChannelTests(FshWebApplicationFactory factory)
+    public JoinChannelTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);
@@ -154,7 +154,7 @@ public sealed class JoinChannelTests
             .GetAsync(TestConstants.RootTenantId);
         scope.ServiceProvider.GetRequiredService<IMultiTenantContextSetter>().MultiTenantContext =
             new MultiTenantContext<AppTenantInfo>(tenant);
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<FshUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DesUser>>();
         var user = await userManager.FindByIdAsync(registered.UserId);
         user.ShouldNotBeNull();
         if (!user!.EmailConfirmed)

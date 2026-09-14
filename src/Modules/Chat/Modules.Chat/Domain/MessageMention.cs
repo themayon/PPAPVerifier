@@ -1,6 +1,6 @@
-using FSH.Framework.Core.Domain;
+﻿using DES.Framework.Core.Domain;
 
-namespace FSH.Modules.Chat.Domain;
+namespace DES.Modules.Chat.Domain;
 
 /// <summary>
 /// A single resolved <c>@username</c> mention attached to a <see cref="Message"/>. Stores the

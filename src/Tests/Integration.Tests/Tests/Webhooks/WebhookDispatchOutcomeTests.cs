@@ -1,8 +1,8 @@
-using Finbuckle.MultiTenant;
+﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Webhooks.Data;
-using FSH.Modules.Webhooks.Services;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Webhooks.Data;
+using DES.Modules.Webhooks.Services;
 using Integration.Tests.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -18,13 +18,13 @@ namespace Integration.Tests.Tests.Webhooks;
 /// HttpClient transport on a derived factory, then invoke the job directly (bypassing Hangfire's
 /// scheduler) so the assertions are deterministic.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class WebhookDispatchOutcomeTests
 {
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public WebhookDispatchOutcomeTests(FshWebApplicationFactory factory)
+    public WebhookDispatchOutcomeTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);
@@ -159,7 +159,7 @@ public sealed class WebhookDispatchOutcomeTests
             cancellationToken: CancellationToken.None);
     }
 
-    private static async Task<FSH.Modules.Webhooks.Domain.WebhookDelivery?> ReadLatestDeliveryAsync(
+    private static async Task<DES.Modules.Webhooks.Domain.WebhookDelivery?> ReadLatestDeliveryAsync(
         WebApplicationFactory<Program> capturingFactory, Guid subscriptionId)
     {
         using var scope = capturingFactory.Services.CreateScope();

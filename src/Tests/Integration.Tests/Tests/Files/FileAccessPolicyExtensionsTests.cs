@@ -1,5 +1,5 @@
-using FSH.Modules.Files.Contracts;
-using FSH.Modules.Files.Services;
+﻿using DES.Modules.Files.Contracts;
+using DES.Modules.Files.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Integration.Tests.Tests.Files;

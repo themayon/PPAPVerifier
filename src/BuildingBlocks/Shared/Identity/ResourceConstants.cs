@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Shared.Constants;
+﻿namespace DES.Framework.Shared.Constants;
 
 public static class ResourceConstants
 {

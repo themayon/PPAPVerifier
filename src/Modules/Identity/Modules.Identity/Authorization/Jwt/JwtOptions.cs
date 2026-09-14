@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FSH.Modules.Identity.Authorization.Jwt;
+namespace DES.Modules.Identity.Authorization.Jwt;
 
 public class JwtOptions : IValidatableObject
 {

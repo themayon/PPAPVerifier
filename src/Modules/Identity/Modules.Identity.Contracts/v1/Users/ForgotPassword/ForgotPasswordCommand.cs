@@ -1,6 +1,6 @@
-using Mediator;
+﻿using Mediator;
 
-namespace FSH.Modules.Identity.Contracts.v1.Users.ForgotPassword;
+namespace DES.Modules.Identity.Contracts.v1.Users.ForgotPassword;
 
 public class ForgotPasswordCommand : ICommand<string>
 {

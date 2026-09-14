@@ -1,14 +1,14 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Billing.Contracts.Dtos;
-using FSH.Modules.Billing.Contracts.v1.Invoices;
-using FSH.Modules.Billing.Data;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Billing.Contracts.Dtos;
+using DES.Modules.Billing.Contracts.v1.Invoices;
+using DES.Modules.Billing.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Billing.Features.v1.Invoices.GetInvoices;
+namespace DES.Modules.Billing.Features.v1.Invoices.GetInvoices;
 
 public sealed class GetInvoicesQueryHandler(
     BillingDbContext dbContext,

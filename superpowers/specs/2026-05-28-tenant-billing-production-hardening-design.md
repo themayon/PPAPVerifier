@@ -266,7 +266,7 @@ user IDs (dashboard banner covers the logged-in case via pull).
 
 ## Docs (golden rule #10)
 
-Update the separate docs repo (`github.com/fullstackhero/docs`) + changelog once behavior lands:
+Update the separate docs repo (`github.com/fullstack/docs`) + changelog once behavior lands:
 new config key `Billing:ExpiryNotificationLeadDays`; new endpoints (`tenants/me/status`,
 `tenants/{id}/adjust-validity`, invoice `/pdf` x2); the **QuestPDF license note** for downstream
 commercial users; the dashboard subscription page + expiry banner; expiry/renewal emails.

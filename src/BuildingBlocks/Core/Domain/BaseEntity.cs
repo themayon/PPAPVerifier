@@ -1,4 +1,4 @@
-﻿namespace FSH.Framework.Core.Domain;
+﻿namespace DES.Framework.Core.Domain;
 
 /// <summary>
 /// Provides a base implementation for entities with identity and domain events.

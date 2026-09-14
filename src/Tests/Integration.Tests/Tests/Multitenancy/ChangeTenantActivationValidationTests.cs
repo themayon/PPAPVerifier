@@ -1,4 +1,4 @@
-#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
+﻿#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
 #pragma warning disable S3459 // Unassigned members — populated by JSON deserialization
 using System.Text.Json;
 using Integration.Tests.Infrastructure;
@@ -14,7 +14,7 @@ namespace Integration.Tests.Tests.Multitenancy;
 /// tenant — the branches in the validator/handler/TenantService that produce error
 /// or terminal results.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class ChangeTenantActivationValidationTests
 {
     private static readonly JsonSerializerOptions Json = new()
@@ -23,10 +23,10 @@ public sealed class ChangeTenantActivationValidationTests
         PropertyNameCaseInsensitive = true,
     };
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public ChangeTenantActivationValidationTests(FshWebApplicationFactory factory)
+    public ChangeTenantActivationValidationTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

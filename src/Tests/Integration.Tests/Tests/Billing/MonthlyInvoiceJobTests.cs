@@ -1,10 +1,10 @@
-using Finbuckle.MultiTenant;
+﻿using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Billing.Contracts;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Domain;
-using FSH.Modules.Billing.Services;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Billing.Contracts;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Domain;
+using DES.Modules.Billing.Services;
 using Integration.Tests.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,15 +19,15 @@ namespace Integration.Tests.Tests.Billing;
 /// (UtcNow - 1 month). We then assert a draft invoice was generated for that period and that a second
 /// run is idempotent.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class MonthlyInvoiceJobTests
 {
     private const string BillingBasePath = "/api/v1/billing";
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public MonthlyInvoiceJobTests(FshWebApplicationFactory factory)
+    public MonthlyInvoiceJobTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

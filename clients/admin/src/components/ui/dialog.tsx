@@ -1,10 +1,10 @@
-import * as React from "react";
+﻿import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * Dialog primitives — Radix-based, styled to the FSH design system.
+ * Dialog primitives — Radix-based, styled to the DES design system.
  * Usage:
  *   <Dialog open={open} onOpenChange={setOpen}>
  *     <DialogContent>

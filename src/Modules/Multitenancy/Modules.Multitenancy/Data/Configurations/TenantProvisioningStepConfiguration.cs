@@ -1,9 +1,9 @@
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Multitenancy.Provisioning;
+﻿using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Multitenancy.Provisioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FSH.Modules.Multitenancy.Data.Configurations;
+namespace DES.Modules.Multitenancy.Data.Configurations;
 
 public class TenantProvisioningStepConfiguration : IEntityTypeConfiguration<TenantProvisioningStep>
 {

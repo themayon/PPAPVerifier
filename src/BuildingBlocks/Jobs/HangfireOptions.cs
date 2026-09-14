@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace FSH.Framework.Jobs;
+namespace DES.Framework.Jobs;
 
 public sealed class HangfireOptions
 {

@@ -1,8 +1,8 @@
-using Hangfire.Common;
+﻿using Hangfire.Common;
 using Hangfire.Server;
 using System.Diagnostics;
 
-namespace FSH.Framework.Jobs;
+namespace DES.Framework.Jobs;
 
 /// <summary>
 /// Adds basic tracing around Hangfire job execution.
@@ -10,7 +10,7 @@ namespace FSH.Framework.Jobs;
 public sealed class HangfireTelemetryFilter : JobFilterAttribute, IServerFilter
 {
     private const string ActivityKey = "__fsh_activity";
-    private static readonly ActivitySource ActivitySource = new("FSH.Hangfire");
+    private static readonly ActivitySource ActivitySource = new("DES.Hangfire");
 
     public void OnPerforming(PerformingContext context)
     {

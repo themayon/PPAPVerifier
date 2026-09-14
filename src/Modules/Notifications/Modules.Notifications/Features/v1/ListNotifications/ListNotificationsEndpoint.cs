@@ -1,12 +1,12 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Notifications.Contracts.Authorization;
-using FSH.Modules.Notifications.Contracts.v1.Queries;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Notifications.Contracts.Authorization;
+using DES.Modules.Notifications.Contracts.v1.Queries;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Notifications.Features.v1.ListNotifications;
+namespace DES.Modules.Notifications.Features.v1.ListNotifications;
 
 public static class ListNotificationsEndpoint
 {

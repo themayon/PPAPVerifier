@@ -41,7 +41,7 @@ test.describe("settings/api-keys — placeholder", () => {
     const popupPromise = context.waitForEvent("page");
     await page.getByRole("button", { name: /view roadmap/i }).click();
     const popup = await popupPromise;
-    expect(popup.url()).toContain("github.com/fullstackhero/dotnet-starter-kit");
+    expect(popup.url()).toContain("github.com/fullstack/dotnet-starter-kit");
     await popup.close();
   });
 });

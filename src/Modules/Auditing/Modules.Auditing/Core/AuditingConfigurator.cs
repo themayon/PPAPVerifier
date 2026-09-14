@@ -1,8 +1,8 @@
-// Add this hosted service class once in your auditing module
-using FSH.Modules.Auditing.Contracts;
+﻿// Add this hosted service class once in your auditing module
+using DES.Modules.Auditing.Contracts;
 using Microsoft.Extensions.Hosting;
 
-namespace FSH.Modules.Auditing;
+namespace DES.Modules.Auditing;
 
 public sealed class AuditingConfigurator : IHostedService
 {

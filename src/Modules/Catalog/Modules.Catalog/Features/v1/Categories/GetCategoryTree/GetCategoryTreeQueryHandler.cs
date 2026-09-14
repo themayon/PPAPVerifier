@@ -1,11 +1,11 @@
-using FSH.Modules.Catalog.Contracts.Dtos;
-using FSH.Modules.Catalog.Contracts.v1.Categories;
-using FSH.Modules.Catalog.Data;
-using FSH.Modules.Catalog.Domain;
+﻿using DES.Modules.Catalog.Contracts.Dtos;
+using DES.Modules.Catalog.Contracts.v1.Categories;
+using DES.Modules.Catalog.Data;
+using DES.Modules.Catalog.Domain;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Categories.GetCategoryTree;
+namespace DES.Modules.Catalog.Features.v1.Categories.GetCategoryTree;
 
 public sealed class GetCategoryTreeQueryHandler(CatalogDbContext dbContext)
     : IQueryHandler<GetCategoryTreeQuery, IReadOnlyList<CategoryTreeNodeDto>>

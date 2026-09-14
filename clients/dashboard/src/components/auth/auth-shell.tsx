@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import { ShieldCheck } from "lucide-react";
 
 // ────────────────────────────────────────────────────────────────────────
 // AuthShell — calm centered-card chrome for unauthenticated pages
 // (forgot-password, reset-password, confirm-email). Mirrors login.tsx's
-// dentalOS vocabulary: atmospheric rose+saffron orbs, Outfit "fullstackhero"
+// dentalOS vocabulary: atmospheric rose+saffron orbs, Outfit "FullStack"
 // brand lockup, warm-paper card with backdrop blur. No parallax, no
 // brackets, no graph paper, no dialog-script eyebrow.
 // ────────────────────────────────────────────────────────────────────────
@@ -63,16 +63,16 @@ export function AuthShell({
 
       {/* Card column */}
       <div className="relative z-10 w-full max-w-[420px] fsh-enter fsh-enter-1">
-        {/* Brand lockup — FSH logo + Outfit wordmark + .NET 10 caption */}
+        {/* Brand lockup — DES logo + Outfit wordmark + .NET 10 caption */}
         <div className="mb-8 flex flex-col items-center">
           <div className="flex items-center gap-2.5">
-            <img
+            {/* <img
               src="/logo-fullstackhero.png"
-              alt="fullstackhero"
+              alt="FullStack"
               className="size-9 object-contain"
-            />
+            /> */}
             <span className="font-display text-[26px] font-semibold tracking-tight text-[var(--color-foreground)]">
-              fullstack<span className="text-[var(--color-primary)]">hero</span>
+              Full<span className="text-[var(--color-primary)]">Stack</span>
             </span>
           </div>
           <div className="mt-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[oklch(from_var(--color-muted-foreground)_l_c_h_/_0.7)]">
@@ -98,7 +98,7 @@ export function AuthShell({
           <span>Encrypted in transit · JWT-secured session</span>
         </div>
         <p className="mt-4 text-center text-[10px] font-medium uppercase tracking-wider text-[oklch(from_var(--color-muted-foreground)_l_c_h_/_0.5)]">
-          fullstackhero Administration
+          FullStack Administration
         </p>
       </div>
     </div>

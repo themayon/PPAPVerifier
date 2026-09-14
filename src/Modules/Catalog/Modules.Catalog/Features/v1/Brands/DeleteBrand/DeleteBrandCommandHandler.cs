@@ -1,10 +1,10 @@
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Catalog.Contracts.v1.Brands;
-using FSH.Modules.Catalog.Data;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Modules.Catalog.Contracts.v1.Brands;
+using DES.Modules.Catalog.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Brands.DeleteBrand;
+namespace DES.Modules.Catalog.Features.v1.Brands.DeleteBrand;
 
 public sealed class DeleteBrandCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<DeleteBrandCommand, Unit>

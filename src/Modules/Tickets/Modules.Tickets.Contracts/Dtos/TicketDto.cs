@@ -1,4 +1,4 @@
-namespace FSH.Modules.Tickets.Contracts.Dtos;
+﻿namespace DES.Modules.Tickets.Contracts.Dtos;
 
 /// <summary>
 /// Read-side projection of a ticket. Includes resolution metadata

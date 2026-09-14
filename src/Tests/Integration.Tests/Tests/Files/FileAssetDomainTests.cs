@@ -1,8 +1,8 @@
-using FSH.Framework.Core.Domain;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Files.Contracts.v1.DTOs;
-using FSH.Modules.Files.Domain;
-using FSH.Modules.Files.Domain.Events;
+﻿using DES.Framework.Core.Domain;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Files.Contracts.v1.DTOs;
+using DES.Modules.Files.Domain;
+using DES.Modules.Files.Domain.Events;
 
 namespace Integration.Tests.Tests.Files;
 

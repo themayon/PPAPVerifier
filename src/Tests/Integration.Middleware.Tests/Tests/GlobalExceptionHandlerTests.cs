@@ -1,10 +1,10 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using Integration.Middleware.Tests.Infrastructure;
 
 namespace Integration.Middleware.Tests.Tests;
 
 /// <summary>
-/// Exercises the production <see cref="FSH.Framework.Web.Exceptions.GlobalExceptionHandler"/>
+/// Exercises the production <see cref="DES.Framework.Web.Exceptions.GlobalExceptionHandler"/>
 /// end-to-end by hitting an endpoint that throws a raw exception. Because this assembly does NOT
 /// swap in a test exception handler, the response is the real RFC 9457 ProblemDetails the API
 /// would return in production.

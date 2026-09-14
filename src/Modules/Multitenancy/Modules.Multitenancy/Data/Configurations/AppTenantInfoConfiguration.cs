@@ -1,11 +1,11 @@
-using System.Text.Json;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Quota;
+﻿using System.Text.Json;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Quota;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FSH.Modules.Multitenancy.Data.Configurations;
+namespace DES.Modules.Multitenancy.Data.Configurations;
 
 public class AppTenantInfoConfiguration : IEntityTypeConfiguration<AppTenantInfo>
 {

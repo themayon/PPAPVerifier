@@ -1,8 +1,8 @@
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Billing.Contracts.Dtos;
+﻿using DES.Framework.Shared.Persistence;
+using DES.Modules.Billing.Contracts.Dtos;
 using Mediator;
 
-namespace FSH.Modules.Billing.Contracts.v1.Invoices;
+namespace DES.Modules.Billing.Contracts.v1.Invoices;
 
 public sealed record GetMyInvoicesQuery(
     InvoiceStatus? Status = null,

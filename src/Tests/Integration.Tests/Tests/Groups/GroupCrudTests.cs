@@ -1,14 +1,14 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Groups;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class GroupCrudTests
 {
     private readonly AuthHelper _auth;
 
-    public GroupCrudTests(FshWebApplicationFactory factory)
+    public GroupCrudTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

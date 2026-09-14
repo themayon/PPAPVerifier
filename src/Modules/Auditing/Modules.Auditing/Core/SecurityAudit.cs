@@ -1,6 +1,6 @@
-using FSH.Modules.Auditing.Contracts;
+﻿using DES.Modules.Auditing.Contracts;
 
-namespace FSH.Modules.Auditing;
+namespace DES.Modules.Auditing;
 
 public sealed class SecurityAudit : ISecurityAudit
 {

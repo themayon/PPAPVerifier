@@ -1,8 +1,8 @@
-using FSH.Modules.Auditing.Contracts;
+﻿using DES.Modules.Auditing.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace FSH.Modules.Auditing.Persistence;
+namespace DES.Modules.Auditing.Persistence;
 
 /// <summary>
 /// Builds property-level diffs for EF Core entries. Skips navigations by default.

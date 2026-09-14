@@ -1,6 +1,6 @@
-using Mediator;
+﻿using Mediator;
 
-namespace FSH.Modules.Catalog.Contracts.v1.Products.ReorderProductImages;
+namespace DES.Modules.Catalog.Contracts.v1.Products.ReorderProductImages;
 
 /// <summary>
 /// Reorder the product's images. Ids in <paramref name="OrderedImageIds"/> are set to

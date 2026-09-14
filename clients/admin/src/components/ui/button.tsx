@@ -1,10 +1,10 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 /**
- * Button — FSH unified design system.
+ * Button — DES unified design system.
  *
  * Variants (preserved + extended):
  *   • default     — solid primary brand fill with hover lift shadow.

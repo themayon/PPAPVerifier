@@ -1,14 +1,14 @@
-using FSH.Modules.Auditing.Contracts.Authorization;
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Modules.Auditing.Contracts.Dtos;
-using FSH.Modules.Auditing.Contracts.v1.GetSecurityAudits;
+﻿using DES.Modules.Auditing.Contracts.Authorization;
+using DES.Framework.Shared.Identity.Authorization;
+using DES.Modules.Auditing.Contracts.Dtos;
+using DES.Modules.Auditing.Contracts.v1.GetSecurityAudits;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Auditing.Features.v1.GetSecurityAudits;
+namespace DES.Modules.Auditing.Features.v1.GetSecurityAudits;
 
 public static class GetSecurityAuditsEndpoint
 {

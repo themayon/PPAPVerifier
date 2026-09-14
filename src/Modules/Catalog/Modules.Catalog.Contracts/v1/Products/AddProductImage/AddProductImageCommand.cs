@@ -1,7 +1,7 @@
-using FSH.Modules.Catalog.Contracts.Dtos;
+﻿using DES.Modules.Catalog.Contracts.Dtos;
 using Mediator;
 
-namespace FSH.Modules.Catalog.Contracts.v1.Products.AddProductImage;
+namespace DES.Modules.Catalog.Contracts.v1.Products.AddProductImage;
 
 /// <summary>
 /// Attach an image to a product. <paramref name="Url"/> is the durable public URL (typically the

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using FSH.Modules.Identity.Contracts.v1.Users.ResetPassword;
+using DES.Modules.Identity.Contracts.v1.Users.ResetPassword;
 
-namespace FSH.Modules.Identity.Features.v1.Users.ResetPassword;
+namespace DES.Modules.Identity.Features.v1.Users.ResetPassword;
 
 public sealed class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
 {

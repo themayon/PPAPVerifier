@@ -1,4 +1,4 @@
-namespace FSH.Modules.Multitenancy.Contracts.v1.RenewTenant;
+﻿namespace DES.Modules.Multitenancy.Contracts.v1.RenewTenant;
 
 public sealed record RenewTenantCommandResponse(
     string TenantId,

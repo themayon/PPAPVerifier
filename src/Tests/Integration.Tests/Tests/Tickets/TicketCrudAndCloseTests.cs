@@ -1,4 +1,4 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Tickets;
@@ -9,12 +9,12 @@ namespace Integration.Tests.Tests.Tickets;
 /// These honor the previously-dangling Tickets.Close/Update/Delete permissions and complete
 /// the trash/restore round-trip that ListTrashed + Restore implied but had no entry point for.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class TicketCrudAndCloseTests
 {
     private readonly AuthHelper _auth;
 
-    public TicketCrudAndCloseTests(FshWebApplicationFactory factory)
+    public TicketCrudAndCloseTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

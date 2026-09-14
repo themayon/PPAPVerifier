@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Catalog.Contracts.v1.Products.ReorderProductImages;
+﻿using FluentValidation;
+using DES.Modules.Catalog.Contracts.v1.Products.ReorderProductImages;
 
-namespace FSH.Modules.Catalog.Features.v1.Products.ReorderProductImages;
+namespace DES.Modules.Catalog.Features.v1.Products.ReorderProductImages;
 
 public sealed class ReorderProductImagesCommandValidator : AbstractValidator<ReorderProductImagesCommand>
 {

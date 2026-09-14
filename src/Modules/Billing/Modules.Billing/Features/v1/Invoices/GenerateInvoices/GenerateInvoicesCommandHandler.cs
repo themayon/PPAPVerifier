@@ -1,11 +1,11 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Billing.Contracts.v1.Invoices;
-using FSH.Modules.Billing.Services;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Billing.Contracts.v1.Invoices;
+using DES.Modules.Billing.Services;
 using Mediator;
 
-namespace FSH.Modules.Billing.Features.v1.Invoices.GenerateInvoices;
+namespace DES.Modules.Billing.Features.v1.Invoices.GenerateInvoices;
 
 public sealed class GenerateInvoicesCommandHandler(
     IBillingService billing,

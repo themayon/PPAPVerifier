@@ -1,6 +1,6 @@
-using System.Diagnostics.Metrics;
+﻿using System.Diagnostics.Metrics;
 
-namespace FSH.Framework.Eventing.Telemetry;
+namespace DES.Framework.Eventing.Telemetry;
 
 /// <summary>
 /// OpenTelemetry metrics for the eventing building block. Register with
@@ -9,7 +9,7 @@ namespace FSH.Framework.Eventing.Telemetry;
 public static class EventingTelemetry
 {
     /// <summary>Name of the <see cref="Meter"/> used for eventing metrics.</summary>
-    public const string MeterName = "FSH.Eventing";
+    public const string MeterName = "DES.Eventing";
 
     internal static readonly Meter Meter = new(MeterName);
 

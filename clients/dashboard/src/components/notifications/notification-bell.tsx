@@ -9,6 +9,7 @@ import {
   markNotificationRead,
   type NotificationDto,
 } from "@/api/notifications";
+import { useAuth } from "@/auth/use-auth";
 import { useRealtimeEvent } from "@/realtime/realtime-context";
 import {
   DropdownMenu,
@@ -29,17 +30,20 @@ export function NotificationBell() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user, permissionsHydrated } = useAuth();
+  const canViewNotifications = user?.permissions.includes("Permissions.Notifications.Inbox.View") ?? false;
 
   const unreadQuery = useQuery({
     queryKey: ["notifications", "unread-count"],
     queryFn: getUnreadCount,
+    enabled: permissionsHydrated && canViewNotifications,
     staleTime: 30_000,
   });
 
   const inboxQuery = useQuery({
     queryKey: ["notifications", "inbox"],
     queryFn: () => listNotifications({ pageSize: 30 }),
-    enabled: open,
+    enabled: open && permissionsHydrated && canViewNotifications,
     staleTime: 0,
   });
 
@@ -75,6 +79,8 @@ export function NotificationBell() {
 
   const unread = unreadQuery.data ?? 0;
   const inbox = inboxQuery.data ?? [];
+
+  if (permissionsHydrated && !canViewNotifications) return null;
 
   const onItemSelect = (n: NotificationDto) => {
     if (!n.readAtUtc) markOneMutation.mutate(n.id);

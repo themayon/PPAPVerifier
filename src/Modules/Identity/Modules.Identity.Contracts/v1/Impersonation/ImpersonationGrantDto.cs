@@ -1,6 +1,6 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace FSH.Modules.Identity.Contracts.v1.Impersonation;
+namespace DES.Modules.Identity.Contracts.v1.Impersonation;
 
 public sealed record ImpersonationGrantDto(
     Guid Id,

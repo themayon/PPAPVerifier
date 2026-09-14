@@ -1,4 +1,4 @@
-name: Backend CI
+﻿name: Backend CI
 
 # Backend pipeline. Only does real work when backend code changed (src/**,
 # central build props, global.json, coverage settings, or this file). A
@@ -74,24 +74,24 @@ jobs:
           restore-keys: ${{ runner.os }}-nuget-
 
       - name: Restore
-        run: dotnet restore src/FSH.Starter.slnx
+        run: dotnet restore src/DES.Starter.slnx
 
       - name: Build
-        run: dotnet build src/FSH.Starter.slnx -c Release --no-restore -warnaserror
+        run: dotnet build src/DES.Starter.slnx -c Release --no-restore -warnaserror
 
       # Gate on DIRECT vulnerable packages (the ones we control). Transitive
       # advisories are surfaced but not blocking — they often can't be fixed
       # without an upstream bump.
       - name: Audit dependencies for known vulnerabilities
         run: |
-          if dotnet list src/FSH.Starter.slnx package --vulnerable 2>&1 | tee vuln-direct.txt | grep -q 'has the following vulnerable'; then
+          if dotnet list src/DES.Starter.slnx package --vulnerable 2>&1 | tee vuln-direct.txt | grep -q 'has the following vulnerable'; then
             echo "::error::Direct package(s) with known vulnerabilities detected — see log."
             cat vuln-direct.txt
             exit 1
           fi
           echo "No direct vulnerable packages."
           echo "::group::Transitive advisories (informational)"
-          dotnet list src/FSH.Starter.slnx package --vulnerable --include-transitive 2>&1 | tee vuln-transitive.txt || true
+          dotnet list src/DES.Starter.slnx package --vulnerable --include-transitive 2>&1 | tee vuln-transitive.txt || true
           echo "::endgroup::"
 
       - name: Run unit tests with coverage
@@ -143,7 +143,7 @@ jobs:
           restore-keys: ${{ runner.os }}-nuget-
 
       - name: Restore
-        run: dotnet restore src/FSH.Starter.slnx
+        run: dotnet restore src/DES.Starter.slnx
 
       # Integration tests build a host with WebApplicationFactory + Testcontainers.
       # Middleware tests live in a separate assembly (own process) because a 2nd
@@ -212,7 +212,7 @@ jobs:
 
       - name: Publish DbMigrator container (local daemon)
         run: |
-          dotnet publish src/Host/FSH.Starter.DbMigrator/FSH.Starter.DbMigrator.csproj \
+          dotnet publish src/Host/DES.Starter.DbMigrator/DES.Starter.DbMigrator.csproj \
             -c Release -r linux-x64 \
             /t:PublishContainer \
             -p:ContainerRepository=fsh-db-migrator \
@@ -223,7 +223,7 @@ jobs:
           docker run --rm --network host \
             -e DatabaseOptions__Provider=POSTGRESQL \
             -e DatabaseOptions__ConnectionString="Host=localhost;Port=5432;Database=fsh_migrator_smoke;Username=postgres;Password=migrator_smoke_pwd" \
-            -e DatabaseOptions__MigrationsAssembly=FSH.Starter.Migrations.PostgreSQL \
+            -e DatabaseOptions__MigrationsAssembly=DES.Starter.Migrations.PostgreSQL \
             fsh-db-migrator:smoke apply --catalog-only \
             | tee migrator.log
           grep -q "finished successfully" migrator.log
@@ -311,7 +311,7 @@ jobs:
 
       - name: Publish API container image
         run: |
-          dotnet publish src/Host/FSH.Starter.Api/FSH.Starter.Api.csproj \
+          dotnet publish src/Host/DES.Starter.Api/DES.Starter.Api.csproj \
             -c Release -r linux-x64 \
             /t:PublishContainer \
             -p:ContainerRegistry=ghcr.io \
@@ -320,7 +320,7 @@ jobs:
 
       - name: Publish DbMigrator container image
         run: |
-          dotnet publish src/Host/FSH.Starter.DbMigrator/FSH.Starter.DbMigrator.csproj \
+          dotnet publish src/Host/DES.Starter.DbMigrator/DES.Starter.DbMigrator.csproj \
             -c Release -r linux-x64 \
             /t:PublishContainer \
             -p:ContainerRegistry=ghcr.io \
@@ -366,8 +366,8 @@ jobs:
 
       - name: Restore and Build with version
         run: |
-          dotnet restore src/FSH.Starter.slnx
-          dotnet build src/FSH.Starter.slnx -c Release --no-restore -p:Version=${{ steps.version.outputs.version }}
+          dotnet restore src/DES.Starter.slnx
+          dotnet build src/DES.Starter.slnx -c Release --no-restore -p:Version=${{ steps.version.outputs.version }}
 
       # Distribution model is source-ownership: consumers get the FULL source via the
       # `dotnet new fsh` template (below), NOT per-module/BuildingBlocks NuGet packages.
@@ -375,7 +375,7 @@ jobs:
       # (The previous per-module packs were incomplete — 4 of 10 modules — and contradicted
       # the locked source-ownership model, so they were removed.)
       - name: Pack CLI Tool
-        run: dotnet pack src/Tools/CLI/FSH.CLI.csproj -c Release --no-build -o ./nupkgs -p:PackageVersion=${{ steps.version.outputs.version }}
+        run: dotnet pack src/Tools/CLI/DES.CLI.csproj -c Release --no-build -o ./nupkgs -p:PackageVersion=${{ steps.version.outputs.version }}
 
       # The dotnet new template package — the primary distribution artifact. Packs the
       # repo (with its root .template.config) so consumers can `dotnet new install` then
@@ -395,7 +395,7 @@ jobs:
 
       - name: Build and push API container
         run: |
-          dotnet publish src/Host/FSH.Starter.Api/FSH.Starter.Api.csproj \
+          dotnet publish src/Host/DES.Starter.Api/DES.Starter.Api.csproj \
             -c Release -r linux-x64 \
             /t:PublishContainer \
             -p:ContainerRegistry=ghcr.io \
@@ -404,7 +404,7 @@ jobs:
 
       - name: Build and push DbMigrator container
         run: |
-          dotnet publish src/Host/FSH.Starter.DbMigrator/FSH.Starter.DbMigrator.csproj \
+          dotnet publish src/Host/DES.Starter.DbMigrator/DES.Starter.DbMigrator.csproj \
             -c Release -r linux-x64 \
             /t:PublishContainer \
             -p:ContainerRegistry=ghcr.io \

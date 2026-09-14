@@ -1,4 +1,4 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Tickets;
@@ -8,12 +8,12 @@ namespace Integration.Tests.Tests.Tickets;
 /// lifecycle guards (idempotent resolve/reopen, illegal-transition 409s)
 /// plus create-validation 400s — none of which the base suite exercised.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class TicketSearchAndLifecycleTests
 {
     private readonly AuthHelper _auth;
 
-    public TicketSearchAndLifecycleTests(FshWebApplicationFactory factory)
+    public TicketSearchAndLifecycleTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

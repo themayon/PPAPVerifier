@@ -1,16 +1,16 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Common;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Eventing.Outbox;
-using FSH.Framework.Jobs.Services;
-using FSH.Framework.Mailing;
-using FSH.Framework.Mailing.Services;
-using FSH.Framework.Shared.Constants;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Identity.Contracts.Events;
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Data;
-using FSH.Modules.Identity.Domain;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Core.Common;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Eventing.Outbox;
+using DES.Framework.Jobs.Services;
+using DES.Framework.Mailing;
+using DES.Framework.Mailing.Services;
+using DES.Framework.Shared.Constants;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Identity.Contracts.Events;
+using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Data;
+using DES.Modules.Identity.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +20,10 @@ using System.Net;
 using System.Security.Claims;
 using System.Text;
 
-namespace FSH.Modules.Identity.Services;
+namespace DES.Modules.Identity.Services;
 
 internal sealed class UserRegistrationService(
-    UserManager<FshUser> userManager,
+    UserManager<DesUser> userManager,
     IdentityDbContext db,
     IJobService jobService,
     IMailService mailService,
@@ -169,13 +169,13 @@ internal sealed class UserRegistrationService(
             ?? throw new CustomException("Email claim is required for external authentication.");
     }
 
-    private async Task<FshUser> CreateUserFromPrincipalAsync(ClaimsPrincipal principal, string email)
+    private async Task<DesUser> CreateUserFromPrincipalAsync(ClaimsPrincipal principal, string email)
     {
         var (firstName, lastName, userName) = ExtractUserInfoFromPrincipal(principal, email);
 
         userName = await EnsureUniqueUserNameAsync(userName);
 
-        var user = new FshUser
+        var user = new DesUser
         {
             Email = email,
             UserName = userName,
@@ -237,7 +237,7 @@ internal sealed class UserRegistrationService(
         }
     }
 
-    private async Task<FshUser> CreateUserWithPasswordAsync(
+    private async Task<DesUser> CreateUserWithPasswordAsync(
         string firstName,
         string lastName,
         string email,
@@ -245,7 +245,7 @@ internal sealed class UserRegistrationService(
         string password,
         string phoneNumber)
     {
-        var user = new FshUser
+        var user = new DesUser
         {
             Email = email,
             FirstName = firstName,
@@ -274,7 +274,7 @@ internal sealed class UserRegistrationService(
     }
 
     private async Task AssignDefaultRoleAndGroupsAsync(
-        FshUser user,
+        DesUser user,
         string source,
         CancellationToken cancellationToken = default)
     {
@@ -296,7 +296,7 @@ internal sealed class UserRegistrationService(
         }
     }
 
-    private async Task SendConfirmationEmailAsync(FshUser user, string origin, CancellationToken cancellationToken)
+    private async Task SendConfirmationEmailAsync(DesUser user, string origin, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(user.Email))
         {
@@ -315,7 +315,7 @@ internal sealed class UserRegistrationService(
     }
 
     private async Task PublishUserRegisteredAsync(
-        FshUser user,
+        DesUser user,
         string source,
         CancellationToken cancellationToken = default)
     {
@@ -338,7 +338,7 @@ internal sealed class UserRegistrationService(
         await outboxStore.AddAsync(integrationEvent, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task<string> GetEmailVerificationUriAsync(FshUser user, string origin)
+    private async Task<string> GetEmailVerificationUriAsync(DesUser user, string origin)
     {
         EnsureValidTenant();
 

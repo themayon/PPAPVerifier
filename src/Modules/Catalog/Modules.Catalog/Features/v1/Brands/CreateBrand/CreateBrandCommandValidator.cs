@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Catalog.Contracts.v1.Brands;
+﻿using FluentValidation;
+using DES.Modules.Catalog.Contracts.v1.Brands;
 
-namespace FSH.Modules.Catalog.Features.v1.Brands.CreateBrand;
+namespace DES.Modules.Catalog.Features.v1.Brands.CreateBrand;
 
 public sealed class CreateBrandCommandValidator : AbstractValidator<CreateBrandCommand>
 {

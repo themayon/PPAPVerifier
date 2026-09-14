@@ -1,6 +1,6 @@
-using FSH.Framework.Eventing.Persistence;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
+﻿using DES.Framework.Eventing.Persistence;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
 using Microsoft.Data.Sqlite;
@@ -35,7 +35,7 @@ internal static class EventingTestContext
         {
             Provider = "postgresql",
             ConnectionString = string.Empty,
-            MigrationsAssembly = "FSH.Starter.Migrations.PostgreSQL",
+            MigrationsAssembly = "DES.Starter.Migrations.PostgreSQL",
         });
 
         var environment = Substitute.For<IHostEnvironment>();

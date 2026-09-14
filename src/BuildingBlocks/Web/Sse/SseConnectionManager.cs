@@ -1,8 +1,8 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Threading.Channels;
 using Microsoft.Extensions.Logging;
 
-namespace FSH.Framework.Web.Sse;
+namespace DES.Framework.Web.Sse;
 
 /// <summary>
 /// Manages active SSE connections keyed by a per-connection <see cref="Guid"/> so a single user with

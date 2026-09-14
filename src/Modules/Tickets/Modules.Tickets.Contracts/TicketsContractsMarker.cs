@@ -1,4 +1,4 @@
-namespace FSH.Modules.Tickets.Contracts;
+﻿namespace DES.Modules.Tickets.Contracts;
 
 /// <summary>
 /// Anchor type used to register this assembly with Mediator without

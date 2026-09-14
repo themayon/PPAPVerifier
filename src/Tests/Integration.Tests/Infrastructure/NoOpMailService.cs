@@ -1,6 +1,6 @@
-using System.Collections.Concurrent;
-using FSH.Framework.Mailing;
-using FSH.Framework.Mailing.Services;
+﻿using System.Collections.Concurrent;
+using DES.Framework.Mailing;
+using DES.Framework.Mailing.Services;
 
 namespace Integration.Tests.Infrastructure;
 

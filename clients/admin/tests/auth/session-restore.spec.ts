@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+﻿import { expect, test, type Page } from "@playwright/test";
 
 // Regression: a stale, EXPIRED access token left in localStorage must NOT make
 // the admin app treat you as signed in. The auth provider attempts ONE silent
@@ -10,10 +10,10 @@ import { expect, test, type Page } from "@playwright/test";
 // Before the fix the app rendered as authenticated off the expired token alone
 // (isAuthenticated was gated on token presence, not `exp`).
 
-const ACCESS_KEY = "fsh.admin.accessToken";
-const REFRESH_KEY = "fsh.admin.refreshToken";
-const TENANT_KEY = "fsh.admin.tenant";
-const PERMS_KEY = "fsh.admin.permissions";
+const ACCESS_KEY = "des.admin.accessToken";
+const REFRESH_KEY = "des.admin.refreshToken";
+const TENANT_KEY = "des.admin.tenant";
+const PERMS_KEY = "des.admin.permissions";
 
 function fakeJwt(payload: Record<string, unknown>): string {
   const b64url = (obj: unknown) =>

@@ -1,16 +1,16 @@
-using FSH.Framework.Core.Context;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Storage.Services;
-using FSH.Modules.Files.Contracts;
-using FSH.Modules.Files.Contracts.v1.DTOs;
-using FSH.Modules.Files.Contracts.v1.Queries;
-using FSH.Modules.Files.Data;
-using FSH.Modules.Files.Services;
+﻿using DES.Framework.Core.Context;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Storage.Services;
+using DES.Modules.Files.Contracts;
+using DES.Modules.Files.Contracts.v1.DTOs;
+using DES.Modules.Files.Contracts.v1.Queries;
+using DES.Modules.Files.Data;
+using DES.Modules.Files.Services;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace FSH.Modules.Files.Features.v1.GetFileDownloadUrl;
+namespace DES.Modules.Files.Features.v1.GetFileDownloadUrl;
 
 public sealed class GetFileDownloadUrlQueryHandler(
     FilesDbContext db,

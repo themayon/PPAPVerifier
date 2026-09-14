@@ -1,13 +1,13 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Billing.Contracts;
-using FSH.Modules.Billing.Contracts.Dtos;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Domain;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
+using DES.Modules.Billing.Contracts;
+using DES.Modules.Billing.Contracts.Dtos;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Domain;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
@@ -19,7 +19,7 @@ namespace Integration.Tests.Tests.Billing;
 ///   POST /api/v1/billing/wallet/topup-requests/{id}/approve
 ///   POST /api/v1/billing/wallet/topup-requests/{id}/reject
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class TopupApprovalTests
 {
     private const string BillingBasePath = "/api/v1/billing";
@@ -31,10 +31,10 @@ public sealed class TopupApprovalTests
         Converters = { new JsonStringEnumConverter() }
     };
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public TopupApprovalTests(FshWebApplicationFactory factory)
+    public TopupApprovalTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

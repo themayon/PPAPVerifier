@@ -1,7 +1,7 @@
-using Hangfire;
+﻿using Hangfire;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace FSH.Framework.Web.Health;
+namespace DES.Framework.Web.Health;
 
 /// <summary>
 /// Health check that verifies Hangfire storage is accessible.

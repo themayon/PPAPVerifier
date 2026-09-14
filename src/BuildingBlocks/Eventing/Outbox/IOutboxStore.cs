@@ -1,6 +1,6 @@
-using FSH.Framework.Eventing.Abstractions;
+﻿using DES.Framework.Eventing.Abstractions;
 
-namespace FSH.Framework.Eventing.Outbox;
+namespace DES.Framework.Eventing.Outbox;
 
 /// <summary>
 /// Abstraction for persisting and reading outbox messages. Modules only ever need the publish

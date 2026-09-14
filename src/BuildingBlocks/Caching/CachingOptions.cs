@@ -1,4 +1,4 @@
-namespace FSH.Framework.Caching;
+﻿namespace DES.Framework.Caching;
 
 /// <summary>
 /// Configuration for the HybridCache-backed caching building block.

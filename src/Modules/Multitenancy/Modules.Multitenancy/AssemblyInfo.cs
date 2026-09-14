@@ -1,3 +1,3 @@
-using FSH.Framework.Web.Modules;
+﻿using DES.Framework.Web.Modules;
 
-[assembly: FshModule(typeof(FSH.Modules.Multitenancy.MultitenancyModule), 200)]
+[assembly: DesModule(typeof(DES.Modules.Multitenancy.MultitenancyModule), 200)]

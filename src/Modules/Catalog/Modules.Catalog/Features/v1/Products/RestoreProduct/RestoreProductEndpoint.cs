@@ -1,13 +1,13 @@
-using FSH.Framework.Shared.Identity.Authorization;
-using FSH.Framework.Web.Idempotency;
-using FSH.Modules.Catalog.Contracts.Authorization;
-using FSH.Modules.Catalog.Contracts.v1.Products;
+﻿using DES.Framework.Shared.Identity.Authorization;
+using DES.Framework.Web.Idempotency;
+using DES.Modules.Catalog.Contracts.Authorization;
+using DES.Modules.Catalog.Contracts.v1.Products;
 using Mediator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace FSH.Modules.Catalog.Features.v1.Products.RestoreProduct;
+namespace DES.Modules.Catalog.Features.v1.Products.RestoreProduct;
 
 public static class RestoreProductEndpoint
 {

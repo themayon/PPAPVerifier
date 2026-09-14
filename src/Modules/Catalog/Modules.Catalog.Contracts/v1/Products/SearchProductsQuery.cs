@@ -1,8 +1,8 @@
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Catalog.Contracts.Dtos;
+﻿using DES.Framework.Shared.Persistence;
+using DES.Modules.Catalog.Contracts.Dtos;
 using Mediator;
 
-namespace FSH.Modules.Catalog.Contracts.v1.Products;
+namespace DES.Modules.Catalog.Contracts.v1.Products;
 
 /// <summary>
 /// Search for products with pagination and sorting.

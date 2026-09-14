@@ -1,10 +1,10 @@
-import * as React from "react";
+﻿import * as React from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 /**
- * Dropdown primitives — Radix-based, styled to the FSH design system.
+ * Dropdown primitives — Radix-based, styled to the DES design system.
  * Trigger transitions are driven by [data-state] attributes Radix sets
  * on the content, paired with the dialog-in/out keyframes from
  * globals.css. Content uses the gradient-border + frosted treatment so

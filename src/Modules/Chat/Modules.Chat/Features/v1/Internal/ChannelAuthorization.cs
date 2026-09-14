@@ -1,8 +1,8 @@
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Chat.Contracts.v1.DTOs;
-using FSH.Modules.Chat.Domain;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Modules.Chat.Contracts.v1.DTOs;
+using DES.Modules.Chat.Domain;
 
-namespace FSH.Modules.Chat.Features.v1.Internal;
+namespace DES.Modules.Chat.Features.v1.Internal;
 
 /// <summary>
 /// Small assertion helpers used by channel/message handlers so the rules stay in one place.

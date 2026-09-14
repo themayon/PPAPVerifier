@@ -1,11 +1,11 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace FSH.Framework.Mailing.Services;
+namespace DES.Framework.Mailing.Services;
 
 public sealed class SendGridMailService : IMailService
 {

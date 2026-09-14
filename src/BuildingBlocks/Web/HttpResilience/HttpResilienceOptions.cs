@@ -1,4 +1,4 @@
-namespace FSH.Framework.Web.HttpResilience;
+﻿namespace DES.Framework.Web.HttpResilience;
 
 /// <summary>
 /// Configuration options for HTTP client resilience pipelines (retry, circuit breaker, timeout).

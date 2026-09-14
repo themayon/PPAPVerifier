@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+﻿import { useEffect, useState, type FormEvent } from "react";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
   AlertCircle,
@@ -22,8 +22,8 @@ import { env } from "@/env";
 import type { DemoAccount } from "@/pages/login.demo-accounts";
 
 // ────────────────────────────────────────────────────────────────────────
-// Login — FSH Admin operator sign-in.
-// Chrome mirrors the dashboard's AuthShell: atmospheric orbs, FSH logo
+// Login — DES Admin operator sign-in.
+// Chrome mirrors the dashboard's AuthShell: atmospheric orbs, DES logo
 // lockup, warm-paper card with backdrop blur.
 // The dev demo button ("Sign in with a demo account") opens the same
 // popup dialog UX the dashboard uses — pick an account → fills
@@ -118,11 +118,11 @@ export function LoginPage() {
             <div className="flex items-center gap-2.5">
               <img
                 src="/logo-fullstackhero.png"
-                alt="fullstackhero"
+                alt="FullStack"
                 className="size-9 object-contain"
               />
               <span className="font-display text-[26px] font-semibold tracking-tight text-[var(--color-foreground)]">
-                fullstack<span className="text-[var(--color-primary)]">hero</span>
+                Full<span className="text-[var(--color-primary)]">Stack</span>
               </span>
             </div>
             <div className="mt-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[oklch(from_var(--color-muted-foreground)_l_c_h_/_0.7)]">
@@ -298,7 +298,7 @@ export function LoginPage() {
             <span>Encrypted in transit · JWT-secured session</span>
           </div>
           <p className="mt-4 text-center text-[10px] font-medium uppercase tracking-wider text-[oklch(from_var(--color-muted-foreground)_l_c_h_/_0.5)]">
-            fullstackhero Administration
+            FullStack Administration
           </p>
         </div>
       </div>

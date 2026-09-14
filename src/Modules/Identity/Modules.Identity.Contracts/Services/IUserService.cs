@@ -1,8 +1,8 @@
-﻿using FSH.Framework.Shared.Storage;
-using FSH.Modules.Identity.Contracts.DTOs;
+﻿using DES.Framework.Shared.Storage;
+using DES.Modules.Identity.Contracts.DTOs;
 using System.Security.Claims;
 
-namespace FSH.Modules.Identity.Contracts.Services;
+namespace DES.Modules.Identity.Contracts.Services;
 
 public interface IUserService
 {

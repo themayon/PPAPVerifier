@@ -1,8 +1,8 @@
-using FSH.Framework.Shared.Persistence;
-using FSH.Modules.Identity.Contracts.DTOs;
+﻿using DES.Framework.Shared.Persistence;
+using DES.Modules.Identity.Contracts.DTOs;
 using Mediator;
 
-namespace FSH.Modules.Identity.Contracts.v1.Sessions.GetTenantSessions;
+namespace DES.Modules.Identity.Contracts.v1.Sessions.GetTenantSessions;
 
 /// <summary>
 /// Returns all sessions across the current tenant, paged and optionally

@@ -1,7 +1,7 @@
-using FluentValidation;
-using FSH.Modules.Multitenancy.Contracts.v1.RenewTenant;
+﻿using FluentValidation;
+using DES.Modules.Multitenancy.Contracts.v1.RenewTenant;
 
-namespace FSH.Modules.Multitenancy.Features.v1.RenewTenant;
+namespace DES.Modules.Multitenancy.Features.v1.RenewTenant;
 
 public sealed class RenewTenantCommandValidator : AbstractValidator<RenewTenantCommand>
 {

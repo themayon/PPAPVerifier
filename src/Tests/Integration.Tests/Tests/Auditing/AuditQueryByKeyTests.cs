@@ -1,4 +1,4 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 
 namespace Integration.Tests.Tests.Auditing;
 
@@ -9,13 +9,13 @@ namespace Integration.Tests.Tests.Auditing;
 /// async, so each happy-path test first polls the list endpoint for a real row
 /// and then queries by its concrete Id / CorrelationId / TraceId.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class AuditQueryByKeyTests
 {
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public AuditQueryByKeyTests(FshWebApplicationFactory factory)
+    public AuditQueryByKeyTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

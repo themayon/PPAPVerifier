@@ -1,4 +1,4 @@
-namespace FSH.Framework.Eventing;
+﻿namespace DES.Framework.Eventing;
 
 /// <summary>
 /// Configuration options for the eventing building block.

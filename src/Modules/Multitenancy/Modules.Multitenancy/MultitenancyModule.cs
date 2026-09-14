@@ -1,33 +1,33 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
 using Finbuckle.MultiTenant.AspNetCore.Extensions;
 using Finbuckle.MultiTenant.EntityFrameworkCore.Stores;
 using Finbuckle.MultiTenant.Extensions;
 using Finbuckle.MultiTenant.Stores;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Eventing.Abstractions;
-using FSH.Framework.Persistence;
-using FSH.Framework.Shared.Constants;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Web.Modules;
-using FSH.Modules.Multitenancy.Contracts;
-using FSH.Modules.Multitenancy.Data;
-using FSH.Modules.Multitenancy.Features.v1.AdjustTenantValidity;
-using FSH.Modules.Multitenancy.Features.v1.ChangeTenantActivation;
-using FSH.Modules.Multitenancy.Features.v1.CreateTenant;
-using FSH.Modules.Multitenancy.Features.v1.GetMyTenantStatus;
-using FSH.Modules.Multitenancy.Features.v1.GetTenantMigrations;
-using FSH.Modules.Multitenancy.Features.v1.GetTenants;
-using FSH.Modules.Multitenancy.Features.v1.GetTenantStatus;
-using FSH.Modules.Multitenancy.Features.v1.GetTenantTheme;
-using FSH.Modules.Multitenancy.Features.v1.ResetTenantTheme;
-using FSH.Modules.Multitenancy.Features.v1.TenantProvisioning.GetTenantProvisioningStatus;
-using FSH.Modules.Multitenancy.Features.v1.TenantProvisioning.RetryTenantProvisioning;
-using FSH.Modules.Multitenancy.Features.v1.RenewTenant;
-using FSH.Modules.Multitenancy.Features.v1.UpdateTenantTheme;
-using FSH.Modules.Multitenancy.Provisioning;
-using FSH.Modules.Multitenancy.Services;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Eventing.Abstractions;
+using DES.Framework.Persistence;
+using DES.Framework.Shared.Constants;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Web.Modules;
+using DES.Modules.Multitenancy.Contracts;
+using DES.Modules.Multitenancy.Data;
+using DES.Modules.Multitenancy.Features.v1.AdjustTenantValidity;
+using DES.Modules.Multitenancy.Features.v1.ChangeTenantActivation;
+using DES.Modules.Multitenancy.Features.v1.CreateTenant;
+using DES.Modules.Multitenancy.Features.v1.GetMyTenantStatus;
+using DES.Modules.Multitenancy.Features.v1.GetTenantMigrations;
+using DES.Modules.Multitenancy.Features.v1.GetTenants;
+using DES.Modules.Multitenancy.Features.v1.GetTenantStatus;
+using DES.Modules.Multitenancy.Features.v1.GetTenantTheme;
+using DES.Modules.Multitenancy.Features.v1.ResetTenantTheme;
+using DES.Modules.Multitenancy.Features.v1.TenantProvisioning.GetTenantProvisioningStatus;
+using DES.Modules.Multitenancy.Features.v1.TenantProvisioning.RetryTenantProvisioning;
+using DES.Modules.Multitenancy.Features.v1.RenewTenant;
+using DES.Modules.Multitenancy.Features.v1.UpdateTenantTheme;
+using DES.Modules.Multitenancy.Provisioning;
+using DES.Modules.Multitenancy.Services;
 using Hangfire;
 using Hangfire.Common;
 using Microsoft.AspNetCore.Builder;
@@ -40,7 +40,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
-namespace FSH.Modules.Multitenancy;
+namespace DES.Modules.Multitenancy;
 
 public sealed class MultitenancyModule : IModule
 {
@@ -48,8 +48,8 @@ public sealed class MultitenancyModule : IModule
     {
         ArgumentNullException.ThrowIfNull(builder);
 
-        FSH.Framework.Shared.Constants.PermissionConstants.Register(
-            FSH.Modules.Multitenancy.Contracts.Authorization.MultitenancyPermissions.All);
+        DES.Framework.Shared.Constants.PermissionConstants.Register(
+            DES.Modules.Multitenancy.Contracts.Authorization.MultitenancyPermissions.All);
 
         builder.Services.Configure<TenantBillingOptions>(
             builder.Configuration.GetSection(TenantBillingOptions.SectionName));
@@ -64,7 +64,7 @@ public sealed class MultitenancyModule : IModule
         // Singleton — the buffer survives the request scope that calls Store(...)
         // so the background Hangfire-scheduled seed scope can still TryConsume(...).
         builder.Services.AddSingleton<
-            FSH.Framework.Shared.Multitenancy.ITenantInitialPasswordBuffer,
+            DES.Framework.Shared.Multitenancy.ITenantInitialPasswordBuffer,
             Services.TenantInitialPasswordBuffer>();
 
         builder.Services.AddHeroDbContext<TenantDbContext>();

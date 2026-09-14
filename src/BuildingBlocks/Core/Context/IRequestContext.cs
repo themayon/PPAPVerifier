@@ -1,4 +1,4 @@
-namespace FSH.Framework.Core.Context;
+﻿namespace DES.Framework.Core.Context;
 
 /// <summary>
 /// Provides access to HTTP request context information without direct dependency on ASP.NET Core.

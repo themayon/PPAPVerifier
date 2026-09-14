@@ -1,4 +1,4 @@
-using FSH.Modules.Identity.Authorization.Jwt;
+﻿using DES.Modules.Identity.Authorization.Jwt;
 using System.ComponentModel.DataAnnotations;
 
 namespace Identity.Tests.Authorization;

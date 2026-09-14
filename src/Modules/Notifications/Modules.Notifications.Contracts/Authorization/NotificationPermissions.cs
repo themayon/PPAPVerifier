@@ -1,6 +1,6 @@
-using FSH.Framework.Shared.Constants;
+﻿using DES.Framework.Shared.Constants;
 
-namespace FSH.Modules.Notifications.Contracts.Authorization;
+namespace DES.Modules.Notifications.Contracts.Authorization;
 
 /// <summary>
 /// Permission constants for the Notifications module. Permissions follow the
@@ -15,7 +15,7 @@ public static class NotificationPermissions
         public const string MarkRead = $"Permissions.{Resource}.MarkRead";
     }
 
-    public static IReadOnlyList<FshPermission> All { get; } =
+    public static IReadOnlyList<DesPermission> All { get; } =
     [
         new("View Notifications",     ActionConstants.View, Inbox.Resource, IsBasic: true),
         new("Mark Notifications Read", "MarkRead",          Inbox.Resource, IsBasic: true),

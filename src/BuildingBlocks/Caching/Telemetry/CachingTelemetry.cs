@@ -1,7 +1,7 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace FSH.Framework.Caching.Telemetry;
+namespace DES.Framework.Caching.Telemetry;
 
 /// <summary>
 /// OpenTelemetry primitives for the caching building block.
@@ -12,10 +12,10 @@ namespace FSH.Framework.Caching.Telemetry;
 public static class CachingTelemetry
 {
     /// <summary>Name of the <see cref="ActivitySource"/> used for cache spans.</summary>
-    public const string ActivitySourceName = "FSH.Caching";
+    public const string ActivitySourceName = "DES.Caching";
 
     /// <summary>Name of the <see cref="Meter"/> used for cache metrics.</summary>
-    public const string MeterName = "FSH.Caching";
+    public const string MeterName = "DES.Caching";
 
     internal static readonly ActivitySource ActivitySource = new(ActivitySourceName);
     internal static readonly Meter Meter = new(MeterName);

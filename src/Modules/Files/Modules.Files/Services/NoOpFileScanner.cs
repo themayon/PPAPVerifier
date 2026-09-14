@@ -1,6 +1,6 @@
-using FSH.Modules.Files.Domain;
+﻿using DES.Modules.Files.Domain;
 
-namespace FSH.Modules.Files.Services;
+namespace DES.Modules.Files.Services;
 
 internal sealed class NoOpFileScanner : IFileScanner
 {

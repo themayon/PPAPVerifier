@@ -1,7 +1,7 @@
-using FSH.Framework.Core.Domain;
-using FSH.Modules.Chat.Contracts.v1.DTOs;
+﻿using DES.Framework.Core.Domain;
+using DES.Modules.Chat.Contracts.v1.DTOs;
 
-namespace FSH.Modules.Chat.Domain.Events;
+namespace DES.Modules.Chat.Domain.Events;
 
 public sealed record ChannelCreatedDomainEvent(
     Guid ChannelId,

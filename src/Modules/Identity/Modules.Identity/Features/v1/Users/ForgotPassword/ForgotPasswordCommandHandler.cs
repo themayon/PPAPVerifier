@@ -1,10 +1,10 @@
-using FSH.Framework.Web.Origin;
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Contracts.v1.Users.ForgotPassword;
+﻿using DES.Framework.Web.Origin;
+using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Contracts.v1.Users.ForgotPassword;
 using Mediator;
 using Microsoft.Extensions.Options;
 
-namespace FSH.Modules.Identity.Features.v1.Users.ForgotPassword;
+namespace DES.Modules.Identity.Features.v1.Users.ForgotPassword;
 
 public sealed class ForgotPasswordCommandHandler : ICommandHandler<ForgotPasswordCommand, string>
 {

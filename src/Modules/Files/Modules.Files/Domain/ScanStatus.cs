@@ -1,4 +1,4 @@
-namespace FSH.Modules.Files.Domain;
+﻿namespace DES.Modules.Files.Domain;
 
 public enum ScanStatus
 {

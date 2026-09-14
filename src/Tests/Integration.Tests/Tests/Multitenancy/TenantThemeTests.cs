@@ -1,4 +1,4 @@
-#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
+﻿#pragma warning disable S1144 // Unused private members — populated by JSON deserialization
 #pragma warning disable S3459 // Unassigned members — populated by JSON deserialization
 using System.Text.Json;
 using Integration.Tests.Infrastructure;
@@ -14,7 +14,7 @@ namespace Integration.Tests.Tests.Multitenancy;
 /// pin both the happy paths and the isolation contract — tenant B must never be able
 /// to read or mutate tenant A's theme.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class TenantThemeTests : IAsyncLifetime
 {
     private static readonly JsonSerializerOptions Json = new()
@@ -26,7 +26,7 @@ public sealed class TenantThemeTests : IAsyncLifetime
     private const string ThemePath = $"{TestConstants.TenantsBasePath}/theme";
     private const string ThemeResetPath = $"{TestConstants.TenantsBasePath}/theme/reset";
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
     private string _tenantA = default!;
@@ -34,7 +34,7 @@ public sealed class TenantThemeTests : IAsyncLifetime
     private string _tenantB = default!;
     private string _tenantBAdminEmail = default!;
 
-    public TenantThemeTests(FshWebApplicationFactory factory)
+    public TenantThemeTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);

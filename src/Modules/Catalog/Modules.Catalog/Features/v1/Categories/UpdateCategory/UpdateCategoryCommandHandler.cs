@@ -1,11 +1,11 @@
-using System.Net;
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Catalog.Contracts.v1.Categories;
-using FSH.Modules.Catalog.Data;
+﻿using System.Net;
+using DES.Framework.Core.Exceptions;
+using DES.Modules.Catalog.Contracts.v1.Categories;
+using DES.Modules.Catalog.Data;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Catalog.Features.v1.Categories.UpdateCategory;
+namespace DES.Modules.Catalog.Features.v1.Categories.UpdateCategory;
 
 public sealed class UpdateCategoryCommandHandler(CatalogDbContext dbContext)
     : ICommandHandler<UpdateCategoryCommand, Guid>

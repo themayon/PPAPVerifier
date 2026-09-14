@@ -1,7 +1,7 @@
-using FSH.Framework.Core.Domain;
-using FSH.Modules.Files.Contracts.v1.DTOs;
+﻿using DES.Framework.Core.Domain;
+using DES.Modules.Files.Contracts.v1.DTOs;
 
-namespace FSH.Modules.Files.Domain.Events;
+namespace DES.Modules.Files.Domain.Events;
 
 public sealed record FileFinalizedDomainEvent(
     Guid FileAssetId,

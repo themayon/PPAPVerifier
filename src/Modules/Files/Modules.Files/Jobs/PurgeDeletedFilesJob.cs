@@ -1,13 +1,13 @@
-using FSH.Framework.Quota;
-using FSH.Framework.Shared.Quota;
-using FSH.Framework.Storage.Services;
-using FSH.Modules.Files.Data;
+﻿using DES.Framework.Quota;
+using DES.Framework.Shared.Quota;
+using DES.Framework.Storage.Services;
+using DES.Modules.Files.Data;
 using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FSH.Modules.Files.Jobs;
+namespace DES.Modules.Files.Jobs;
 
 /// <summary>
 /// Daily purge of soft-deleted FileAsset rows past the retention window. Hard-deletes the row,

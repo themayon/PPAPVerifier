@@ -1,6 +1,6 @@
-using FSH.Modules.Identity.Contracts.DTOs;
+﻿using DES.Modules.Identity.Contracts.DTOs;
 using Mediator;
 
-namespace FSH.Modules.Identity.Contracts.v1.Groups.GetGroupMembers;
+namespace DES.Modules.Identity.Contracts.v1.Groups.GetGroupMembers;
 
 public sealed record GetGroupMembersQuery(Guid GroupId) : IQuery<IEnumerable<GroupMemberDto>>;

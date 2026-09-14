@@ -1,4 +1,4 @@
-// Test-only DTOs are populated by System.Text.Json via reflection — the
+﻿// Test-only DTOs are populated by System.Text.Json via reflection — the
 // SonarAnalyzer can't see the assignments and warns about "unused" private
 // setters. Suppressing the noise file-wide rather than annotating each DTO.
 #pragma warning disable S1144 // Unused private types or members should be removed
@@ -9,8 +9,8 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Identity.Domain;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Identity.Domain;
 using Integration.Tests.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +24,7 @@ namespace Integration.Tests.Tests.Impersonation;
 /// can exercise both intra-tenant (tenant admin impersonating their own user) and
 /// cross-tenant (root operator impersonating into another tenant) paths.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class ImpersonationTests : IAsyncLifetime
 {
     private const string ImpersonationBasePath = TestConstants.IdentityBasePath + "/impersonation";
@@ -35,7 +35,7 @@ public sealed class ImpersonationTests : IAsyncLifetime
         PropertyNameCaseInsensitive = true,
     };
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
     // Populated by InitializeAsync — a freshly provisioned tenant with a known admin user.
@@ -44,7 +44,7 @@ public sealed class ImpersonationTests : IAsyncLifetime
     private string _tenantAdminUserId = default!;
     private string _rootAdminUserId = default!;
 
-    public ImpersonationTests(FshWebApplicationFactory factory)
+    public ImpersonationTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);
@@ -876,7 +876,7 @@ public sealed class ImpersonationTests : IAsyncLifetime
         scope.ServiceProvider.GetRequiredService<IMultiTenantContextSetter>().MultiTenantContext =
             new MultiTenantContext<AppTenantInfo>(tenant);
 
-        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<FshUser>>();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DesUser>>();
         var user = await userManager.FindByIdAsync(userId);
         user.ShouldNotBeNull();
         if (!user!.EmailConfirmed)

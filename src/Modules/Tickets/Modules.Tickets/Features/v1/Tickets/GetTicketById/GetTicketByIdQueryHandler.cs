@@ -1,12 +1,12 @@
-using FSH.Framework.Core.Exceptions;
-using FSH.Modules.Tickets.Contracts.Dtos;
-using FSH.Modules.Tickets.Contracts.v1.Tickets;
-using FSH.Modules.Tickets.Data;
-using FSH.Modules.Tickets.Domain;
+﻿using DES.Framework.Core.Exceptions;
+using DES.Modules.Tickets.Contracts.Dtos;
+using DES.Modules.Tickets.Contracts.v1.Tickets;
+using DES.Modules.Tickets.Data;
+using DES.Modules.Tickets.Domain;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Tickets.Features.v1.Tickets.GetTicketById;
+namespace DES.Modules.Tickets.Features.v1.Tickets.GetTicketById;
 
 public sealed class GetTicketByIdQueryHandler(TicketsDbContext dbContext)
     : IQueryHandler<GetTicketByIdQuery, TicketDto>

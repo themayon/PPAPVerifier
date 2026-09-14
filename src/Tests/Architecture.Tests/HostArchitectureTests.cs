@@ -1,4 +1,4 @@
-using NetArchTest.Rules;
+﻿using NetArchTest.Rules;
 using Shouldly;
 using Xunit;
 
@@ -12,13 +12,13 @@ public class HostArchitectureTests
         // Assemblies / namespaces that represent host applications.
         string[] hostNamespaces =
         {
-            "FSH.Starter.Api"
+            "DES.Starter.Api"
         };
 
         var result = Types
             .InCurrentDomain()
             .That()
-            .ResideInNamespace("FSH.Modules")
+            .ResideInNamespace("DES.Modules")
             .Should()
             .NotHaveDependencyOnAny(hostNamespaces)
             .GetResult();
@@ -37,21 +37,21 @@ public class HostArchitectureTests
         // but should not directly reference feature or data-layer namespaces.
         string[] forbiddenNamespaces =
         {
-            "FSH.Modules.Auditing.Features",
-            "FSH.Modules.Auditing.Data",
-            "FSH.Modules.Chat.Features",
-            "FSH.Modules.Chat.Data",
-            "FSH.Modules.Chat.Domain",
-            "FSH.Modules.Identity.Features",
-            "FSH.Modules.Identity.Data",
-            "FSH.Modules.Multitenancy.Features",
-            "FSH.Modules.Multitenancy.Data"
+            "DES.Modules.Auditing.Features",
+            "DES.Modules.Auditing.Data",
+            "DES.Modules.Chat.Features",
+            "DES.Modules.Chat.Data",
+            "DES.Modules.Chat.Domain",
+            "DES.Modules.Identity.Features",
+            "DES.Modules.Identity.Data",
+            "DES.Modules.Multitenancy.Features",
+            "DES.Modules.Multitenancy.Data"
         };
 
         var hostResult = Types
             .InCurrentDomain()
             .That()
-            .ResideInNamespace("FSH.Starter")
+            .ResideInNamespace("DES.Starter")
             .Should()
             .NotHaveDependencyOnAny(forbiddenNamespaces)
             .GetResult();

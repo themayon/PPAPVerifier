@@ -1,14 +1,14 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Eventing.Inbox;
-using FSH.Framework.Eventing.Outbox;
-using FSH.Framework.Persistence.Context;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Framework.Shared.Persistence;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Eventing.Inbox;
+using DES.Framework.Eventing.Outbox;
+using DES.Framework.Persistence.Context;
+using DES.Framework.Shared.Multitenancy;
+using DES.Framework.Shared.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace FSH.Framework.Eventing.Persistence;
+namespace DES.Framework.Eventing.Persistence;
 
 /// <summary>
 /// The single context owning the transactional outbox and inbox.

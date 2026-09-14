@@ -1,8 +1,8 @@
-using FSH.Modules.Identity.Contracts.Services;
-using FSH.Modules.Identity.Contracts.v1.Roles.UpdatePermissions;
+﻿using DES.Modules.Identity.Contracts.Services;
+using DES.Modules.Identity.Contracts.v1.Roles.UpdatePermissions;
 using Mediator;
 
-namespace FSH.Modules.Identity.Features.v1.Roles.UpdateRolePermissions;
+namespace DES.Modules.Identity.Features.v1.Roles.UpdateRolePermissions;
 
 public sealed class UpdatePermissionsCommandHandler : ICommandHandler<UpdatePermissionsCommand, string>
 {

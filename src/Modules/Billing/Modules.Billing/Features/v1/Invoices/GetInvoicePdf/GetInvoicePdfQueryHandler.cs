@@ -1,12 +1,12 @@
-using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Core.Exceptions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Billing.Data;
-using FSH.Modules.Billing.Services;
+﻿using Finbuckle.MultiTenant.Abstractions;
+using DES.Framework.Core.Exceptions;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Billing.Data;
+using DES.Modules.Billing.Services;
 using Mediator;
 using Microsoft.EntityFrameworkCore;
 
-namespace FSH.Modules.Billing.Features.v1.Invoices.GetInvoicePdf;
+namespace DES.Modules.Billing.Features.v1.Invoices.GetInvoicePdf;
 
 public sealed class GetInvoicePdfQueryHandler(
     BillingDbContext dbContext,

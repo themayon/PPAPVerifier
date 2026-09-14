@@ -1,6 +1,6 @@
-using FSH.Framework.Core.Domain;
+﻿using DES.Framework.Core.Domain;
 
-namespace FSH.Modules.Identity.Domain.Events;
+namespace DES.Modules.Identity.Domain.Events;
 
 /// <summary>Raised when a user changes their password.</summary>
 public sealed record PasswordChangedEvent(

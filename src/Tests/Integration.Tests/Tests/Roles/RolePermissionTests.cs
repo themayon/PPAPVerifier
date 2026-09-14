@@ -1,14 +1,14 @@
-using Integration.Tests.Infrastructure;
+﻿using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 
 namespace Integration.Tests.Tests.Roles;
 
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class RolePermissionTests
 {
     private readonly AuthHelper _auth;
 
-    public RolePermissionTests(FshWebApplicationFactory factory)
+    public RolePermissionTests(DesWebApplicationFactory factory)
     {
         _auth = new AuthHelper(factory);
     }

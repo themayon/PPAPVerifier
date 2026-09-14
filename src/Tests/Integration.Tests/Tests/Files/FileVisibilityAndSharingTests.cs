@@ -1,9 +1,9 @@
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Finbuckle.MultiTenant;
 using Finbuckle.MultiTenant.Abstractions;
-using FSH.Framework.Shared.Multitenancy;
-using FSH.Modules.Files.Contracts.v1.DTOs;
-using FSH.Modules.Identity.Domain;
+using DES.Framework.Shared.Multitenancy;
+using DES.Modules.Files.Contracts.v1.DTOs;
+using DES.Modules.Identity.Domain;
 using Integration.Tests.Infrastructure;
 using Integration.Tests.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -25,15 +25,15 @@ namespace Integration.Tests.Tests.Files;
 /// Tests use two users in the SAME tenant (owner = root admin, grantee = a freshly registered user)
 /// plus the grantee acting as a non-owner.
 /// </summary>
-[Collection(FshCollectionDefinition.Name)]
+[Collection(DesCollectionDefinition.Name)]
 public sealed class FileVisibilityAndSharingTests
 {
     private const string FilesBasePath = "/api/v1/files";
 
-    private readonly FshWebApplicationFactory _factory;
+    private readonly DesWebApplicationFactory _factory;
     private readonly AuthHelper _auth;
 
-    public FileVisibilityAndSharingTests(FshWebApplicationFactory factory)
+    public FileVisibilityAndSharingTests(DesWebApplicationFactory factory)
     {
         _factory = factory;
         _auth = new AuthHelper(factory);
@@ -271,7 +271,7 @@ public sealed class FileVisibilityAndSharingTests
             scope.ServiceProvider.GetRequiredService<IMultiTenantContextSetter>().MultiTenantContext =
                 new MultiTenantContext<AppTenantInfo>(tenant);
 
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<FshUser>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<DesUser>>();
             var user = await userManager.FindByIdAsync(registered.UserId);
             user.ShouldNotBeNull();
             if (!user!.EmailConfirmed)

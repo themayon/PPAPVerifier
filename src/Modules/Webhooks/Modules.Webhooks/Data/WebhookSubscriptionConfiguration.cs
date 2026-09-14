@@ -1,9 +1,9 @@
-using Finbuckle.MultiTenant.EntityFrameworkCore.Extensions;
-using FSH.Modules.Webhooks.Domain;
+﻿using Finbuckle.MultiTenant.EntityFrameworkCore.Extensions;
+using DES.Modules.Webhooks.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace FSH.Modules.Webhooks.Data;
+namespace DES.Modules.Webhooks.Data;
 
 public sealed class WebhookSubscriptionConfiguration : IEntityTypeConfiguration<WebhookSubscription>
 {

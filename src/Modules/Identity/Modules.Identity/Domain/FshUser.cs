@@ -1,10 +1,10 @@
-using FSH.Framework.Core.Domain;
-using FSH.Modules.Identity.Domain.Events;
+﻿using DES.Framework.Core.Domain;
+using DES.Modules.Identity.Domain.Events;
 using Microsoft.AspNetCore.Identity;
 
-namespace FSH.Modules.Identity.Domain;
+namespace DES.Modules.Identity.Domain;
 
-public class FshUser : IdentityUser, IHasDomainEvents
+public class DesUser : IdentityUser, IHasDomainEvents
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 
