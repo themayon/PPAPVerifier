@@ -1,8 +1,12 @@
 import {
   Activity,
+  BookOpenCheck,
   Building2,
+  ClipboardCheck,
   LayoutDashboard,
+  PanelsTopLeft,
   Receipt,
+  ScanSearch,
   ScrollText,
   Settings,
   ShieldCheck,
@@ -14,8 +18,11 @@ import {
 import {
   AuditingPermissions,
   BillingPermissions,
+  DocumentIntelligencePermissions,
   IdentityPermissions,
   MultitenancyPermissions,
+  PpapPermissions,
+  RulesPermissions,
   WebhooksPermissions,
 } from "@/lib/permissions";
 
@@ -97,6 +104,34 @@ export const sections: NavSection[] = [
         label: "Billing",
         icon: Receipt,
         perms: [BillingPermissions.View],
+      },
+      {
+        to: "/extraction-attempts",
+        label: "Extraction attempts",
+        icon: ScanSearch,
+        perms: [DocumentIntelligencePermissions.Attempts.View],
+      },
+      {
+        to: "/ppap",
+        label: "PPAP",
+        icon: ClipboardCheck,
+        perms: [
+          PpapPermissions.Operations.View,
+          PpapPermissions.Jobs.View,
+          PpapPermissions.Credits.Manage,
+        ],
+      },
+      {
+        to: "/rules",
+        label: "Rules",
+        icon: BookOpenCheck,
+        perms: [RulesPermissions.Definitions.View],
+      },
+      {
+        to: "/rule-templates",
+        label: "Rule templates",
+        icon: PanelsTopLeft,
+        perms: [RulesPermissions.Templates.View],
       },
       {
         to: "/webhooks",
@@ -192,6 +227,24 @@ export const NAV_ITEMS: NavItem[] = [
     perms: [BillingPermissions.View],
   },
   {
+    to: "/extraction-attempts",
+    label: "Extraction attempts",
+    icon: ScanSearch,
+    matchPrefix: "/extraction-attempts",
+    perms: [DocumentIntelligencePermissions.Attempts.View],
+  },
+  {
+    to: "/ppap",
+    label: "PPAP",
+    icon: ClipboardCheck,
+    matchPrefix: "/ppap",
+    perms: [
+      PpapPermissions.Operations.View,
+      PpapPermissions.Jobs.View,
+      PpapPermissions.Credits.Manage,
+    ],
+  },
+  {
     to: "/impersonation",
     label: "Impersonation",
     icon: UserCog,
@@ -204,6 +257,20 @@ export const NAV_ITEMS: NavItem[] = [
     icon: ScrollText,
     matchPrefix: "/audits",
     perms: [AuditingPermissions.AuditTrails.View],
+  },
+  {
+    to: "/rules",
+    label: "Rules",
+    icon: BookOpenCheck,
+    matchPrefix: "/rules",
+    perms: [RulesPermissions.Definitions.View],
+  },
+  {
+    to: "/rule-templates",
+    label: "Rule templates",
+    icon: PanelsTopLeft,
+    matchPrefix: "/rule-templates",
+    perms: [RulesPermissions.Templates.View],
   },
   {
     to: "/webhooks",

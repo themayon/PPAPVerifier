@@ -1,22 +1,26 @@
 import {
   Activity,
+  BookOpenCheck,
+  BrainCircuit,
+  ClipboardCheck,
   CreditCard,
+  FileCog,
+  FileSpreadsheet,
   FolderOpen,
-  FolderTree,
   HeartPulse,
   LayoutDashboard,
-  MessageCircle,
+  ListChecks,
   Package,
+  PanelsTopLeft,
   Receipt,
+  ScanSearch,
   ScrollText,
   Settings,
   ShieldCheck,
-  Tags,
-  Ticket,
+  Sparkles,
   Trash2,
   Users,
   UsersRound,
-  Wallet,
   Wifi,
 } from "lucide-react";
 import { ALL_TRASH_PERMISSIONS } from "@/lib/trash-permissions";
@@ -50,15 +54,12 @@ export type NavSection = {
   items: NavSpec[];
 };
 
-// Top-level items live OUTSIDE any section. Overview opens the app;
+// Top-level items live OUTSIDE any section. The PPAP workspace opens the app;
 // Settings is account-scoped and lives at the very bottom.
 export const topNavTop: NavSpec[] = [
-  { to: "/", label: "Overview", icon: LayoutDashboard },
-  // Each gate mirrors the permission the page's primary list endpoint enforces
-  // server-side (Chat → channels list, Files → /files/mine). Same convention
-  // as trash-permissions.ts: if the endpoint's permission changes, mirror it.
-  { to: "/chat", label: "Chat", icon: MessageCircle, perm: "Permissions.Chat.Channels.View" },
-  { to: "/files", label: "My Files", icon: FolderOpen, perm: "Permissions.Files.Upload" },
+  { to: "/ppap", label: "PPAP Workspace", icon: ClipboardCheck, perm: "Permissions.Ppap.Submissions.View" },
+  { to: "/ppap/parts", label: "Parts", icon: Package, perm: "Permissions.Ppap.Parts.View" },
+  { to: "/files", label: "Documents", icon: FolderOpen, perm: "Permissions.Files.Upload" },
 ];
 
 export const topNavBottom: NavSpec[] = [
@@ -69,45 +70,56 @@ export const topNavBottom: NavSpec[] = [
 export const sections: NavSection[] = [
   {
     id: "operations",
-    caption: "Operations",
+    caption: "PPAP Operations",
     icon: Activity,
     items: [
       // Live activity is SSE-backed; the stream is auth-only (no permission), so no gate.
       { to: "/activity", label: "Live activity", icon: Activity },
-      { to: "/subscription", label: "Subscription", icon: CreditCard, perm: "Permissions.Billing.View" },
-      { to: "/wallet", label: "WhatsApp wallet", icon: Wallet, perm: "Permissions.Billing.View" },
-      { to: "/invoices", label: "Invoices", icon: Receipt, perm: "Permissions.Billing.View" },
+      {
+        to: "/ppap/operations",
+        label: "Operations console",
+        icon: ClipboardCheck,
+        anyPerm: [
+          "Permissions.Ppap.Operations.View",
+          "Permissions.Ppap.Jobs.View",
+          "Permissions.Ppap.Credits.Manage",
+        ],
+      },
+      {
+        to: "/extraction-attempts",
+        label: "Extraction attempts",
+        icon: ScanSearch,
+        perm: "Permissions.DocumentIntelligence.Attempts.View",
+      },
     ],
   },
   {
-    id: "catalog",
-    caption: "Catalog",
-    icon: Package,
+    id: "rules",
+    caption: "Rule library",
+    icon: BookOpenCheck,
     items: [
-      { to: "/catalog/products", label: "Products", icon: Package, perm: "Permissions.Catalog.Products.View" },
-      { to: "/catalog/brands", label: "Brands", icon: Tags, perm: "Permissions.Catalog.Brands.View" },
-      { to: "/catalog/categories", label: "Categories", icon: FolderTree, perm: "Permissions.Catalog.Categories.View" },
+      { to: "/rules/validation", label: "Validation rules", icon: ListChecks, perm: "Permissions.Definitions.View" },
+      { to: "/rules/header", label: "Header rules", icon: FileSpreadsheet, perm: "Permissions.Definitions.View" },
+      { to: "/rules/special", label: "Special rules", icon: Sparkles, perm: "Permissions.Definitions.View" },
+      { to: "/rules/custom", label: "Custom rules", icon: FileCog, perm: "Permissions.Definitions.View" },
+      { to: "/rules/ml", label: "ML rules", icon: BrainCircuit, perm: "Permissions.Definitions.View" },
+      { to: "/rule-templates", label: "Rule templates", icon: PanelsTopLeft, perm: "Permissions.Templates.View" },
     ],
   },
   {
-    id: "helpdesk",
-    caption: "Helpdesk",
-    icon: Ticket,
-    items: [
-      { to: "/tickets", label: "Tickets", icon: Ticket, perm: "Permissions.Tickets.View" },
-    ],
-  },
-  {
-    id: "identity",
-    caption: "Identity",
+    id: "administration",
+    caption: "Administration",
     icon: Users,
     items: [
+      { to: "/overview", label: "Admin overview", icon: LayoutDashboard },
       // Gate the identity-management pages on a manage permission (not View): View Users/Roles/Groups
       // are IsBasic so every member holds them (the chat/user picker relies on Users.View), but only
       // managers should see these admin pages. Basic lacks the *.Update perms, so the items hide for them.
       { to: "/identity/users", label: "Users", icon: Users, perm: "Permissions.Users.Update" },
       { to: "/identity/roles", label: "Roles", icon: ShieldCheck, perm: "Permissions.Roles.Update" },
       { to: "/identity/groups", label: "Groups", icon: UsersRound, perm: "Permissions.Groups.Update" },
+      { to: "/subscription", label: "Subscription", icon: CreditCard, perm: "Permissions.Billing.View" },
+      { to: "/invoices", label: "Invoices", icon: Receipt, perm: "Permissions.Billing.View" },
     ],
   },
   {

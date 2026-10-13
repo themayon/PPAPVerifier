@@ -177,7 +177,7 @@ export function ResetPasswordPage() {
             <AuthHeadline lead="Set a new" accent="password" />
             <p className="text-[13px] text-[var(--color-muted-foreground)]">
               Resetting password for{" "}
-              <span className="text-[var(--color-foreground)]">{email}</span> on{" "}
+              <span className="text-[var(--color-foreground)]">{email}</span> at company{" "}
               <span className="text-[var(--color-foreground)]">{tenant}</span>.
             </p>
           </div>

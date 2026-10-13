@@ -22,6 +22,12 @@ const SHARED_FALLBACKS =
 
 export const fonts: FontOption[] = [
   {
+    id: "segoe",
+    label: "Segoe UI",
+    description: "Omnex PPAP default.",
+    family: `'Segoe UI', ${SHARED_FALLBACKS}`,
+  },
+  {
     id: "geist",
     label: "Geist",
     description: "Designed for screens. Default.",
@@ -95,7 +101,7 @@ export const fonts: FontOption[] = [
   },
 ];
 
-export const DEFAULT_FONT = "figtree";
+export const DEFAULT_FONT = "segoe";
 
 export type AccentOption = {
   id: string;
@@ -106,22 +112,23 @@ export type AccentOption = {
 };
 
 export const accents: AccentOption[] = [
-  { id: "rose",    label: "Rose",    description: "Editorial, warm-paper default.",  swatch: "oklch(0.575 0.232  13)" },
-  { id: "indigo",  label: "Indigo",  description: "Confident tech-forward chassis.", swatch: "oklch(0.555 0.220 268)" },
-  { id: "violet",  label: "Violet",  description: "Saturated, expressive.",          swatch: "oklch(0.555 0.220 305)" },
-  { id: "sky",     label: "Sky",     description: "Cool, calm, professional.",       swatch: "oklch(0.555 0.220 232)" },
-  { id: "emerald", label: "Emerald", description: "Fresh, success-leaning.",         swatch: "oklch(0.555 0.220 152)" },
-  { id: "amber",   label: "Amber",   description: "Warm, energetic.",                swatch: "oklch(0.620 0.180  76)" },
+  { id: "omnex", label: "Omnex Blue", description: "PPAP royal blue and navy.", swatch: "#2375e5" },
+  { id: "rose", label: "Rose", description: "Editorial warm palette.", swatch: "oklch(0.575 0.232  13)" },
+  { id: "indigo", label: "Indigo", description: "Confident tech-forward chassis.", swatch: "oklch(0.555 0.220 268)" },
+  { id: "violet", label: "Violet", description: "Saturated, expressive.", swatch: "oklch(0.555 0.220 305)" },
+  { id: "sky", label: "Sky", description: "Cool, calm, professional.", swatch: "oklch(0.555 0.220 232)" },
+  { id: "emerald", label: "Emerald", description: "Fresh, success-leaning.", swatch: "oklch(0.555 0.220 152)" },
+  { id: "amber", label: "Amber", description: "Warm, energetic.", swatch: "oklch(0.620 0.180  76)" },
 ];
 
-export const DEFAULT_ACCENT = "rose";
+export const DEFAULT_ACCENT = "omnex";
 export const CUSTOM_ACCENT_ID = "custom";
 
-export const FONT_STORAGE_KEY = "des.font";
-export const ACCENT_STORAGE_KEY = "des.accent";
+export const FONT_STORAGE_KEY = "ppap.font";
+export const ACCENT_STORAGE_KEY = "ppap.accent";
 /** Stores `{ h, c }` for the custom accent — h = hue (0-360),
  *  c = chroma scale (0.6 → 1.2 of the indigo template). */
-export const CUSTOM_ACCENT_STORAGE_KEY = "des.accent.custom";
+export const CUSTOM_ACCENT_STORAGE_KEY = "ppap.accent.custom";
 
 export type DensityMode = "comfortable" | "compact";
 export const DENSITY_STORAGE_KEY = "des.density";
@@ -139,7 +146,7 @@ export const DEFAULT_DENSITY: DensityMode = "comfortable";
 type BrandStop = { stop: number; l: number; c: number };
 
 const BRAND_LADDER: ReadonlyArray<BrandStop> = [
-  { stop:  50, l: 0.972, c: 0.020 },
+  { stop: 50, l: 0.972, c: 0.020 },
   { stop: 100, l: 0.945, c: 0.040 },
   { stop: 200, l: 0.895, c: 0.078 },
   { stop: 300, l: 0.825, c: 0.130 },

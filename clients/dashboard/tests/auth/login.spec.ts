@@ -28,17 +28,17 @@ test.describe("login — page chrome", () => {
     await setConfig(page, true);
   });
 
-  test("renders the DES logo lockup with the .NET 10 caption", async ({ page }) => {
+  test("renders the PPAP Verifier product identity", async ({ page }) => {
     await page.goto("/login");
-    await expect(page.getByRole("img", { name: /FullStack/i })).toBeVisible();
-    await expect(page.getByText(/\.NET 10 Starter Kit/i)).toBeVisible();
+    await expect(page.getByText(/PPAP Verifier/i)).toBeVisible();
+    await expect(page.getByText(/Production Part Approval/i)).toBeVisible();
     await expect(page.getByRole("heading", { name: /welcome back/i })).toBeVisible();
-    await expect(page.getByText(/sign in to your account/i)).toBeVisible();
+    await expect(page.getByText(/PPAP submissions and validation/i)).toBeVisible();
   });
 
-  test("renders the tenant + email + password fields", async ({ page }) => {
+  test("renders the company code + email + password fields", async ({ page }) => {
     await page.goto("/login");
-    await expect(page.getByLabel("Tenant")).toBeVisible();
+    await expect(page.getByLabel("Company Code")).toBeVisible();
     await expect(page.getByLabel("Email")).toBeVisible();
     await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
     await expect(page.getByRole("link", { name: /forgot/i })).toHaveAttribute("href", "/forgot-password");
@@ -54,7 +54,7 @@ test.describe("login — page chrome", () => {
     await expect(pwd).toHaveAttribute("type", "password");
   });
 
-  test("submit is disabled until tenant + email + password are filled", async ({ page }) => {
+  test("submit is disabled until company code + email + password are filled", async ({ page }) => {
     await page.goto("/login");
     const submit = page.getByRole("button", { name: /^sign in$/i });
     // Tenant defaults to "root"; fill the rest to enable.
@@ -73,7 +73,7 @@ test.describe("login — manual sign in", () => {
 
   test("POSTs credentials with the tenant header", async ({ page }) => {
     await page.goto("/login");
-    await page.getByLabel("Tenant").fill("acme");
+    await page.getByLabel("Company Code").fill("acme");
     await page.getByLabel("Email").fill("alice@acme.com");
     await page.getByLabel("Password", { exact: true }).fill("Password123!");
 

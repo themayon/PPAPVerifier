@@ -59,7 +59,7 @@ export function DemoAccountsDialog({ open, onOpenChange, onPick }: DemoAccountsD
           aria-hidden
         />
         <div
-          className="pointer-events-none absolute -bottom-32 -left-32 size-[320px] rounded-full bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--saffron)_12%,transparent),transparent)] blur-3xl"
+          className="pointer-events-none absolute -bottom-32 -left-32 size-[320px] rounded-full bg-[radial-gradient(closest-side,rgb(0_176_240_/_0.12),transparent)] blur-3xl"
           aria-hidden
         />
 
@@ -78,7 +78,7 @@ export function DemoAccountsDialog({ open, onOpenChange, onPick }: DemoAccountsD
             Step into any role.
           </h2>
           <p className="mt-1.5 max-w-[80%] text-[12.5px] leading-relaxed text-muted-foreground/80">
-            Explore FullStack as any user across the demo tenants — we'll sign you in instantly.
+            Explore PPAP Verifier using a sample company and role — we'll sign you in instantly.
           </p>
         </header>
 

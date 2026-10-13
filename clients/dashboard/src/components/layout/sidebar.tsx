@@ -96,15 +96,15 @@ export function Sidebar() {
               "font-display text-[12px] font-bold text-[var(--color-primary-foreground)]",
             )}
           >
-            F
+            P
           </span>
           {!collapsed && (
             <div className="flex flex-col">
               <span className="whitespace-nowrap font-display text-[15px] font-bold leading-none tracking-tight text-[var(--color-foreground)]">
-                Full<span className="text-[var(--color-primary)]">Stack</span>
+                PPAP <span className="text-[var(--color-primary)]">Verifier</span>
               </span>
               <span className="mt-1 text-[10px] font-semibold uppercase tracking-wider text-[oklch(from_var(--color-muted-foreground)_l_c_h_/_0.7)]">
-                Dashboard
+                Compliance workspace
               </span>
             </div>
           )}

@@ -36,7 +36,12 @@ export function Pagination({
   const tp = String(Math.max(totalPages, 1)).padStart(2, "0");
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
-      <span className="font-mono text-[10.5px] font-medium uppercase tracking-[0.18em] text-[var(--color-muted-foreground)]">
+      <span
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="font-mono text-[10.5px] font-medium uppercase tracking-[0.18em] text-[var(--color-muted-foreground)]"
+      >
         Showing {shown} of {totalCount} {noun} · folio {p} / {tp}
       </span>
       <div className="flex items-center gap-2">

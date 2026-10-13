@@ -365,9 +365,9 @@ export function Topbar() {
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Sign out of FullStack?</DialogTitle>
+            <DialogTitle>Sign out of PPAP Verifier?</DialogTitle>
             <DialogDescription>
-              You'll need to sign in again to access this tenant. Any unsaved
+              You'll need to sign in again to access this company. Any unsaved
               work in this session will be lost.
             </DialogDescription>
           </DialogHeader>

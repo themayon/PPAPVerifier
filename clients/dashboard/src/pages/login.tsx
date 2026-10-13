@@ -91,7 +91,7 @@ export function LoginPage() {
             Welcome back
           </h1>
           <p className="text-[13px] text-[var(--color-muted-foreground)]">
-            Sign in to your account
+            Sign in to manage PPAP submissions and validation
           </p>
         </div>
 
@@ -111,19 +111,19 @@ export function LoginPage() {
           noValidate
           aria-describedby={error ? "login-error" : undefined}
         >
-          {/* Tenant — DES stays multi-tenant, so this leads the form. */}
+          {/* Company code resolves the tenant boundary before authentication. */}
           <div className="space-y-1.5">
             <Label
               htmlFor="tenant"
               className="block text-[11.5px] font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]"
             >
-              Tenant
+              Company Code
             </Label>
             <Input
               id="tenant"
               value={tenant}
               onChange={(e) => setTenant(e.target.value)}
-              placeholder="root"
+              placeholder="your-company"
               autoComplete="organization"
               required
               aria-invalid={error ? true : undefined}

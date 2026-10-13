@@ -10,7 +10,7 @@ test.describe("forgot-password page", () => {
     // + form scaffolding only.
     await expect(page.getByRole("heading", { name: /reset your password/i })).toBeVisible();
     await expect(page.getByLabel("Email")).toBeVisible();
-    await expect(page.getByLabel("Tenant")).toBeVisible();
+    await expect(page.getByLabel("Company Code")).toBeVisible();
     await expect(page.getByRole("button", { name: /send reset link/i })).toBeVisible();
   });
 
@@ -19,7 +19,7 @@ test.describe("forgot-password page", () => {
 
     await page.goto("/forgot-password");
     await page.getByLabel("Email").fill("alice@acme.com");
-    await page.getByLabel("Tenant").fill("acme");
+    await page.getByLabel("Company Code").fill("acme");
     await page.getByRole("button", { name: /send reset link/i }).click();
 
     const { body, headers } = await captured.value();
@@ -33,7 +33,7 @@ test.describe("forgot-password page", () => {
 
     await page.goto("/forgot-password");
     await page.getByLabel("Email").fill("bob@globex.com");
-    await page.getByLabel("Tenant").fill("globex");
+    await page.getByLabel("Company Code").fill("globex");
     await page.getByRole("button", { name: /send reset link/i }).click();
 
     // Success heading + echoed email/tenant in the confirmation copy.
@@ -42,7 +42,7 @@ test.describe("forgot-password page", () => {
     // visible body text instead.
     await expect(page.getByRole("heading", { name: /check your inbox/i })).toBeVisible();
     await expect(page.getByText(/bob@globex\.com/)).toBeVisible();
-    await expect(page.getByText(/in tenant globex/i)).toBeVisible();
+    await expect(page.getByText(/at company globex/i)).toBeVisible();
 
     // "Try a different address" affordance lets the user retry without
     // a page reload — important when they typo their email.
@@ -57,7 +57,7 @@ test.describe("forgot-password page", () => {
 
     await page.goto("/forgot-password");
     await page.getByLabel("Email").fill("alice@acme.com");
-    await page.getByLabel("Tenant").fill("does-not-exist");
+    await page.getByLabel("Company Code").fill("does-not-exist");
     await page.getByRole("button", { name: /send reset link/i }).click();
 
     // Error band is rendered (role=alert) with the server's detail surfaced.

@@ -237,17 +237,8 @@ else
 }
 
 //#if (frontend)
-// Admin console (React + Vite). Target the API's HTTPS endpoint directly — UseHttpsRedirection's 307 to https is cross-origin and strips the Authorization header.
-builder.AddJavaScriptApp($"{appPrefix}-admin", "../../../clients/admin", "dev")
-    .WithNpm()
-    .WithReference(api)
-    .WaitFor(api)
-    .WithHttpEndpoint(port: 5173, targetPort: 5173, isProxied: false)
-    .WithExternalHttpEndpoints()
-    .WithEnvironment("VITE_API_BASE_URL", api.GetEndpoint("https"));
-
-// Tenant-facing dashboard (React + Vite, with SSE live feed)
-builder.AddJavaScriptApp($"{appPrefix}-dashboard", "../../../clients/dashboard", "dev")
+// Unified PPAP Verifier application (React + Vite, with SSE live feed)
+builder.AddJavaScriptApp("ppap-verifier", "../../../clients/dashboard", "dev")
     .WithNpm()
     .WithReference(api)
     .WaitFor(api)

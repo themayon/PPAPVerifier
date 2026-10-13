@@ -104,7 +104,7 @@ export function FileDropzone({ options, onUploaded, disabled, accept, className 
             ? "cursor-not-allowed border-border bg-[var(--color-muted)] opacity-60"
             : "cursor-pointer border-border bg-[var(--color-muted)] hover:bg-[oklch(from_var(--color-muted)_l_c_h_/_0.6)]",
           dragOver
-            && "border-[var(--color-primary)] bg-[oklch(from_var(--color-primary)_l_c_h_/_0.06)]",
+          && "border-[var(--color-primary)] bg-[oklch(from_var(--color-primary)_l_c_h_/_0.06)]",
           isError && "border-[var(--color-destructive)]",
         )}
       >
@@ -227,7 +227,7 @@ function detailFor(
   }
   if (options.allowedExtensions && options.allowedExtensions.length > 0) {
     const ext = options.allowedExtensions.join(", ");
-    const cap = options.maxBytes ? ` · up to ${formatBytes(options.maxBytes)}` : "";
+    const cap = typeof options.maxBytes === "number" ? ` · up to ${formatBytes(options.maxBytes)}` : "";
     return `Allowed: ${ext}${cap}`;
   }
   return typeof options.category === "string" ? options.category : "Drop a file";

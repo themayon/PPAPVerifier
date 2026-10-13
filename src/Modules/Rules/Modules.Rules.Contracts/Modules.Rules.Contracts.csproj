@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>DES.Modules.Rules.Contracts</RootNamespace>
+    <AssemblyName>DES.Modules.Rules.Contracts</AssemblyName>
+    <NoWarn>$(NoWarn);S2094</NoWarn>
+  </PropertyGroup>
+  <ItemGroup><PackageReference Include="Mediator.Abstractions" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="..\..\..\BuildingBlocks\Shared\Shared.csproj" /></ItemGroup>
+</Project>

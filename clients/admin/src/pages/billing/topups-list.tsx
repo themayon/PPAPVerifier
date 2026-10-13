@@ -36,7 +36,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { Select } from "@/components/list";
+import { ErrorBand, Select } from "@/components/list";
 import { KpiTile } from "@/components/kpi-tile";
 import { ApiRequestError } from "@/lib/api-client";
 import { useAuth } from "@/auth/use-auth";
@@ -163,9 +163,9 @@ export function TopupsListPage() {
         description: "A draft invoice was created for this top-up.",
         action: invoiceId
           ? {
-              label: "View invoice",
-              onClick: () => navigate(`/billing/invoices/${invoiceId}`),
-            }
+            label: "View invoice",
+            onClick: () => navigate(`/billing/invoices/${invoiceId}`),
+          }
           : undefined,
       });
       invalidate();
@@ -291,8 +291,8 @@ export function TopupsListPage() {
         </CardHeader>
         <CardContent className="p-0">
           {query.isError && (
-            <div className="border-t border-[var(--color-border)] px-6 py-4 text-sm text-[var(--color-destructive)]">
-              {describe(query.error, "Failed to load top-up requests.")}
+            <div className="border-t border-[var(--color-border)] px-6 py-4">
+              <ErrorBand message={describe(query.error, "Failed to load top-up requests.")} />
             </div>
           )}
 
@@ -340,7 +340,7 @@ export function TopupsListPage() {
                           <button
                             type="button"
                             onClick={() => navigate(`/billing/invoices/${req.invoiceId}`)}
-                            className="inline-flex items-center gap-1 rounded font-mono text-[11px] text-[var(--color-primary)] underline-offset-2 hover:underline"
+                            className="inline-flex items-center gap-1 rounded font-mono text-[11px] text-[var(--color-primary)] underline-offset-2 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-[var(--color-ring)] focus-visible:ring-offset-2"
                           >
                             <Receipt className="h-3 w-3" /> invoice
                           </button>

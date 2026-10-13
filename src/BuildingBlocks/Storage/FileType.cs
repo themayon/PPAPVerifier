@@ -19,6 +19,7 @@ public static class FileTypeMetadata
         type switch
         {
             FileType.Image => new() { AllowedExtensions = [".jpg", ".jpeg", ".png", ".ico"], MaxSizeInMB = 5 },
+            FileType.Document => new() { AllowedExtensions = [".xlsx", ".docx", ".pptx", ".txt", ".csv", ".json"], MaxSizeInMB = 25 },
             FileType.Pdf => new() { AllowedExtensions = [".pdf"], MaxSizeInMB = 10 },
             _ => throw new NotSupportedException($"Unsupported file type: {type}")
         };

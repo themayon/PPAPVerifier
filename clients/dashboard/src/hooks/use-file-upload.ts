@@ -25,7 +25,7 @@ export type UploadOptions = {
    */
   allowedExtensions?: string[];
   /** Optional client-side max bytes for an early reject. Server enforces too. */
-  maxBytes?: number;
+  maxBytes?: number | ((file: File) => number);
 };
 
 export type UploadProgress = {
@@ -112,8 +112,9 @@ export function useFileUpload(options: UploadOptions): UseFileUploadResult {
           throw new Error(message);
         }
       }
-      if (opts.maxBytes !== undefined && file.size > opts.maxBytes) {
-        const message = `File is ${formatBytes(file.size)}; limit is ${formatBytes(opts.maxBytes)}.`;
+      const maxBytes = typeof opts.maxBytes === "function" ? opts.maxBytes(file) : opts.maxBytes;
+      if (maxBytes !== undefined && file.size > maxBytes) {
+        const message = `File is ${formatBytes(file.size)}; limit is ${formatBytes(maxBytes)}.`;
         setProgress({
           fileName: file.name,
           totalBytes: file.size,
@@ -169,11 +170,11 @@ export function useFileUpload(options: UploadOptions): UseFileUploadResult {
           setProgress((p) =>
             p
               ? {
-                  ...p,
-                  loaded,
-                  totalBytes: t,
-                  percent: t > 0 ? Math.min(99, Math.round((loaded / t) * 100)) : 0,
-                }
+                ...p,
+                loaded,
+                totalBytes: t,
+                percent: t > 0 ? Math.min(99, Math.round((loaded / t) * 100)) : 0,
+              }
               : null,
           );
         }, (xhr) => {

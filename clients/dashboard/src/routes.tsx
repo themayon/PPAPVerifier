@@ -114,6 +114,38 @@ const GroupDetailPage = lazyNamed(
 );
 const MyFilesPage = lazyNamed(() => import("@/pages/files/my-files"), "MyFilesPage");
 const ChatPage = lazyNamed(() => import("@/pages/chat/chat-page"), "ChatPage");
+const PpapHomePage = lazyNamed(() => import("@/pages/ppap/home"), "PpapHomePage");
+const PpapPartsPage = lazyNamed(() => import("@/pages/ppap/parts"), "PpapPartsPage");
+const PpapSubmissionPage = lazyNamed(
+  () => import("@/pages/ppap/submission"),
+  "PpapSubmissionPage",
+);
+const PpapProcessingPage = lazyNamed(
+  () => import("@/pages/ppap/processing"),
+  "PpapProcessingPage",
+);
+const PpapReportPage = lazyNamed(
+  () => import("@/pages/ppap/report"),
+  "PpapReportPage",
+);
+const PpapOperationsPage = lazyNamed(
+  () => import("@/pages/ppap/operations"),
+  "PpapOperationsPage",
+);
+const PpapReportReviewPage = lazyNamed(
+  () => import("@/pages/ppap/review"),
+  "PpapReportReviewPage",
+);
+const RulesListPage = lazyNamed(() => import("@/pages/rules/rules-list"), "RulesListPage");
+const RuleEditorPage = lazyNamed(() => import("@/pages/rules/rule-editor"), "RuleEditorPage");
+const RuleTemplatesPage = lazyNamed(
+  () => import("@/pages/rules/templates"),
+  "RuleTemplatesPage",
+);
+const ExtractionAttemptsPage = lazyNamed(
+  () => import("@/pages/extraction-attempts"),
+  "ExtractionAttemptsPage",
+);
 
 /**
  * RouteFallback — what shows while a lazy chunk is downloading. Mirrors
@@ -198,8 +230,22 @@ export const router = createBrowserRouter([
         element: <AppShell />,
         errorElement: <RouteError />,
         children: [
-          { index: true, element: withSuspense(<OverviewPage />) },
+          { index: true, element: <Navigate to="/ppap" replace /> },
+          { path: "overview", element: withSuspense(<OverviewPage />) },
           { path: "activity", element: withSuspense(<ActivityPage />) },
+          { path: "ppap", element: withSuspense(<PpapHomePage />) },
+          { path: "ppap/parts", element: withSuspense(<PpapPartsPage />) },
+          { path: "ppap/submissions/:submissionId", element: withSuspense(<PpapSubmissionPage />) },
+          { path: "ppap/processing/:jobId", element: withSuspense(<PpapProcessingPage />) },
+          { path: "ppap/reports/:reportId", element: withSuspense(<PpapReportPage />) },
+          { path: "ppap/operations", element: withSuspense(<PpapOperationsPage />) },
+          { path: "ppap/reports/:reportId/review", element: withSuspense(<PpapReportReviewPage />) },
+          { path: "rules", element: <Navigate to="/rules/validation" replace /> },
+          { path: "rules/:type", element: withSuspense(<RulesListPage />) },
+          { path: "rules/:type/new", element: withSuspense(<RuleEditorPage />) },
+          { path: "rules/:type/:ruleId", element: withSuspense(<RuleEditorPage />) },
+          { path: "rule-templates", element: withSuspense(<RuleTemplatesPage />) },
+          { path: "extraction-attempts", element: withSuspense(<ExtractionAttemptsPage />) },
           { path: "subscription", element: withSuspense(<SubscriptionPage />) },
           { path: "wallet", element: withSuspense(<WalletPage />) },
           { path: "invoices", element: withSuspense(<InvoicesPage />) },

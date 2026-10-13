@@ -181,20 +181,20 @@ test.describe("expiry banner", () => {
 
   test("warns while in grace", async ({ page }) => {
     await mockJsonResponse(page, "**/api/v1/tenants/me/status**", GRACE_STATUS);
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByText(/your subscription expired/i)).toBeVisible();
     await expect(page.getByText(/grace left/i)).toBeVisible();
   });
 
   test("informs when nearing expiry", async ({ page }) => {
     await mockJsonResponse(page, "**/api/v1/tenants/me/status**", NEARING_STATUS);
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByText(/your subscription expires in/i)).toBeVisible();
   });
 
   test("pins a persistent bar when expired (no dismiss)", async ({ page }) => {
     await mockJsonResponse(page, "**/api/v1/tenants/me/status**", EXPIRED_STATUS);
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByText(/your subscription has expired/i)).toBeVisible();
     // Expired is the hardest state — it cannot be dismissed.
     await expect(
@@ -204,7 +204,7 @@ test.describe("expiry banner", () => {
 
   test("is absent when healthy", async ({ page }) => {
     await mockJsonResponse(page, "**/api/v1/tenants/me/status**", HEALTHY_STATUS);
-    await page.goto("/");
+    await page.goto("/overview");
     // Wait for the page to settle, then assert the bar never showed.
     await expect(page.getByRole("heading", { name: /good (morning|afternoon|evening)/i })).toBeVisible();
     await expect(page.getByText(/your subscription expire/i)).toHaveCount(0);
@@ -212,7 +212,7 @@ test.describe("expiry banner", () => {
 
   test("can be dismissed for the session", async ({ page }) => {
     await mockJsonResponse(page, "**/api/v1/tenants/me/status**", GRACE_STATUS);
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByText(/your subscription expired/i)).toBeVisible();
     await page.getByRole("button", { name: /dismiss subscription notice/i }).click();
     await expect(page.getByText(/your subscription expired/i)).toHaveCount(0);

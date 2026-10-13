@@ -58,8 +58,14 @@ builder.Services.AddMediator(o =>
         typeof(DES.Modules.Catalog.CatalogModule),
         typeof(DES.Modules.Tickets.Contracts.TicketsContractsMarker),
         typeof(DES.Modules.Tickets.TicketsModule),
+        typeof(DES.Modules.Rules.Contracts.RulesContractsMarker),
+        typeof(DES.Modules.Rules.RulesModule),
         typeof(DES.Modules.Files.Contracts.v1.Commands.RequestUploadUrlCommand),
         typeof(DES.Modules.Files.FilesModule),
+        typeof(DES.Modules.Ppap.Contracts.PpapContractsMarker),
+        typeof(DES.Modules.Ppap.PpapModule),
+        typeof(DES.Modules.DocumentIntelligence.Contracts.DocumentIntelligenceContractsMarker),
+        typeof(DES.Modules.DocumentIntelligence.DocumentIntelligenceModule),
         typeof(DES.Modules.Chat.Contracts.v1.Commands.CreateChannelCommand),
         typeof(DES.Modules.Chat.ChatModule),
         typeof(DES.Modules.Notifications.Contracts.v1.Commands.MarkNotificationReadCommand),
@@ -76,8 +82,11 @@ var moduleAssemblies = new Assembly[]
     typeof(BillingModule).Assembly,
     typeof(CatalogModule).Assembly,
     typeof(TicketsModule).Assembly,
-    typeof(DES.Modules.Chat.ChatModule).Assembly,
+    typeof(DES.Modules.Rules.RulesModule).Assembly,
     typeof(DES.Modules.Notifications.NotificationsModule).Assembly,
+    typeof(DES.Modules.Ppap.PpapModule).Assembly,
+    typeof(DES.Modules.DocumentIntelligence.DocumentIntelligenceModule).Assembly,
+    typeof(DES.Modules.Chat.ChatModule).Assembly,
 };
 
 builder.AddHeroPlatform(o =>

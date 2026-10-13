@@ -1,0 +1,28 @@
+namespace DES.Modules.DocumentIntelligence.Contracts.Dtos;
+
+public sealed record OperatorExtractionAttemptDto(
+    Guid Id,
+    Guid OwnerUserId,
+    Guid SubmissionDocumentId,
+    Guid SourceFileAssetId,
+    string DocumentCode,
+    string SourceSha256,
+    string Provider,
+    string Model,
+    string ExtractorVersion,
+    string Status,
+    int AttemptCount,
+    string? ErrorCode,
+    string? ErrorMessage,
+    Guid? CanonicalDocumentId,
+    Guid? RawResponseFileAssetId,
+    Guid? GeneratedExcelFileAssetId,
+    DateTime CreatedAtUtc,
+    DateTime? ClaimedAtUtc,
+    DateTime? ClaimedUntilUtc,
+    DateTime? SubmittedAtUtc,
+    DateTime? StartedAtUtc,
+    DateTime? CompletedAtUtc,
+    DateTime UpdatedAtUtc,
+    DateTime? CompletionEventPublishedAtUtc,
+    DateTime? FailureEventPublishedAtUtc);

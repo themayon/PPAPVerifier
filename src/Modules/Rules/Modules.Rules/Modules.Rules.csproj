@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>DES.Modules.Rules</RootNamespace>
+    <AssemblyName>DES.Modules.Rules</AssemblyName>
+    <NoWarn>$(NoWarn);CA1062;CA1307;CA1512;CA1725;CA1812;CA1822;CA1859;S2094;S2325;S2681;S3267;S3358;S3626;S927</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Persistence\Persistence.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Web\Web.csproj" />
+    <ProjectReference Include="..\Modules.Rules.Contracts\Modules.Rules.Contracts.csproj" />
+  </ItemGroup>
+</Project>

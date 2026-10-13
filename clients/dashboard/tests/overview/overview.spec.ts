@@ -49,7 +49,7 @@ test.describe("overview (/)", () => {
   });
 
   test("renders the greeting header and the four stat cards", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByRole("heading", { name: /good (morning|afternoon|evening), alice/i })).toBeVisible();
     await expect(page.getByText("Plan", { exact: true })).toBeVisible();
     await expect(page.getByText("Resources", { exact: true })).toBeVisible();
@@ -57,7 +57,7 @@ test.describe("overview (/)", () => {
   });
 
   test("renders the recent-audits + usage + system-status sections", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByText("Recent audits", { exact: true })).toBeVisible();
     await expect(page.getByText("Usage by resource", { exact: true })).toBeVisible();
     await expect(page.getByText("System status", { exact: true })).toBeVisible();
@@ -78,7 +78,7 @@ test.describe("overview (/)", () => {
       expiryState: "InGrace",
       graceEndsUtc: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
     });
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByText("Valid for", { exact: true })).toBeVisible();
     // Grace surfaces the grace-end caption on the stat card.
     await expect(page.getByText(/grace ends/i)).toBeVisible();
@@ -97,7 +97,7 @@ test.describe("overview (/)", () => {
       expiryState: "Expired",
       graceEndsUtc: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString(),
     });
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByText("Valid for", { exact: true })).toBeVisible();
     // The stat card reads "Expired" rather than a healthy day count.
     await expect(page.getByText("Expired", { exact: true })).toBeVisible();
@@ -122,7 +122,7 @@ test.describe("overview (/)", () => {
       });
     }
 
-    await page.goto("/");
+    await page.goto("/overview");
     await expect(page.getByRole("heading", { name: /good (morning|afternoon|evening), alice/i })).toBeVisible();
     await expect.poll(() => protectedRequests).toEqual([]);
   });

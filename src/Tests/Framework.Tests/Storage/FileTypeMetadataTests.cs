@@ -32,6 +32,17 @@ public sealed class FileTypeMetadataTests
         rules.AllowedExtensions.ShouldContain(".pdf");
     }
 
+    [Fact]
+    public void GetRules_Should_ReturnDocumentRules_When_DocumentRequested()
+    {
+        var rules = FileTypeMetadata.GetRules(FileType.Document);
+
+        rules.MaxSizeInMB.ShouldBe(25);
+        rules.AllowedExtensions.ShouldContain(".xlsx");
+        rules.AllowedExtensions.ShouldContain(".json");
+        rules.AllowedExtensions.ShouldContain(".txt");
+    }
+
     #endregion
 
     #region Edge Cases
@@ -39,8 +50,8 @@ public sealed class FileTypeMetadataTests
     [Fact]
     public void GetRules_Should_Throw_When_TypeUnsupported()
     {
-        // FileType.Document has no mapping and falls into the default arm.
-        Should.Throw<NotSupportedException>(() => FileTypeMetadata.GetRules(FileType.Document));
+        // An undefined enum value falls into the default arm.
+        Should.Throw<NotSupportedException>(() => FileTypeMetadata.GetRules((FileType)999));
     }
 
     [Fact]

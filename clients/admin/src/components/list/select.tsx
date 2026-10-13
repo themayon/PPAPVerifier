@@ -22,6 +22,7 @@ type SelectProps<T extends string = string> = {
   id?: string;
   disabled?: boolean;
   className?: string;
+  "aria-label"?: string;
   "aria-invalid"?: boolean | "true" | "false";
   "aria-describedby"?: string;
 };
@@ -43,6 +44,7 @@ export function Select<T extends string = string>({
   id,
   disabled,
   className,
+  "aria-label": ariaLabel,
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
 }: SelectProps<T>) {
@@ -63,6 +65,7 @@ export function Select<T extends string = string>({
         <DropdownMenuTrigger
           id={id}
           disabled={disabled}
+          aria-label={ariaLabel}
           aria-invalid={ariaInvalid}
           aria-describedby={ariaDescribedBy}
           className={cn(

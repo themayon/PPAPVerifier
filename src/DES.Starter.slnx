@@ -1,4 +1,4 @@
-﻿<Solution>
+<Solution>
   <Folder Name="/BuildingBlocks/">
 <Project Path="BuildingBlocks/Caching/Caching.csproj" />
     <Project Path="BuildingBlocks/Core/Core.csproj" />
@@ -29,6 +29,10 @@
     <Project Path="Modules/Chat/Modules.Chat.Contracts/Modules.Chat.Contracts.csproj" />
     <Project Path="Modules/Chat/Modules.Chat/Modules.Chat.csproj" />
   </Folder>
+  <Folder Name="/Modules/DocumentIntelligence/">
+    <Project Path="Modules/DocumentIntelligence/Modules.DocumentIntelligence.Contracts/Modules.DocumentIntelligence.Contracts.csproj" />
+    <Project Path="Modules/DocumentIntelligence/Modules.DocumentIntelligence/Modules.DocumentIntelligence.csproj" />
+  </Folder>
   <Folder Name="/Modules/Files/">
     <Project Path="Modules/Files/Modules.Files.Contracts/Modules.Files.Contracts.csproj" />
     <Project Path="Modules/Files/Modules.Files/Modules.Files.csproj" />
@@ -44,6 +48,14 @@
   <Folder Name="/Modules/Notifications/">
     <Project Path="Modules/Notifications/Modules.Notifications.Contracts/Modules.Notifications.Contracts.csproj" />
     <Project Path="Modules/Notifications/Modules.Notifications/Modules.Notifications.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Ppap/">
+    <Project Path="Modules/Ppap/Modules.Ppap.Contracts/Modules.Ppap.Contracts.csproj" />
+    <Project Path="Modules/Ppap/Modules.Ppap/Modules.Ppap.csproj" />
+  </Folder>
+  <Folder Name="/Modules/Rules/">
+    <Project Path="Modules/Rules/Modules.Rules.Contracts/Modules.Rules.Contracts.csproj" />
+    <Project Path="Modules/Rules/Modules.Rules/Modules.Rules.csproj" />
   </Folder>
   <Folder Name="/Modules/Tickets/">
     <Project Path="Modules/Tickets/Modules.Tickets.Contracts/Modules.Tickets.Contracts.csproj" />
@@ -72,6 +84,7 @@
     <Project Path="Tests/Catalog.Tests/Catalog.Tests.csproj" />
     <Project Path="Tests/Chat.Tests/Chat.Tests.csproj" />
     <Project Path="Tests/Webhooks.Tests/Webhooks.Tests.csproj" />
+    <Project Path="Tests/DocumentIntelligence.Tests/DocumentIntelligence.Tests.csproj" />
     <Project Path="Tests/Files.Tests/Files.Tests.csproj" />
     <Project Path="Tests/Framework.Tests/Framework.Tests.csproj" />
     <Project Path="Tests/Caching.Tests/Caching.Tests.csproj" />
@@ -80,6 +93,8 @@
     <Project Path="Tests/Integration.Tests/Integration.Tests.csproj" />
     <Project Path="Tests/Integration.Middleware.Tests/Integration.Middleware.Tests.csproj" />
     <Project Path="Tests/Multitenancy.Tests/Multitenancy.Tests.csproj" Id="985345a2-edb4-4ef9-9a1b-59b704f523b6" />
+    <Project Path="Tests/Ppap.Tests/Ppap.Tests.csproj" />
+    <Project Path="Tests/Rules.Tests/Rules.Tests.csproj" />
   </Folder>
   <!--#if (includeTools) -->
   <Folder Name="/Tools/">

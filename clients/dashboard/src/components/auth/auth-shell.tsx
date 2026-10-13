@@ -44,7 +44,7 @@ export function AuthShell({
 }) {
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[var(--color-background)] px-5 py-8 sm:py-12">
-      {/* Atmospheric background — three rose/saffron blur orbs at
+      {/* Atmospheric background — three royal/cyan blur orbs at
           descending opacities. No parallax, no animation — calm. */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
         <div
@@ -53,7 +53,7 @@ export function AuthShell({
         />
         <div
           className="absolute -bottom-[20%] -right-[10%] h-[55vw] w-[55vw] rounded-full blur-[120px]"
-          style={{ backgroundColor: "oklch(from var(--color-saffron) l c h / 0.07)" }}
+          style={{ backgroundColor: "rgb(0 176 240 / 0.08)" }}
         />
         <div
           className="absolute top-[10%] right-[5%] h-[30vw] w-[30vw] rounded-full blur-[80px]"
@@ -72,12 +72,12 @@ export function AuthShell({
               className="size-9 object-contain"
             /> */}
             <span className="font-display text-[26px] font-semibold tracking-tight text-[var(--color-foreground)]">
-              Full<span className="text-[var(--color-primary)]">Stack</span>
+              PPAP <span className="text-[var(--color-primary)]">Verifier</span>
             </span>
           </div>
           <div className="mt-3 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[oklch(from_var(--color-muted-foreground)_l_c_h_/_0.7)]">
             <span aria-hidden className="h-px w-6 bg-[var(--color-border)]" />
-            <span>.NET 10 Starter Kit</span>
+            <span>Production Part Approval</span>
             <span aria-hidden className="h-px w-6 bg-[var(--color-border)]" />
           </div>
         </div>
@@ -98,7 +98,7 @@ export function AuthShell({
           <span>Encrypted in transit · JWT-secured session</span>
         </div>
         <p className="mt-4 text-center text-[10px] font-medium uppercase tracking-wider text-[oklch(from_var(--color-muted-foreground)_l_c_h_/_0.5)]">
-          FullStack Administration
+          PPAP validation and compliance
         </p>
       </div>
     </div>

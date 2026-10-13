@@ -92,7 +92,7 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
             if (!token) {
               console.warn(
                 "[realtime] accessTokenFactory called with no stored token — SignalR negotiate will 401. " +
-                  "This usually means the provider is alive while the user is signed out.",
+                "This usually means the provider is alive while the user is signed out.",
               );
               return "";
             }
@@ -151,6 +151,7 @@ export function RealtimeProvider({ children }: { children: ReactNode }) {
         "ChatTypingStarted",
         "PresenceChanged",
         "NotificationCreated",
+        "PpapJobProgressed",
       ]) {
         wire(event);
       }

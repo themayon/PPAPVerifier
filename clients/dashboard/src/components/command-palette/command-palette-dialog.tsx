@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Command } from "cmdk";
 import {
   Activity,
+  BookOpenCheck,
   Boxes,
+  ClipboardCheck,
   Folder,
   HeartPulse,
   KeyRound,
@@ -15,8 +17,10 @@ import {
   Moon,
   Package,
   Palette,
+  PanelsTopLeft,
   Plus,
   Receipt,
+  ScanSearch,
   ScrollText,
   Search,
   Settings as SettingsIcon,
@@ -104,12 +108,21 @@ export function CommandPaletteDialog({
         heading: "Navigate",
         items: [
           {
+            id: "nav-ppap",
+            label: "PPAP Workspace",
+            hint: "Submissions, parts, and validation",
+            Icon: ClipboardCheck,
+            keywords: ["home", "ppap", "submissions", "validation"],
+            perform: go("/ppap"),
+            perm: "Permissions.Ppap.Submissions.View",
+          },
+          {
             id: "nav-overview",
-            label: "Overview",
-            hint: "Tenant telemetry & usage",
+            label: "Admin overview",
+            hint: "Company telemetry & usage",
             Icon: LayoutDashboard,
-            keywords: ["home", "dashboard"],
-            perform: go("/"),
+            keywords: ["administration", "dashboard"],
+            perform: go("/overview"),
           },
           {
             id: "nav-activity",
@@ -118,6 +131,91 @@ export function CommandPaletteDialog({
             Icon: Activity,
             keywords: ["events", "sse", "log"],
             perform: go("/activity"),
+          },
+          {
+            id: "nav-ppap-operations",
+            label: "PPAP operations",
+            hint: "Jobs, credits, and report review",
+            Icon: ClipboardCheck,
+            keywords: ["operator", "jobs", "credits", "reports"],
+            perform: go("/ppap/operations"),
+            anyPerm: [
+              "Permissions.Ppap.Operations.View",
+              "Permissions.Ppap.Jobs.View",
+              "Permissions.Ppap.Credits.Manage",
+            ],
+          },
+          {
+            id: "nav-extraction-attempts",
+            label: "Extraction attempts",
+            hint: "Document intelligence processing",
+            Icon: ScanSearch,
+            keywords: ["documents", "ai", "processing"],
+            perform: go("/extraction-attempts"),
+            perm: "Permissions.DocumentIntelligence.Attempts.View",
+          },
+          {
+            id: "nav-rules",
+            label: "Validation rules",
+            hint: "Row and document validation rules",
+            Icon: BookOpenCheck,
+            keywords: ["rules", "validation", "findings", "conditions"],
+            perform: go("/rules/validation"),
+            perm: "Permissions.Definitions.View",
+          },
+          {
+            id: "nav-rules-header",
+            label: "Header rules",
+            hint: "Document header checks",
+            Icon: BookOpenCheck,
+            keywords: ["rules", "header", "part number", "revision"],
+            perform: go("/rules/header"),
+            perm: "Permissions.Definitions.View",
+          },
+          {
+            id: "nav-rules-special",
+            label: "Special rules",
+            hint: "Special characteristics and customer-specific checks",
+            Icon: Sparkles,
+            keywords: ["rules", "special", "customer"],
+            perform: go("/rules/special"),
+            perm: "Permissions.Definitions.View",
+          },
+          {
+            id: "nav-rules-custom",
+            label: "Custom rules",
+            hint: "Tenant-authored checks",
+            Icon: BookOpenCheck,
+            keywords: ["rules", "custom"],
+            perform: go("/rules/custom"),
+            perm: "Permissions.Definitions.View",
+          },
+          {
+            id: "nav-rules-ml",
+            label: "ML rules",
+            hint: "Model-assisted checks",
+            Icon: BookOpenCheck,
+            keywords: ["rules", "ml", "ai", "model"],
+            perform: go("/rules/ml"),
+            perm: "Permissions.Definitions.View",
+          },
+          {
+            id: "action-new-rule",
+            label: "New validation rule",
+            hint: "Open the rule builder",
+            Icon: Plus,
+            keywords: ["create", "rule", "condition"],
+            perform: go("/rules/validation/new"),
+            perm: "Permissions.Definitions.Create",
+          },
+          {
+            id: "nav-rule-templates",
+            label: "Rule templates",
+            hint: "PPAP document and rule assignments",
+            Icon: PanelsTopLeft,
+            keywords: ["templates", "documents", "levels"],
+            perform: go("/rule-templates"),
+            perm: "Permissions.Templates.View",
           },
           {
             id: "nav-chat",
@@ -459,7 +557,7 @@ export function CommandPaletteDialog({
         <Command
           loop
           className="flex flex-col"
-          // cmdk sets [cmdk-...] data attrs we hook into with selectors below.
+        // cmdk sets [cmdk-...] data attrs we hook into with selectors below.
         >
           {/* Search row — mirrors EntitySearch shape (rounded-xl, soft icon left). */}
           <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">

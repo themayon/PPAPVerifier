@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>DES.Modules.Ppap</RootNamespace>
+		<AssemblyName>DES.Modules.Ppap</AssemblyName>
+		<NoWarn>$(NoWarn);CA1031;CA1812;CA1859;S3267</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\BuildingBlocks\Eventing\Eventing.csproj" />
+		<ProjectReference Include="..\..\..\BuildingBlocks\Jobs\Jobs.csproj" />
+		<ProjectReference Include="..\..\..\BuildingBlocks\Persistence\Persistence.csproj" />
+		<ProjectReference Include="..\..\..\BuildingBlocks\Web\Web.csproj" />
+		<ProjectReference Include="..\..\DocumentIntelligence\Modules.DocumentIntelligence.Contracts\Modules.DocumentIntelligence.Contracts.csproj" />
+		<ProjectReference Include="..\..\Files\Modules.Files.Contracts\Modules.Files.Contracts.csproj" />
+		<ProjectReference Include="..\..\Rules\Modules.Rules.Contracts\Modules.Rules.Contracts.csproj" />
+		<ProjectReference Include="..\Modules.Ppap.Contracts\Modules.Ppap.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>

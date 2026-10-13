@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<RootNamespace>DES.Modules.DocumentIntelligence</RootNamespace>
+		<AssemblyName>DES.Modules.DocumentIntelligence</AssemblyName>
+		<NoWarn>$(NoWarn);CA1812</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\BuildingBlocks\Eventing\Eventing.csproj" />
+		<ProjectReference Include="..\..\..\BuildingBlocks\Persistence\Persistence.csproj" />
+		<ProjectReference Include="..\..\..\BuildingBlocks\Web\Web.csproj" />
+		<ProjectReference Include="..\..\Files\Modules.Files.Contracts\Modules.Files.Contracts.csproj" />
+		<ProjectReference Include="..\..\Ppap\Modules.Ppap.Contracts\Modules.Ppap.Contracts.csproj" />
+		<ProjectReference Include="..\Modules.DocumentIntelligence.Contracts\Modules.DocumentIntelligence.Contracts.csproj" />
+	</ItemGroup>
+
+</Project>

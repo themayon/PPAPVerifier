@@ -77,6 +77,58 @@ export const WebhooksPermissions = Object.freeze({
   },
 } as const);
 
+export const RulesPermissions = Object.freeze({
+  Definitions: {
+    View: "Permissions.Definitions.View",
+    Create: "Permissions.Definitions.Create",
+    Edit: "Permissions.Definitions.Edit",
+    Review: "Permissions.Definitions.Review",
+    Publish: "Permissions.Definitions.Publish",
+    Retire: "Permissions.Definitions.Retire",
+    Test: "Permissions.Definitions.Test",
+  },
+  Templates: {
+    View: "Permissions.Templates.View",
+    Create: "Permissions.Templates.Create",
+    Edit: "Permissions.Templates.Edit",
+    Review: "Permissions.Templates.Review",
+    Publish: "Permissions.Templates.Publish",
+    Retire: "Permissions.Templates.Retire",
+  },
+} as const);
+
+export const DocumentIntelligencePermissions = Object.freeze({
+  Attempts: {
+    View: "Permissions.DocumentIntelligence.Attempts.View",
+  },
+} as const);
+
+export const PpapPermissions = Object.freeze({
+  Submissions: {
+    Create: "Permissions.Ppap.Submissions.Create",
+    View: "Permissions.Ppap.Submissions.View",
+    Update: "Permissions.Ppap.Submissions.Update",
+    Submit: "Permissions.Ppap.Submissions.Submit",
+    Cancel: "Permissions.Ppap.Submissions.Cancel",
+  },
+  Credits: {
+    View: "Permissions.Ppap.Credits.View",
+    RequestTopup: "Permissions.Ppap.Credits.RequestTopup",
+    Manage: "Permissions.Ppap.Credits.Manage",
+  },
+  Operations: {
+    View: "Permissions.Ppap.Operations.View",
+  },
+  Jobs: {
+    View: "Permissions.Ppap.Jobs.View",
+  },
+  Findings: {
+    View: "Permissions.Ppap.Findings.View",
+    CreateManual: "Permissions.Ppap.Findings.CreateManual",
+    ManageWaivers: "Permissions.Ppap.Findings.ManageWaivers",
+  },
+} as const);
+
 // ─── Catalog (drives the Role editor) ───────────────────────────────────
 
 export type PermissionEntry = {
@@ -181,6 +233,57 @@ export const PERMISSION_CATALOG: readonly PermissionGroup[] = [
       { name: WebhooksPermissions.Subscriptions.Create, description: "Create webhook subscriptions" },
       { name: WebhooksPermissions.Subscriptions.Delete, description: "Delete webhook subscriptions" },
       { name: WebhooksPermissions.Subscriptions.Test, description: "Send test webhook deliveries" },
+    ],
+  },
+  {
+    category: "Rule definitions",
+    blurb: "Author, review, publish, retire, and test tenant rule definitions.",
+    entries: [
+      { name: RulesPermissions.Definitions.View, description: "View rule definitions", basic: true },
+      { name: RulesPermissions.Definitions.Create, description: "Create rule definitions" },
+      { name: RulesPermissions.Definitions.Edit, description: "Edit and clone rule definitions" },
+      { name: RulesPermissions.Definitions.Review, description: "Submit rule definitions for review" },
+      { name: RulesPermissions.Definitions.Publish, description: "Publish rule definitions" },
+      { name: RulesPermissions.Definitions.Retire, description: "Retire rule definitions" },
+      { name: RulesPermissions.Definitions.Test, description: "Test rule definitions" },
+    ],
+  },
+  {
+    category: "Rule templates",
+    blurb: "Compose published rule versions into reusable document templates.",
+    entries: [
+      { name: RulesPermissions.Templates.View, description: "View rule templates", basic: true },
+      { name: RulesPermissions.Templates.Create, description: "Create rule templates" },
+      { name: RulesPermissions.Templates.Edit, description: "Edit and clone rule templates" },
+      { name: RulesPermissions.Templates.Review, description: "Submit rule templates for review" },
+      { name: RulesPermissions.Templates.Publish, description: "Publish rule templates" },
+      { name: RulesPermissions.Templates.Retire, description: "Retire rule templates" },
+    ],
+  },
+  {
+    category: "Document intelligence",
+    blurb: "Inspect tenant-scoped document extraction processing attempts and artifacts.",
+    entries: [
+      { name: DocumentIntelligencePermissions.Attempts.View, description: "View document extraction attempts" },
+    ],
+  },
+  {
+    category: "PPAP",
+    blurb: "Create submissions and operate tenant-scoped PPAP processing and credits.",
+    entries: [
+      { name: PpapPermissions.Submissions.Create, description: "Create PPAP submissions" },
+      { name: PpapPermissions.Submissions.View, description: "View PPAP submissions", basic: true },
+      { name: PpapPermissions.Submissions.Update, description: "Update PPAP submissions" },
+      { name: PpapPermissions.Submissions.Submit, description: "Submit PPAP submissions" },
+      { name: PpapPermissions.Submissions.Cancel, description: "Cancel PPAP submissions" },
+      { name: PpapPermissions.Credits.View, description: "View PPAP credits", basic: true },
+      { name: PpapPermissions.Credits.RequestTopup, description: "Request PPAP credit top-ups", basic: true },
+      { name: PpapPermissions.Credits.Manage, description: "Manage PPAP credits" },
+      { name: PpapPermissions.Operations.View, description: "View PPAP operations" },
+      { name: PpapPermissions.Jobs.View, description: "View PPAP jobs" },
+      { name: PpapPermissions.Findings.View, description: "View PPAP findings" },
+      { name: PpapPermissions.Findings.CreateManual, description: "Create manual PPAP findings" },
+      { name: PpapPermissions.Findings.ManageWaivers, description: "Manage PPAP finding waivers" },
     ],
   },
 ];

@@ -10,8 +10,11 @@ import { NotFoundPage } from "@/pages/not-found";
 import {
   AuditingPermissions,
   BillingPermissions,
+  DocumentIntelligencePermissions,
   IdentityPermissions,
   MultitenancyPermissions,
+  PpapPermissions,
+  RulesPermissions,
   WebhooksPermissions,
 } from "@/lib/permissions";
 
@@ -40,9 +43,17 @@ const InvoiceDetailPage = lazyNamed(() => import("@/pages/billing/invoice-detail
 const TopupsListPage = lazyNamed(() => import("@/pages/billing/topups-list"), "TopupsListPage");
 const AuditsListPage = lazyNamed(() => import("@/pages/audits/list"), "AuditsListPage");
 const HealthPage = lazyNamed(() => import("@/pages/health/page"), "HealthPage");
+const PpapOperationsPage = lazyNamed(() => import("@/pages/ppap/operations"), "PpapOperationsPage");
+const PpapReportReviewPage = lazyNamed(() => import("@/pages/ppap/review"), "PpapReportReviewPage");
+const ExtractionAttemptsPage = lazyNamed(
+  () => import("@/pages/extraction-attempts"),
+  "ExtractionAttemptsPage",
+);
 const ImpersonationListPage = lazyNamed(() => import("@/pages/impersonation/list"), "ImpersonationListPage");
 const WebhooksListPage = lazyNamed(() => import("@/pages/webhooks/list"), "WebhooksListPage");
 const WebhookDetailPage = lazyNamed(() => import("@/pages/webhooks/detail"), "WebhookDetailPage");
+const RulesCataloguePage = lazyNamed(() => import("@/pages/rules/catalogue"), "RulesCataloguePage");
+const RuleTemplatesPage = lazyNamed(() => import("@/pages/rules/templates"), "RuleTemplatesPage");
 const NotificationsInboxPage = lazyNamed(() => import("@/pages/notifications/inbox"), "NotificationsInboxPage");
 const SettingsLayout = lazyNamed(() => import("@/pages/settings/layout"), "SettingsLayout");
 const ProfileSettings = lazyNamed(() => import("@/pages/settings/profile"), "ProfileSettings");
@@ -210,6 +221,53 @@ export const router = createBrowserRouter([
             element: (
               <RouteGuard perms={[WebhooksPermissions.Subscriptions.View]}>
                 <WebhookDetailPage />
+              </RouteGuard>
+            ),
+          },
+
+          {
+            path: "rules",
+            element: (
+              <RouteGuard perms={[RulesPermissions.Definitions.View]}>
+                <RulesCataloguePage />
+              </RouteGuard>
+            ),
+          },
+          {
+            path: "rule-templates",
+            element: (
+              <RouteGuard perms={[RulesPermissions.Templates.View]}>
+                <RuleTemplatesPage />
+              </RouteGuard>
+            ),
+          },
+
+          {
+            path: "extraction-attempts",
+            element: (
+              <RouteGuard perms={[DocumentIntelligencePermissions.Attempts.View]}>
+                <ExtractionAttemptsPage />
+              </RouteGuard>
+            ),
+          },
+
+          {
+            path: "ppap",
+            element: (
+              <RouteGuard perms={[
+                PpapPermissions.Operations.View,
+                PpapPermissions.Jobs.View,
+                PpapPermissions.Credits.Manage,
+              ]}>
+                <PpapOperationsPage />
+              </RouteGuard>
+            ),
+          },
+          {
+            path: "ppap/reports/:reportId/review",
+            element: (
+              <RouteGuard perms={[PpapPermissions.Findings.View]}>
+                <PpapReportReviewPage />
               </RouteGuard>
             ),
           },

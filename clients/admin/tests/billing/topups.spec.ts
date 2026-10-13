@@ -49,6 +49,35 @@ test.describe("billing top-ups list", () => {
     await expect(page.getByRole("button", { name: "Approve", exact: true })).toBeVisible();
   });
 
+  test("makes generated invoice actions keyboard focusable", async ({ page }) => {
+    await page.route("**/api/v1/billing/wallet/topup-requests?*", async (route: Route) => {
+      await route.fulfill({
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(paged([{ ...PENDING_REQUEST, status: "Approved", invoiceId: "inv-1" }])),
+      });
+    });
+
+    await page.goto("/billing/topups");
+    const invoiceButton = page.getByRole("button", { name: "invoice" });
+    await invoiceButton.focus();
+    await expect(invoiceButton).toBeFocused();
+    await expect(invoiceButton).toHaveClass(/focus-visible:ring-2/);
+  });
+
+  test("announces top-up loading errors", async ({ page }) => {
+    await page.route("**/api/v1/billing/wallet/topup-requests?*", async (route: Route) => {
+      await route.fulfill({
+        status: 400,
+        headers: { "Content-Type": "application/problem+json" },
+        body: JSON.stringify({ title: "Top-ups unavailable", detail: "You cannot load top-up requests." }),
+      });
+    });
+
+    await page.goto("/billing/topups");
+    await expect(page.getByRole("alert")).toContainText("You cannot load top-up requests.", { timeout: 10_000 });
+  });
+
   test("approving a request POSTs to /approve and shows the invoice toast", async ({ page }) => {
     await page.route("**/api/v1/billing/wallet/topup-requests?*", async (route: Route) => {
       if (route.request().method() !== "GET") {
