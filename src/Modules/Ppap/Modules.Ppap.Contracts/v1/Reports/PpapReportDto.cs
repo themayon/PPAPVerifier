@@ -102,4 +102,15 @@ public sealed record PpapReportDto(
     public int WaivedFindingCount { get; init; }
     public int OpenFindingCount { get; init; }
     public IReadOnlyList<PpapManualFindingDto> ManualFindings { get; init; } = [];
+    public PpapReportSubmissionStateDto? Submission { get; init; }
 }
+
+public sealed record PpapReportSubmissionStateDto(
+    Guid Id,
+    string Status,
+    string Decision,
+    string? DecisionComment,
+    Guid? DecidedByUserId,
+    DateTime? DecidedAtUtc,
+    int Version,
+    bool IsLatestReport);

@@ -109,6 +109,25 @@ public sealed class PpapSubmissionDocument : BaseEntity<Guid>, IHasTenant
         return true;
     }
 
+    internal void ApplyCurrentRevisionFile(Guid fileAssetId, bool isAvailable)
+    {
+        if (fileAssetId == Guid.Empty) throw new ArgumentException("File asset ID is required.", nameof(fileAssetId));
+        FileAssetId = fileAssetId;
+        NotApplicableReason = null;
+        Status = isAvailable ? SubmissionDocumentStatus.Available : SubmissionDocumentStatus.Quarantined;
+        ExtractionRequestEventId = null;
+        ExtractionRequestPublishedAtUtc = null;
+        ExtractionAttemptId = null;
+        ExtractionTerminalStatus = null;
+        CanonicalDocumentId = null;
+        RawResponseFileAssetId = null;
+        GeneratedExcelFileAssetId = null;
+        ExtractionFailureCode = null;
+        ExtractionCompletedAtUtc = null;
+        ExtractionFailedAtUtc = null;
+        UpdatedAtUtc = DateTime.UtcNow;
+    }
+
     public bool MarkExtractionRequestPublished(Guid eventId, DateTime publishedAtUtc)
     {
         if (ExtractionRequestPublishedAtUtc is not null)

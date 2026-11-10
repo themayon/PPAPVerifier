@@ -10,7 +10,25 @@ const RULE_PERMISSIONS = [
   "Permissions.Definitions.Review",
   "Permissions.Definitions.Publish",
   "Permissions.Definitions.Retire",
+  "Permissions.Definitions.Delete",
   "Permissions.Definitions.Test",
+  "Permissions.RuleColumns.View",
+  "Permissions.RuleColumns.Create",
+  "Permissions.RuleColumns.Update",
+  "Permissions.RuleColumns.Delete",
+];
+
+const column = (id: string, name: string, key: string, dataType: string, kind = "Column") => ({
+  id, name, key, kind, dataType, headerNames: name, description: null, isActive: true,
+  createdAtUtc: "2026-10-01T10:00:00Z", updatedAtUtc: "2026-10-01T10:00:00Z", version: 1,
+});
+
+const COLUMNS = [
+  column("c1", "Status", "status", "Text"),
+  column("c2", "Completion Date", "completionDate", "Date"),
+  column("c3", "Target Date", "targetDate", "Date"),
+  column("c4", "Owner", "owner", "Text"),
+  column("c5", "Item Id", "itemId", "Text"),
 ];
 
 const field = (documentCode: string, path: string) => ({ type: "field", documentCode, path });
@@ -35,12 +53,12 @@ const publishedAst = {
   child: {
     type: "all",
     children: [
-      { type: "comparison", operator: "NotEqual", left: field("DFMEA", "actions.status"), right: { type: "literal", value: "Completed" } },
+      { type: "comparison", operator: "NotEqual", left: field("DFMEA", "status"), right: { type: "literal", value: "Completed" } },
       {
         type: "any",
         children: [
-          { type: "comparison", operator: "GreaterThan", left: field("DFMEA", "actions.completedOn"), right: field("DFMEA", "actions.targetDate") },
-          { type: "comparison", operator: "IsEmpty", left: field("DFMEA", "actions.completedOn") },
+          { type: "comparison", operator: "GreaterThan", left: field("DFMEA", "completionDate"), right: field("DFMEA", "targetDate") },
+          { type: "comparison", operator: "IsEmpty", left: field("DFMEA", "completionDate") },
         ],
       },
     ],
@@ -59,19 +77,21 @@ const detail = {
       retiredAtUtc: null,
       createdByUserId: "u-test-1",
       astJson: JSON.stringify(publishedAst),
-      outcomeJson: JSON.stringify({ severity: "Warning", tags: ["DFMEA"], mode: "flag", messages: [{ field: null, text: "Action #PrimaryKey# is overdue" }], primaryKey: { documentCode: "DFMEA", path: "actions.id" } }),
+      outcomeJson: JSON.stringify({ documentCode: "DFMEA", severity: "Warning", tags: ["DFMEA"], mode: "flag", messages: [{ field: null, text: "Action #PrimaryKey# is overdue" }], primaryKey: { documentCode: "DFMEA", path: "itemId" } }),
     },
   ],
 };
 
-async function grantRulePermissions(page: Page) {
-  await mockJsonResponse(page, "**/api/v1/identity/permissions", RULE_PERMISSIONS);
+async function pick(page: Page, groupName: string, option: RegExp, scope: Page | ReturnType<Page["locator"]> = page) {
+  await scope.getByRole("group", { name: groupName, exact: true }).getByRole("button").first().click();
+  await page.getByRole("menuitemradio", { name: option }).click();
 }
 
 test.beforeEach(async ({ page }) => {
   await seedAuthedSession(page, TEST_USER);
   await installShellMocks(page);
-  await grantRulePermissions(page);
+  await mockJsonResponse(page, "**/api/v1/identity/permissions", RULE_PERMISSIONS);
+  await mockJsonResponse(page, "**/api/v1/rules/columns?**", paged(COLUMNS, { pageSize: 500 }));
 });
 
 test("lists validation rules as cards with severity, tags, and server-side filters", async ({ page }) => {
@@ -108,7 +128,39 @@ test("lists validation rules as cards with severity, tags, and server-side filte
   await expect.poll(() => searches.some((url) => url.searchParams.get("Categories") === "ModelInference" && url.searchParams.get("PageSize") === "24")).toBe(true);
 });
 
-test("builds a multi-condition rule with a nested OR group and posts the AST", async ({ page }) => {
+test("deletes a never-published rule from the list and hides Delete for live rules", async ({ page }) => {
+  const draftRule = { ...summary, id: "draft-rule-id", stableCode: "WRONG_RULE", name: "Wrong rule", lifecycle: "Draft", currentPublishedVersionId: null, version: 3 };
+  let deleted = false;
+  await page.route("**/api/v1/rules/definitions?**", async (route) => {
+    const items = deleted ? [summary] : [summary, draftRule];
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(paged(items, { pageSize: 24 })) });
+  });
+  await page.route("**/api/v1/rules/definitions/draft-rule-id?**", async (route) => {
+    if (route.request().method() !== "DELETE") return route.fallback();
+    deleted = true;
+    await route.fulfill({ status: 204, body: "" });
+  });
+
+  await page.goto("/rules/validation");
+  await expect(page.getByRole("heading", { name: "Validation rules" })).toBeVisible({ timeout: 20_000 });
+
+  await page.getByRole("button", { name: `Actions for ${summary.stableCode}` }).click();
+  await expect(page.getByRole("menuitem", { name: "Open" })).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "Delete" })).toHaveCount(0);
+  await page.keyboard.press("Escape");
+
+  await page.getByRole("button", { name: "Actions for WRONG_RULE" }).click();
+  await page.getByRole("menuitem", { name: "Delete" }).click();
+  const dialog = page.getByRole("dialog", { name: "Delete rule" });
+  await expect(dialog).toContainText("WRONG_RULE");
+  const request = page.waitForRequest((req) => req.url().includes("/api/v1/rules/definitions/draft-rule-id") && req.method() === "DELETE");
+  await dialog.getByRole("button", { name: "Delete" }).click();
+  expect(new URL((await request).url()).searchParams.get("expectedVersion")).toBe("3");
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByText("WRONG_RULE")).toHaveCount(0);
+});
+
+test("builds a legacy-style formula from column master columns and posts the AST", async ({ page }) => {
   test.slow();
   await mockJsonResponse(page, "**/api/v1/rules/definitions?**", paged([]));
   await mockJsonResponse(page, "**/api/v1/rules/definitions/new-rule-id", { ...detail, id: "new-rule-id", lifecycle: "Draft", versions: [{ ...detail.versions[0], status: "Draft" }] });
@@ -119,43 +171,34 @@ test("builds a multi-condition rule with a nested OR group and posts the AST", a
   await page.getByLabel("Rule code").fill("com_date_bln_targ");
   await page.getByLabel("Display name").fill("Action completed after target date");
   await page.getByRole("radio", { name: "Warning" }).click();
+  await pick(page, "Rule document", /^DFMEA/);
 
   const rows = page.getByTestId("condition-row");
   const first = rows.nth(0);
-  await first.getByRole("button", { name: "Document" }).click();
-  await page.getByRole("menuitemradio", { name: /^DFMEA/ }).click();
-  await first.getByLabel("Condition 1 field").fill("actions.status");
-  await first.getByRole("button", { name: "equals", exact: true }).click();
-  await page.getByRole("menuitemradio", { name: "does not equal" }).click();
-  await first.getByLabel("Condition 1 value").fill("Completed");
+  await pick(page, "Condition 1 column", /^Status/, first);
+  await pick(page, "Condition 1 operator", /^!= does not equal/, first);
+  await first.getByLabel("Condition 1 value", { exact: true }).fill("Completed");
 
-  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await page.getByRole("button", { name: "Add ( group )" }).click();
   const group = page.getByTestId("condition-group");
   await expect(group).toHaveCount(1);
 
   const nested = rows.nth(1);
-  await nested.getByLabel("Condition 1 field").fill("actions.completedOn");
-  await nested.getByRole("button", { name: "Text", exact: true }).click();
-  await page.getByRole("menuitemradio", { name: "Date" }).click();
-  await nested.getByRole("button", { name: "is on", exact: true }).click();
-  await page.getByRole("menuitemradio", { name: "is after" }).click();
-  await nested.getByRole("radio", { name: "Field" }).click();
-  await nested.getByLabel("Condition 1 compare field").fill("actions.targetDate");
-  await nested.getByLabel("Also match when empty").check();
+  await pick(page, "Condition 1 column", /^Completion Date/, nested);
+  await pick(page, "Condition 1 operator", /^> /, nested);
+  await pick(page, "Condition 1 type", /^Column/, nested);
+  await expect(nested.getByText("Value column", { exact: true })).toBeVisible();
+  await pick(page, "Condition 1 value column", /^Target Date/, nested);
+  await nested.getByLabel("Include empty value").check();
 
-  await group.getByRole("button", { name: "Condition", exact: true }).click();
+  await group.getByRole("button", { name: "Add formula" }).click();
   const third = rows.nth(2);
-  await third.getByLabel("Condition 2 field").fill("actions.owner");
-  await third.getByRole("button", { name: "equals", exact: true }).click();
-  await page.getByRole("menuitemradio", { name: "is empty" }).click();
+  await pick(page, "Condition 2 column", /^Owner/, third);
+  await pick(page, "Condition 2 operator", /^= null/, third);
+  await expect(third.getByText("Value", { exact: true })).toHaveCount(0);
 
   await page.getByLabel("Message 1 text").fill("Action is overdue");
-
-  const preview = page.getByTestId("rule-preview");
-  if (await preview.isVisible()) {
-    await expect(preview).toContainText("ANY of:");
-    await expect(preview).toContainText("DFMEA › actions.completedOn is after DFMEA › actions.targetDate (or is empty)");
-  }
+  await expect(page.getByTestId("rule-formula")).toHaveText('Status != "Completed" AND ((Completion Date > Target Date OR Completion Date = null) OR Owner = null)');
 
   const request = page.waitForRequest((req) => req.url().endsWith("/api/v1/rules/definitions") && req.method() === "POST");
   await page.getByRole("button", { name: "Create draft" }).click();
@@ -168,29 +211,77 @@ test("builds a multi-condition rule with a nested OR group and posts the AST", a
     child: {
       type: "all",
       children: [
-        { type: "comparison", operator: "NotEqual", left: field("DFMEA", "actions.status"), right: { type: "literal", value: "Completed" } },
+        { type: "comparison", operator: "NotEqual", left: field("DFMEA", "status"), right: { type: "literal", value: "Completed" } },
         {
           type: "any",
           children: [
             {
               type: "any",
               children: [
-                { type: "comparison", operator: "GreaterThan", left: field("DFMEA", "actions.completedOn"), right: field("DFMEA", "actions.targetDate") },
-                { type: "comparison", operator: "IsEmpty", left: field("DFMEA", "actions.completedOn") },
+                { type: "comparison", operator: "GreaterThan", left: field("DFMEA", "completionDate"), right: field("DFMEA", "targetDate") },
+                { type: "comparison", operator: "IsEmpty", left: field("DFMEA", "completionDate") },
               ],
             },
-            { type: "comparison", operator: "IsEmpty", left: field("DFMEA", "actions.owner") },
+            { type: "comparison", operator: "IsEmpty", left: field("DFMEA", "owner") },
           ],
         },
       ],
     },
   });
-  const outcome = JSON.parse(body.outcomeJson) as Record<string, unknown>;
-  expect(outcome).toMatchObject({ severity: "Warning", mode: "flag", message: "Action is overdue", Failed: { message: "Action is overdue" } });
+  expect(JSON.parse(body.outcomeJson)).toMatchObject({ documentCode: "DFMEA", severity: "Warning", mode: "flag", message: "Action is overdue" });
   await expect(page).toHaveURL(/\/rules\/validation\/new-rule-id$/);
 });
 
-test("opens a published rule read-only with its conditions rebuilt from the AST", async ({ page }) => {
+test("checks that two date columns are not null with the != null operator", async ({ page }) => {
+  await mockJsonResponse(page, "**/api/v1/rules/definitions", '"null-rule"', { method: "POST", status: 201 });
+  await mockJsonResponse(page, "**/api/v1/rules/definitions/null-rule", { ...detail, id: "null-rule", lifecycle: "Draft", versions: [{ ...detail.versions[0], status: "Draft" }] });
+
+  await page.goto("/rules/validation/new");
+  await expect(page.getByRole("heading", { name: "New validation rule" })).toBeVisible({ timeout: 20_000 });
+  await page.getByLabel("Rule code").fill("DATES_FILLED");
+  await page.getByLabel("Display name").fill("Target and completion dates are filled");
+  await pick(page, "Rule document", /^DFMEA/);
+  await page.getByRole("radio", { name: "Pass when matched" }).click();
+
+  const rows = page.getByTestId("condition-row");
+  await pick(page, "Condition 1 column", /^Target Date/, rows.nth(0));
+  await pick(page, "Condition 1 operator", /^!= null/, rows.nth(0));
+  await expect(rows.nth(0).getByRole("group", { name: "Condition 1 type" })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Add formula" }).click();
+  await pick(page, "Condition 2 column", /^Completion Date/, rows.nth(1));
+  await pick(page, "Condition 2 operator", /^!= null/, rows.nth(1));
+  await page.getByLabel("Message 1 text").fill("Target date and completion date are required");
+
+  await expect(page.getByTestId("rule-formula")).toHaveText("Target Date != null AND Completion Date != null");
+  const request = page.waitForRequest((req) => req.url().endsWith("/api/v1/rules/definitions") && req.method() === "POST");
+  await page.getByRole("button", { name: "Create draft" }).click();
+  expect(JSON.parse(((await request).postDataJSON() as { astJson: string }).astJson)).toEqual({
+    type: "all",
+    children: [
+      { type: "comparison", operator: "IsNotEmpty", left: field("DFMEA", "targetDate") },
+      { type: "comparison", operator: "IsNotEmpty", left: field("DFMEA", "completionDate") },
+    ],
+  });
+});
+
+test("switching Type to Value shows the value input instead of the value column", async ({ page }) => {
+  await page.goto("/rules/validation/new");
+  await expect(page.getByRole("heading", { name: "New validation rule" })).toBeVisible({ timeout: 20_000 });
+  await pick(page, "Rule document", /^DFMEA/);
+  const row = page.getByTestId("condition-row").first();
+  await pick(page, "Condition 1 column", /^Target Date/, row);
+
+  const value = row.getByLabel("Condition 1 value", { exact: true });
+  await expect(value).toHaveAttribute("type", "date");
+  await pick(page, "Condition 1 type", /^Column/, row);
+  await expect(row.getByRole("group", { name: "Condition 1 value column" })).toBeVisible();
+  await expect(value).toHaveCount(0);
+  await pick(page, "Condition 1 type", /^Value/, row);
+  await expect(value).toBeVisible();
+});
+
+test("opens a published rule read-only with column names rebuilt from the AST", async ({ page }) => {
   await mockJsonResponse(page, `**/api/v1/rules/definitions/${detail.id}`, detail);
 
   await page.goto(`/rules/validation/${detail.id}`);
@@ -201,9 +292,11 @@ test("opens a published rule read-only with its conditions rebuilt from the AST"
 
   const rows = page.getByTestId("condition-row");
   await expect(rows).toHaveCount(2);
-  await expect(rows.nth(0).getByLabel("Condition 1 field")).toHaveValue("actions.status");
-  await expect(rows.nth(0).getByLabel("Condition 1 field")).toBeDisabled();
-  await expect(rows.nth(1).getByLabel("Also match when empty")).toBeChecked();
+  const firstColumn = rows.nth(0).getByRole("group", { name: "Condition 1 column" }).getByRole("button");
+  await expect(firstColumn).toHaveText("Status");
+  await expect(firstColumn).toBeDisabled();
+  await expect(rows.nth(1).getByLabel("Include empty value")).toBeChecked();
+  await expect(page.getByTestId("rule-formula")).toHaveText('Status != "Completed" AND (Completion Date > Target Date OR Completion Date = null)');
   await expect(page.getByLabel("Message 1 text")).toHaveValue("Action #PrimaryKey# is overdue");
 });
 
@@ -219,7 +312,38 @@ test("blocks saving and points to issues when required details are missing", asy
   await page.getByRole("button", { name: "Create draft" }).click();
 
   await expect(page.getByText("Give the rule a display name.").first()).toBeVisible();
-  await expect(page.getByText("Field: choose a document.").first()).toBeVisible();
+  await expect(page.getByText("Choose the document this rule checks.").first()).toBeVisible();
+  await expect(page.getByText("Choose a column.").first()).toBeVisible();
   await expect(page.getByText("Add at least one message so reviewers know what went wrong.").first()).toBeVisible();
   expect(posted).toBe(false);
+});
+
+test("column master lists columns per kind and creates a column with an auto key", async ({ page }) => {
+  const searches: URL[] = [];
+  await page.route("**/api/v1/rules/columns?**", async (route) => {
+    const url = new URL(route.request().url());
+    searches.push(url);
+    const kind = url.searchParams.get("Kind");
+    const items = kind === "Header" ? [column("h1", "Part Number", "partNumber", "Text", "Header")] : COLUMNS;
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(paged(items, { pageSize: 50 })) });
+  });
+  await mockJsonResponse(page, "**/api/v1/rules/columns", '"new-column"', { method: "POST", status: 201 });
+
+  await page.goto("/rules/columns");
+  await expect(page.getByRole("heading", { name: "Column master" })).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByText("Completion Date", { exact: true }).first()).toBeVisible();
+  await expect.poll(() => searches.some((url) => url.searchParams.get("Kind") === "Column" && url.searchParams.get("IsActive") === "true")).toBe(true);
+
+  await page.getByRole("tab", { name: /Header columns/ }).click();
+  await expect(page.getByText("Part Number", { exact: true }).first()).toBeVisible();
+  await page.getByRole("tab", { name: /^Columns/ }).click();
+
+  await page.getByRole("button", { name: "New column" }).click();
+  await page.getByLabel("Column name").fill("Recommended Action Date");
+  await expect(page.getByLabel("Key")).toHaveValue("recommendedActionDate");
+  await page.getByRole("radio", { name: "Date" }).click();
+  await page.getByLabel("Actual header names").fill("Rec. Action Date, Action Date");
+  const request = page.waitForRequest((req) => req.url().endsWith("/api/v1/rules/columns") && req.method() === "POST");
+  await page.getByRole("button", { name: "Create column" }).click();
+  expect((await request).postDataJSON()).toEqual({ name: "Recommended Action Date", key: "recommendedActionDate", kind: "Column", dataType: "Date", headerNames: "Rec. Action Date, Action Date", description: null });
 });

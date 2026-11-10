@@ -24,6 +24,10 @@ public sealed class PpapSubmission : AggregateRoot<Guid>, IHasTenant
     public DateTime? UpdatedAtUtc { get; private set; }
     public DateTime? SubmittedAtUtc { get; private set; }
     public DateTime? CancelledAtUtc { get; private set; }
+    public SubmissionDecision Decision { get; private set; }
+    public string? DecisionComment { get; private set; }
+    public Guid? DecidedByUserId { get; private set; }
+    public DateTime? DecidedAtUtc { get; private set; }
     public IReadOnlyCollection<PpapSubmissionDocument> Documents => _documents.AsReadOnly();
 
     private PpapSubmission() { }
@@ -108,6 +112,13 @@ public sealed class PpapSubmission : AggregateRoot<Guid>, IHasTenant
         }
     }
 
+    public void RecordDocumentRevisionReserved(Guid documentId)
+    {
+        EnsureDraft("reserve document revisions on");
+        _ = GetDocument(documentId);
+        RecordMutation();
+    }
+
     public void UpdateDraft(string partName, string partNumber, string drawingRevision, int ppapLevel)
     {
         EnsureDraft("update");
@@ -146,6 +157,29 @@ public sealed class PpapSubmission : AggregateRoot<Guid>, IHasTenant
         Version = checked(Version + 1);
         CancelledAtUtc = DateTime.UtcNow;
         UpdatedAtUtc = CancelledAtUtc;
+    }
+
+    public void Decide(SubmissionDecision decision, string? comment, Guid decidedByUserId, int expectedVersion, DateTime utcNow)
+    {
+        if (Version != expectedVersion) throw Conflict("The submission was modified by another request.");
+        if (Status != SubmissionStatus.Submitted) throw Conflict($"Only submitted PPAP submissions can be decided (current status {Status}).");
+        if (Decision is SubmissionDecision.Approved or SubmissionDecision.Rejected) throw Conflict(Decision == SubmissionDecision.Approved ? "The submission has already been approved." : "The submission has already been rejected.");
+        if (decision == SubmissionDecision.None || !Enum.IsDefined(decision)) throw new ArgumentOutOfRangeException(nameof(decision));
+        if (decision == Decision) throw Conflict("The submission already has this decision.");
+        if (decidedByUserId == Guid.Empty) throw new ArgumentException("Decision maker is required.", nameof(decidedByUserId));
+        string? normalized = string.IsNullOrWhiteSpace(comment) ? null : comment.Trim();
+        if (normalized is { Length: > 1000 }) throw new ArgumentOutOfRangeException(nameof(comment));
+        if (normalized is null && decision is SubmissionDecision.Rejected or SubmissionDecision.InterimApproved)
+        {
+            throw new ArgumentException("A comment is required for interim approval or rejection.", nameof(comment));
+        }
+
+        Decision = decision;
+        DecisionComment = normalized;
+        DecidedByUserId = decidedByUserId;
+        DecidedAtUtc = utcNow;
+        Version = checked(Version + 1);
+        UpdatedAtUtc = utcNow;
     }
 
     private PpapSubmissionDocument GetDocument(Guid documentId)

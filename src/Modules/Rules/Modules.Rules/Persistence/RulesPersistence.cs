@@ -25,6 +25,10 @@ public sealed class RulesDbContext(IMultiTenantContextAccessor<AppTenantInfo> te
     public DbSet<TemplateRuleAssignment> TemplateRuleAssignments => Set<TemplateRuleAssignment>();
     public DbSet<RuleEvaluationRun> RuleEvaluationRuns => Set<RuleEvaluationRun>();
     public DbSet<RuleEvaluationResultRecord> RuleEvaluationResults => Set<RuleEvaluationResultRecord>();
+    public DbSet<RuleColumn> RuleColumns => Set<RuleColumn>();
+    public DbSet<DocumentSetting> DocumentSettings => Set<DocumentSetting>();
+    public DbSet<RuleTemplateDocument> RuleTemplateDocuments => Set<RuleTemplateDocument>();
+    public DbSet<RuleTemplateRule> RuleTemplateRules => Set<RuleTemplateRule>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ArgumentNullException.ThrowIfNull(modelBuilder); modelBuilder.HasDefaultSchema(Schema); modelBuilder.ApplyConfigurationsFromAssembly(typeof(RulesDbContext).Assembly); base.OnModelCreating(modelBuilder);
@@ -63,6 +67,51 @@ public sealed class RuleTemplateConfiguration : IEntityTypeConfiguration<RuleTem
         builder.Property(x => x.Name).HasMaxLength(200).IsRequired(); builder.Property(x => x.Description).HasMaxLength(2000);
         builder.Property(x => x.Lifecycle).HasConversion<string>().HasMaxLength(16); builder.Property(x => x.Version).IsConcurrencyToken();
         builder.HasMany(x => x.Versions).WithOne().HasForeignKey(x => x.RuleTemplateId).OnDelete(DeleteBehavior.Cascade); builder.Ignore(x => x.DomainEvents);
+        builder.HasMany(x => x.Documents).WithOne().HasForeignKey(x => x.RuleTemplateId).OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(x => x.Rules).WithOne().HasForeignKey(x => x.RuleTemplateId).OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
+public sealed class RuleTemplateDocumentConfiguration : IEntityTypeConfiguration<RuleTemplateDocument>
+{
+    public void Configure(EntityTypeBuilder<RuleTemplateDocument> builder)
+    {
+        builder.ToTable("RuleTemplateDocuments"); builder.HasKey(x => x.Id); builder.Property(x => x.Id).ValueGeneratedNever();
+        builder.Property(x => x.DocumentCode).HasMaxLength(32).IsRequired(); builder.Property(x => x.Disposition).HasConversion<string>().HasMaxLength(16).IsRequired();
+        builder.HasIndex(x => new { x.RuleTemplateId, x.DocumentCode }).IsUnique(); builder.Ignore(x => x.DomainEvents);
+    }
+}
+
+public sealed class RuleTemplateRuleConfiguration : IEntityTypeConfiguration<RuleTemplateRule>
+{
+    public void Configure(EntityTypeBuilder<RuleTemplateRule> builder)
+    {
+        builder.ToTable("RuleTemplateRules"); builder.HasKey(x => x.Id); builder.Property(x => x.Id).ValueGeneratedNever();
+        builder.Property(x => x.DocumentCode).HasMaxLength(32).IsRequired();
+        builder.HasIndex(x => new { x.RuleTemplateId, x.DocumentCode, x.RuleDefinitionId }).IsUnique();
+        builder.HasOne<RuleDefinition>().WithMany().HasForeignKey(x => x.RuleDefinitionId).OnDelete(DeleteBehavior.Cascade); builder.Ignore(x => x.DomainEvents);
+    }
+}
+
+public sealed class DocumentSettingConfiguration : IEntityTypeConfiguration<DocumentSetting>
+{
+    public void Configure(EntityTypeBuilder<DocumentSetting> builder)
+    {
+        builder.ToTable("DocumentSettings"); builder.HasKey(x => x.Id); builder.Property(x => x.TenantId).HasMaxLength(64).IsRequired();
+        builder.Property(x => x.DocumentCode).HasMaxLength(32).IsRequired(); builder.Property(x => x.Name).HasMaxLength(200).IsRequired();
+        builder.Property(x => x.DefaultDisposition).HasConversion<string>().HasMaxLength(16).IsRequired();
+        builder.Property(x => x.Version).IsConcurrencyToken(); builder.HasIndex(x => new { x.TenantId, x.DocumentCode }).IsUnique();
+        builder.HasMany(x => x.Rules).WithOne().HasForeignKey(x => x.DocumentSettingId).OnDelete(DeleteBehavior.Cascade); builder.Ignore(x => x.DomainEvents);
+    }
+}
+
+public sealed class DocumentSettingRuleConfiguration : IEntityTypeConfiguration<DocumentSettingRule>
+{
+    public void Configure(EntityTypeBuilder<DocumentSettingRule> builder)
+    {
+        builder.ToTable("DocumentSettingRules"); builder.HasKey(x => x.Id); builder.Property(x => x.Id).ValueGeneratedNever();
+        builder.HasIndex(x => new { x.DocumentSettingId, x.RuleDefinitionId }).IsUnique();
+        builder.HasOne<RuleDefinition>().WithMany().HasForeignKey(x => x.RuleDefinitionId).OnDelete(DeleteBehavior.Cascade); builder.Ignore(x => x.DomainEvents);
     }
 }
 
@@ -124,6 +173,20 @@ public sealed class RuleEvaluationResultRecordConfiguration : IEntityTypeConfigu
     }
 }
 
+public sealed class RuleColumnConfiguration : IEntityTypeConfiguration<RuleColumn>
+{
+    public void Configure(EntityTypeBuilder<RuleColumn> builder)
+    {
+        builder.ToTable("RuleColumns"); builder.HasKey(x => x.Id); builder.Property(x => x.TenantId).HasMaxLength(64).IsRequired();
+        builder.Property(x => x.Name).HasMaxLength(RuleColumn.NameMaxLength).IsRequired(); builder.Property(x => x.Key).HasMaxLength(RuleColumn.KeyMaxLength).IsRequired();
+        builder.Property(x => x.Kind).HasConversion<string>().HasMaxLength(16); builder.Property(x => x.DataType).HasConversion<string>().HasMaxLength(16);
+        builder.Property(x => x.HeaderNames).HasMaxLength(RuleColumn.HeaderNamesMaxLength); builder.Property(x => x.Description).HasMaxLength(RuleColumn.DescriptionMaxLength);
+        builder.Property(x => x.Version).IsConcurrencyToken();
+        builder.HasIndex(x => new { x.TenantId, x.Kind, x.Key }).IsUnique(); builder.HasIndex(x => new { x.TenantId, x.Kind, x.Name }).IsUnique();
+        builder.Ignore(x => x.DomainEvents);
+    }
+}
+
 public sealed class RulesDbInitializer(RulesDbContext dbContext, TimeProvider timeProvider, ILogger<RulesDbInitializer> logger) : IDbInitializer
 {
     private static readonly Guid SystemUserId = Guid.Parse("91a14482-7f9c-4a2b-917c-7db88994033c");
@@ -155,6 +218,17 @@ public sealed class RulesDbInitializer(RulesDbContext dbContext, TimeProvider ti
             template.SubmitForReview(version.Id, template.Version, utcNow);
             template.Publish(version.Id, template.Version, true, SystemUserId, utcNow);
             dbContext.RuleTemplates.Add(template);
+        }
+
+        HashSet<string> existingDocuments = (await dbContext.DocumentSettings.Select(x => x.DocumentCode).ToListAsync(cancellationToken).ConfigureAwait(false)).ToHashSet(StringComparer.Ordinal);
+        dbContext.DocumentSettings.AddRange(PpapDocumentCatalogue.Documents
+            .Select((document, index) => (document, index))
+            .Where(x => !existingDocuments.Contains(x.document.Code))
+            .Select(x => DocumentSetting.Create(tenantId, x.document.Code, x.document.Name, x.index + 1, utcNow)));
+
+        if (!await dbContext.RuleColumns.AnyAsync(cancellationToken).ConfigureAwait(false))
+        {
+            dbContext.RuleColumns.AddRange(RuleColumnCatalogue.Defaults.Select(x => RuleColumn.Create(tenantId, x.Name, x.Key, x.Kind, x.DataType, x.HeaderNames, null, utcNow)));
         }
 
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);

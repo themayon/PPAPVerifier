@@ -23,9 +23,11 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "lucide-react": "^0.475.0",
+    "omnex-spreadjs": "file:omnex-spreadjs-0.1.0.tgz",
     "qrcode": "^1.5.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
+    "react-pdf": "^9.2.1",
     "react-router-dom": "^7.15.1",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.6.0"
@@ -52,6 +54,8 @@
     "node": ">=20"
   },
   "overrides": {
-    "esbuild": "^0.28.1"
+    "esbuild": "^0.28.1",
+    "brace-expansion": "^1.1.21",
+    "uuid": "^11.1.1"
   }
 }

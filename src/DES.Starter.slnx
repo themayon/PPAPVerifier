@@ -77,6 +77,9 @@
   <Folder Name="/Host/Migrations/">
     <Project Path="Host/DES.Starter.Migrations.PostgreSQL/DES.Starter.Migrations.PostgreSQL.csproj" Id="2c21903e-5dfa-47e0-82d9-1a0bd627fcbd" />
   </Folder>
+  <Folder Name="/Workers/">
+    <Project Path="Workers/DES.Ppap.ValidationWorker/DES.Ppap.ValidationWorker.csproj" />
+  </Folder>
   <Folder Name="/Tests/">
     <Project Path="Tests/Architecture.Tests/Architecture.Tests.csproj" />
     <Project Path="Tests/Auditing.Tests/Auditing.Tests.csproj" />

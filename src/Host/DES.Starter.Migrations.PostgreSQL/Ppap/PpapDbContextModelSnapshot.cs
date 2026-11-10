@@ -18,7 +18,7 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("ppap")
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -157,6 +157,181 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                         .HasDatabaseName("IX_CreditTransactions_CreditAccountId_Kind_Reference");
 
                     b.ToTable("CreditTransactions", "ppap");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapComplexValidationRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ExecutorKey")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("InputFingerprint")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("RequestEventId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("RequestedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RuleVersionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SubmissionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("ValidationRunId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequestEventId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PpapComplexValidationRequests_RequestEventId");
+
+                    b.HasIndex("ValidationRunId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PpapComplexValidationRequests_ValidationRunId");
+
+                    b.HasIndex("TenantId", "SubmissionId", "RuleVersionId", "InputFingerprint")
+                        .IsUnique();
+
+                    b.ToTable("PpapComplexValidationRequests", "ppap");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapDocumentRevision", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CanonicalDocumentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ExtractionAttemptId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ExtractionRequestEventId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ExtractionRequestedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ExtractorVersion")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("FailureCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("GeneratedWorkbookFileAssetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PreviewPdfFileAssetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ProcessingStatus")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("Provider")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<Guid?>("RawResponseFileAssetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("RevisionNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SourceContentType")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid?>("SourceFileAssetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("SourceFileName")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("character varying(512)");
+
+                    b.Property<long>("SourceSizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("SubmissionDocumentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UploadStatus")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProcessingStatus");
+
+                    b.HasIndex("ExtractionAttemptId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PpapDocumentRevisions_ExtractionAttemptId");
+
+                    b.HasIndex("ExtractionRequestEventId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PpapDocumentRevisions_ExtractionRequestEventId");
+
+                    b.HasIndex("SourceFileAssetId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PpapDocumentRevisions_SourceFileAssetId");
+
+                    b.HasIndex("TenantId", "SubmissionDocumentId")
+                        .IsUnique()
+                        .HasFilter("\"IsCurrent\" = TRUE");
+
+                    b.HasIndex("TenantId", "SubmissionDocumentId", "RevisionNumber")
+                        .IsUnique();
+
+                    b.ToTable("PpapDocumentRevisions", "ppap");
 
                     b.HasAnnotation("Finbuckle:MultiTenant", true);
                 });
@@ -496,6 +671,13 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Classification")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasDefaultValue("Standard");
+
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -520,10 +702,18 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<int>("PpapLevel")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(3);
+
                     b.Property<Guid?>("RuleTemplateId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("RuleTemplateVersionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("SupplierId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("TenantId")
@@ -539,6 +729,8 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
 
                     b.HasIndex("RuleTemplateId", "RuleTemplateVersionId");
 
@@ -632,6 +824,23 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                     b.Property<DateTime>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("DecidedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DecidedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Decision")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasDefaultValue("None");
+
+                    b.Property<string>("DecisionComment")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
                     b.Property<string>("DrawingRevision")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -697,6 +906,8 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                     b.HasIndex("TenantId", "PartNumber");
 
                     b.HasIndex("TenantId", "OwnerUserId", "Status");
+
+                    b.HasIndex("TenantId", "Status", "Decision");
 
                     b.ToTable("PpapSubmissions", "ppap");
 
@@ -804,6 +1015,246 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                     b.HasAnnotation("Finbuckle:MultiTenant", true);
                 });
 
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapSupplier", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ContactJobTitle")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Country")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DunsNumber")
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("QualityGrade")
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)");
+
+                    b.Property<string>("Region")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("SiteAddress")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("SiteName")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("SiteSameAsHeadquarters")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("TaxId")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("TierLevel")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "Code")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "IsActive");
+
+                    b.HasIndex("TenantId", "Region");
+
+                    b.ToTable("PpapSuppliers", "ppap");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapSupplierCertificate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("AddedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CertificateType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid>("FileAssetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(260)
+                        .HasColumnType("character varying(260)");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileAssetId");
+
+                    b.HasIndex("SupplierId", "FileAssetId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PpapSupplierCertificates_SupplierId_FileAssetId");
+
+                    b.ToTable("PpapSupplierCertificates", "ppap");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapSupplierUser", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("SupplierId", "UserId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PpapSupplierUsers_SupplierId_UserId");
+
+                    b.ToTable("PpapSupplierUsers", "ppap");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapWaiverRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("FindingFingerprint")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("RequestReason")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<DateTime>("RequestedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RequestedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ReviewReason")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<DateTime?>("ReviewedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ReviewedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid>("SubmissionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint");
+
+                    b.Property<Guid>("WorkingFindingId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "WorkingFindingId")
+                        .IsUnique()
+                        .HasFilter("\"Status\" = 'Pending'");
+
+                    b.HasIndex("TenantId", "SubmissionId", "Status");
+
+                    b.ToTable("PpapWaiverRequests", "ppap");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
             modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapWaiverRevocation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -840,6 +1291,84 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                     b.HasAnnotation("Finbuckle:MultiTenant", true);
                 });
 
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapWorkingFinding", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DocumentRevisionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("EvidenceJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("InputFingerprint")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)");
+
+                    b.Property<string>("RuleName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<Guid>("RuleVersionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("StableRuleCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid?>("SubmissionDocumentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SubmissionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("SupersededAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("ValidationRunId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentRevisionId");
+
+                    b.HasIndex("TenantId", "RuleVersionId", "InputFingerprint")
+                        .IsUnique()
+                        .HasFilter("\"IsCurrent\" = TRUE");
+
+                    b.HasIndex("TenantId", "SubmissionId", "IsCurrent");
+
+                    b.ToTable("PpapWorkingFindings", "ppap");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
             modelBuilder.Entity("DES.Modules.Ppap.Domain.CreditTransaction", b =>
                 {
                     b.HasOne("DES.Modules.Ppap.Domain.CreditAccount", null)
@@ -849,11 +1378,37 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapPart", b =>
+                {
+                    b.HasOne("DES.Modules.Ppap.Domain.PpapSupplier", null)
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapSubmissionDocument", b =>
                 {
                     b.HasOne("DES.Modules.Ppap.Domain.PpapSubmission", null)
                         .WithMany("Documents")
                         .HasForeignKey("SubmissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapSupplierCertificate", b =>
+                {
+                    b.HasOne("DES.Modules.Ppap.Domain.PpapSupplier", null)
+                        .WithMany("Certificates")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapSupplierUser", b =>
+                {
+                    b.HasOne("DES.Modules.Ppap.Domain.PpapSupplier", null)
+                        .WithMany("Users")
+                        .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -875,6 +1430,13 @@ namespace DES.Starter.Migrations.PostgreSQL.Ppap
             modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapSubmission", b =>
                 {
                     b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("DES.Modules.Ppap.Domain.PpapSupplier", b =>
+                {
+                    b.Navigation("Certificates");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

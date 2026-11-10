@@ -23,6 +23,8 @@ public sealed class AspectPdfExtractionOptions
     public long MaxExcelBytes { get; set; } = DefaultMaxExcelBytes;
     public int MaxRetryAttempts { get; set; } = 3;
     public double FirstRetryDelaySeconds { get; set; } = 1;
+    public bool UseAsyncTaskApi { get; set; }
+    public double PollIntervalSeconds { get; set; } = 2;
 }
 
 internal sealed class AspectPdfExtractionOptionsValidator(IHostEnvironment environment)
@@ -43,6 +45,7 @@ internal sealed class AspectPdfExtractionOptionsValidator(IHostEnvironment envir
         AddRangeFailure(options.MaxExcelBytes is < 1 or > 104_857_600, "MaxExcelBytes must be between 1 and 104857600.", failures);
         AddRangeFailure(options.MaxRetryAttempts is < 1 or > 3, "MaxRetryAttempts must be between 1 and 3.", failures);
         AddRangeFailure(options.FirstRetryDelaySeconds is < 0 or > 300, "FirstRetryDelaySeconds must be between 0 and 300.", failures);
+        AddRangeFailure(!double.IsFinite(options.PollIntervalSeconds) || options.PollIntervalSeconds is < 0.1 or > 300, "PollIntervalSeconds must be between 0.1 and 300.", failures);
 
         if (options.Enabled)
         {

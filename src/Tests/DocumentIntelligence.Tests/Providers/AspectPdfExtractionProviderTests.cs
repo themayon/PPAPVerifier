@@ -56,6 +56,37 @@ public sealed class AspectPdfExtractionProviderTests
         stored[1].FileName.ShouldBe("result.xlsx");
     }
 
+    [Fact]
+    public async Task ExtractAsync_Should_PollAndDownloadArtifacts_When_AsyncTaskApiEnabled()
+    {
+        Guid taskId = Guid.CreateVersion7();
+        byte[] workbook = CreateWorkbook("<c r=\"A1\" t=\"inlineStr\"><is><t>Async Evidence</t></is></c>");
+        string status = "{\"task_id\":\"" + taskId + "\",\"status\":\"succeeded\",\"artifacts\":["
+            + "{\"name\":\"result.json\",\"download_url\":\"/v1/extraction-tasks/" + taskId + "/artifacts/result.json\"},"
+            + "{\"name\":\"output.xlsx\",\"download_url\":\"/v1/extraction-tasks/" + taskId + "/artifacts/output.xlsx\"}]}";
+        RecordingHandler handler = new((_, call) => call switch
+        {
+            1 => JsonResponse("{\"task_id\":\"" + taskId + "\",\"status\":\"queued\"}", HttpStatusCode.Accepted),
+            2 => JsonResponse(status),
+            3 => JsonResponse("{\"Is_Valid\":\"Yes\",\"process_id\":\"" + taskId + "\"}"),
+            _ => BytesResponse(workbook)
+        });
+        AspectPdfExtractionOptions options = ValidOptions();
+        options.UseAsyncTaskApi = true;
+        options.PollIntervalSeconds = 0.001;
+        List<GeneratedFileArtifactRequest> stored = [];
+        AspectPdfExtractionProvider provider = CreateProvider(handler, CreateArtifacts(stored), options);
+
+        ExtractionProviderResult result = await provider.ExtractAsync(CreateRequest());
+
+        result.Outcome.ShouldBe(ExtractionProviderOutcome.Succeeded);
+        result.CanonicalJson.ShouldNotBeNull().ShouldContain("Async Evidence");
+        handler.Calls.ShouldBe(4);
+        handler.Requests[0].Uri.ShouldBe(new Uri("https://aspect.test/api/v1/extraction-tasks"));
+        handler.Requests[1].Uri.ShouldBe(new Uri($"https://aspect.test/api/v1/extraction-tasks/{taskId}"));
+        stored.Count.ShouldBe(2);
+    }
+
     [Theory]
     [InlineData("No", "No", "InvalidDocument")]
     [InlineData("Yes", "Yes", "CoversheetDocument")]

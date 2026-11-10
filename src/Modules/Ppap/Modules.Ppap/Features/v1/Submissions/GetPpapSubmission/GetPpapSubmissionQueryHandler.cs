@@ -41,7 +41,10 @@ public sealed class GetPpapSubmissionQueryHandler(
                 x.CreatedAtUtc,
                 x.UpdatedAtUtc,
                 x.SubmittedAtUtc,
-                x.CancelledAtUtc))
+                x.CancelledAtUtc,
+                x.Decision.ToString(),
+                x.DecisionComment,
+                x.DecidedAtUtc))
             .FirstOrDefaultAsync(cancellationToken)
             .ConfigureAwait(false)
             ?? throw new NotFoundException($"PPAP submission {query.Id} not found.");

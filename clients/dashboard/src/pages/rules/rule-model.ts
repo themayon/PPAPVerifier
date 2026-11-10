@@ -1,5 +1,11 @@
 import { BrainCircuit, FileCog, FileSpreadsheet, ListChecks, Sparkles, type LucideIcon } from "lucide-react";
-import type { RuleCategory, RuleLifecycle } from "@/api/rules";
+import type { RuleCategory, RuleColumnDataType, RuleColumnDto, RuleLifecycle, TemplateDocumentDisposition } from "@/api/rules";
+
+export const DISPOSITIONS: ReadonlyArray<{ value: TemplateDocumentDisposition; label: string; title: string }> = [
+  { value: "Submit", label: "Submit", title: "Supplier must submit this document" },
+  { value: "Available", label: "Available", title: "Optional; supplier may submit it" },
+  { value: "Retain", label: "Retain", title: "Kept on file by the supplier, not submitted" },
+];
 
 export type RuleTypeKey = "validation" | "header" | "special" | "custom" | "ml";
 
@@ -198,6 +204,38 @@ export function newGroup(combinator: "all" | "any" = "all", children?: BuilderNo
 
 export const isUnary = (operator: Operator) => operator === "IsEmpty" || operator === "IsNotEmpty";
 
+export const OPERATOR_SYMBOL: Record<Operator, string> = {
+  Equal: "=",
+  NotEqual: "!=",
+  GreaterThan: ">",
+  GreaterThanOrEqual: ">=",
+  LessThan: "<",
+  LessThanOrEqual: "<=",
+  Contains: "contains",
+  In: "in",
+  IsEmpty: "= null",
+  IsNotEmpty: "!= null",
+};
+
+const MISSING_VALUE = "[value?]";
+const MISSING_COLUMN = "[column?]";
+
+export function valueTypeFor(dataType: RuleColumnDataType): ValueType {
+  return dataType === "Number" ? "number" : dataType === "Date" ? "date" : dataType === "Boolean" ? "boolean" : "text";
+}
+
+export type ColumnIndex = { byKey: ReadonlyMap<string, RuleColumnDto>; list: readonly RuleColumnDto[] };
+
+export function indexColumns(columns: readonly RuleColumnDto[]): ColumnIndex {
+  return { byKey: new Map(columns.map((column) => [column.key, column])), list: columns };
+}
+
+export function columnLabel(field: FieldRef, columns: ColumnIndex, withDocument = false): string {
+  if (!field.path) return MISSING_COLUMN;
+  const name = columns.byKey.get(field.path)?.name ?? field.path;
+  return withDocument && field.documentCode ? `${field.documentCode} › ${name}` : name;
+}
+
 export function operatorLabel(operator: Operator, valueType: ValueType): string {
   const date = valueType === "date";
   switch (operator) {
@@ -209,8 +247,8 @@ export function operatorLabel(operator: Operator, valueType: ValueType): string 
     case "LessThanOrEqual": return date ? "is on or before" : "is at most";
     case "Contains": return "contains";
     case "In": return "is one of";
-    case "IsEmpty": return "is empty";
-    case "IsNotEmpty": return "is not empty";
+    case "IsEmpty": return "is empty / null";
+    case "IsNotEmpty": return "is filled / not null";
   }
 }
 
@@ -358,6 +396,7 @@ export type RuleMessage = { id: string; field: FieldRef; text: string };
 export type RuleHighlight = { id: string; field: FieldRef; color: string };
 
 export type RuleOutcome = {
+  documentCode: string;
   severity: Severity;
   tags: string[];
   mode: RuleMode;
@@ -371,6 +410,7 @@ export type RuleOutcome = {
 
 export function defaultOutcome(): RuleOutcome {
   return {
+    documentCode: "",
     severity: "Error",
     tags: [],
     mode: "flag",
@@ -384,6 +424,7 @@ export function defaultOutcome(): RuleOutcome {
 }
 
 type StoredOutcome = Partial<{
+  documentCode: string;
   severity: string;
   tags: unknown;
   mode: string;
@@ -408,6 +449,7 @@ export function parseOutcome(json: string | null | undefined): RuleOutcome {
     ? stored.messages.map((message) => ({ id: newId("m"), field: asField(message.field), text: message.text ?? "" }))
     : [{ id: newId("m"), field: emptyField(), text: typeof stored.message === "string" ? stored.message : "" }];
   return {
+    documentCode: typeof stored.documentCode === "string" ? stored.documentCode : "",
     severity: SEVERITIES.includes(stored.severity as Severity) ? (stored.severity as Severity) : "Error",
     tags: Array.isArray(stored.tags) ? stored.tags.filter((tag): tag is string => typeof tag === "string") : [],
     mode: stored.mode === "flag" ? "flag" : "pass",
@@ -434,6 +476,7 @@ export function serializeOutcome(outcome: RuleOutcome, type: RuleTypeConfig): st
   return JSON.stringify({
     schema: "ppap-rule/v1",
     ruleType: type.key,
+    documentCode: outcome.documentCode || null,
     severity: outcome.severity,
     tags: outcome.tags,
     mode: outcome.mode,
@@ -456,17 +499,17 @@ const PARAM_PATTERN = /^[A-Za-z0-9_.-]{1,64}$/;
 export const CODE_PATTERN = /^[A-Za-z0-9_.-]{1,64}$/;
 
 function fieldIssue(field: FieldRef, label: string): string | null {
-  if (!field.documentCode.trim()) return `${label}: choose a document.`;
-  if (!field.path.trim()) return `${label}: enter a field.`;
-  if (!PATH_PATTERN.test(field.path.trim()) || field.path.split(".").length > 10) return `${label}: use dot-separated field names (no brackets or $).`;
+  if (!field.path.trim()) return `Choose a ${label}.`;
+  if (!field.documentCode.trim()) return `Choose the document for the ${label}.`;
+  if (!PATH_PATTERN.test(field.path.trim()) || field.path.split(".").length > 10) return `The ${label} key is invalid; fix it in the column master.`;
   return null;
 }
 
 export function conditionIssue(condition: ConditionNode): string | null {
-  const left = fieldIssue(condition.field, "Field");
+  const left = fieldIssue(condition.field, "column");
   if (left) return left;
   if (isUnary(condition.operator)) return null;
-  if (condition.source === "field") return fieldIssue(condition.valueField, "Compare-to field");
+  if (condition.source === "field") return fieldIssue(condition.valueField, "value column");
   if (condition.source === "parameter") return PARAM_PATTERN.test(condition.parameter.trim()) ? null : "Parameter: use 1-64 letters, numbers, dots, dashes, or underscores.";
   const raw = condition.value.trim();
   if (condition.operator === "In" || condition.valueType === "list") {
@@ -477,7 +520,7 @@ export function conditionIssue(condition: ConditionNode): string | null {
     if (condition.valueType === "date" && items.some((item) => !isDateString(item))) return "Every list value must be a date (yyyy-mm-dd).";
     return null;
   }
-  if (!raw && condition.valueType !== "text") return "Enter a value.";
+  if (!raw && condition.valueType !== "text") return "Enter a value. To check that the column is filled (or blank), choose the \"!= null\" (or \"= null\") operator instead.";
   if (condition.valueType === "number" && Number.isNaN(Number(raw))) return "Enter a valid number.";
   if (condition.valueType === "date" && !isDateString(raw)) return "Pick a date.";
   if (condition.operator === "Contains" && condition.valueType !== "text") return "Contains only works with text.";
@@ -524,28 +567,46 @@ export function validateTree(root: GroupNode): Issue[] {
 
 export type PreviewLine = { id: string; depth: number; text: string; kind: "group" | "condition" };
 
-export const fieldLabel = (field: FieldRef) => (field.path ? `${field.documentCode || "?"} › ${field.path}` : field.documentCode ? `${field.documentCode} › …` : "…");
+type LabelContext = { columns: ColumnIndex; documentCode: string };
 
-export function describeCondition(condition: ConditionNode): string {
-  const left = fieldLabel(condition.field);
-  const op = operatorLabel(condition.operator, condition.valueType);
-  if (isUnary(condition.operator)) return `${left} ${op}`;
+const labelFor = (field: FieldRef, context: LabelContext) => columnLabel(field, context.columns, field.documentCode !== context.documentCode);
+
+function rightOperand(condition: ConditionNode, context: LabelContext, symbols: boolean): string {
   const isList = condition.operator === "In" || condition.valueType === "list";
-  const right =
-    condition.source === "field" ? fieldLabel(condition.valueField)
-      : condition.source === "parameter" ? `{${condition.parameter || "parameter"}}`
-        : isList ? `[${condition.value || "…"}]`
-          : condition.valueType === "text" ? `"${condition.value}"`
-            : condition.valueType === "boolean" ? (condition.value === "true" ? "Yes" : "No")
-              : condition.value || "…";
-  return `${left} ${op} ${right}${condition.includeEmpty ? " (or is empty)" : ""}`;
+  if (condition.source === "field") return labelFor(condition.valueField, context);
+  if (condition.source === "parameter") return `{${condition.parameter || "parameter"}}`;
+  if (isList) return condition.value.trim() ? (symbols ? `(${condition.value})` : `[${condition.value}]`) : MISSING_VALUE;
+  if (condition.valueType === "boolean") return condition.value === "true" ? "Yes" : "No";
+  if (condition.valueType === "text") return `"${condition.value}"`;
+  return condition.value || MISSING_VALUE;
 }
 
-export function previewLines(root: GroupNode): PreviewLine[] {
+export function describeCondition(condition: ConditionNode, context: LabelContext): string {
+  const left = labelFor(condition.field, context);
+  const op = operatorLabel(condition.operator, condition.valueType);
+  if (isUnary(condition.operator)) return `${left} ${op}`;
+  return `${left} ${op} ${rightOperand(condition, context, false)}${condition.includeEmpty ? " (or is empty)" : ""}`;
+}
+
+export function formulaText(root: GroupNode, context: LabelContext): string {
+  const render = (node: BuilderNode, nested: boolean): string => {
+    if (node.kind === "condition") {
+      const left = labelFor(node.field, context);
+      const text = isUnary(node.operator) ? `${left} ${OPERATOR_SYMBOL[node.operator]}` : `${left} ${OPERATOR_SYMBOL[node.operator]} ${rightOperand(node, context, true)}`;
+      return node.includeEmpty && !isUnary(node.operator) ? `(${text} OR ${left} = null)` : text;
+    }
+    const body = node.children.map((child) => render(child, true)).join(node.combinator === "all" ? " AND " : " OR ") || "[empty group]";
+    const wrapped = nested || node.negate ? `(${body})` : body;
+    return node.negate ? `NOT ${wrapped}` : wrapped;
+  };
+  return render(root, false);
+}
+
+export function previewLines(root: GroupNode, context: LabelContext): PreviewLine[] {
   const lines: PreviewLine[] = [];
   const walk = (node: BuilderNode, depth: number): void => {
     if (node.kind === "condition") {
-      lines.push({ id: node.id, depth, text: describeCondition(node), kind: "condition" });
+      lines.push({ id: node.id, depth, text: describeCondition(node, context), kind: "condition" });
       return;
     }
     lines.push({ id: node.id, depth, text: `${node.negate ? "NOT " : ""}${node.combinator === "all" ? "ALL" : "ANY"} of:`, kind: "group" });
@@ -651,40 +712,29 @@ export function duplicateNode(root: GroupNode, id: string): GroupNode {
   return walk(root);
 }
 
-const RECENT_KEY = "des.dashboard.rules.recentFields";
-
-export function readRecentFields(): FieldRef[] {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(RECENT_KEY) ?? "[]") as unknown;
-    return Array.isArray(parsed)
-      ? parsed.filter((item): item is FieldRef => typeof item?.documentCode === "string" && typeof item?.path === "string").slice(0, 200)
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-export function rememberFields(fields: FieldRef[]) {
-  const seen = new Set<string>();
-  const merged = [...fields, ...readRecentFields()].filter((field) => {
-    const key = `${field.documentCode}|${field.path}`;
-    if (!field.documentCode || !field.path || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-  try { localStorage.setItem(RECENT_KEY, JSON.stringify(merged.slice(0, 200))); } catch { return; }
-}
-
-export function fieldsInRule(root: GroupNode, outcome: RuleOutcome): FieldRef[] {
-  const fields: FieldRef[] = [];
+export function primaryDocument(root: GroupNode, outcome: RuleOutcome): string {
+  if (outcome.documentCode) return outcome.documentCode;
+  const counts = new Map<string, number>();
   const walk = (node: BuilderNode): void => {
     if (node.kind === "group") return node.children.forEach(walk);
-    fields.push(cleanField(node.field));
-    if (node.source === "field") fields.push(cleanField(node.valueField));
+    if (node.field.documentCode) counts.set(node.field.documentCode, (counts.get(node.field.documentCode) ?? 0) + 1);
   };
   walk(root);
-  outcome.messages.forEach((message) => fields.push(cleanField(message.field)));
-  outcome.highlights.forEach((item) => fields.push(cleanField(item.field)));
-  if (outcome.primaryKey) fields.push(cleanField(outcome.primaryKey));
-  return fields;
+  return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? "";
+}
+
+export function retargetDocument(root: GroupNode, outcome: RuleOutcome, from: string, to: string): { tree: GroupNode; outcome: RuleOutcome } {
+  const move = (field: FieldRef): FieldRef => (!field.documentCode || field.documentCode === from ? { ...field, documentCode: to } : field);
+  const walk = (node: BuilderNode): BuilderNode =>
+    node.kind === "group" ? { ...node, children: node.children.map(walk) } : { ...node, field: move(node.field), valueField: move(node.valueField) };
+  return {
+    tree: walk(root) as GroupNode,
+    outcome: {
+      ...outcome,
+      documentCode: to,
+      primaryKey: outcome.primaryKey ? move(outcome.primaryKey) : null,
+      messages: outcome.messages.map((message) => (message.field.path ? { ...message, field: move(message.field) } : message)),
+      highlights: outcome.highlights.map((item) => ({ ...item, field: move(item.field) })),
+    },
+  };
 }

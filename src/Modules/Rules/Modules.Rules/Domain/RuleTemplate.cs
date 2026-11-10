@@ -10,6 +10,8 @@ namespace DES.Modules.Rules.Domain;
 public sealed class RuleTemplate : AggregateRoot<Guid>, IHasTenant
 {
     private readonly List<RuleTemplateVersion> _versions = [];
+    private readonly List<RuleTemplateDocument> _documents = [];
+    private readonly List<RuleTemplateRule> _rules = [];
 
     public string TenantId { get; private set; } = default!;
     public string StableCode { get; private set; } = default!;
@@ -21,8 +23,61 @@ public sealed class RuleTemplate : AggregateRoot<Guid>, IHasTenant
     public DateTime UpdatedAtUtc { get; private set; }
     public long Version { get; private set; }
     public IReadOnlyCollection<RuleTemplateVersion> Versions => _versions.AsReadOnly();
+    public IReadOnlyCollection<RuleTemplateDocument> Documents => _documents.AsReadOnly();
+    public IReadOnlyCollection<RuleTemplateRule> Rules => _rules.AsReadOnly();
 
     private RuleTemplate() { }
+
+    public static RuleTemplate CreateForSetup(string tenantId, string stableCode, string name, string? description, DateTime utcNow)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
+        return new RuleTemplate
+        {
+            Id = Guid.CreateVersion7(),
+            TenantId = tenantId,
+            StableCode = NormalizeCode(stableCode),
+            Name = NormalizeRequired(name, 200),
+            Description = NormalizeOptional(description, 2000),
+            Lifecycle = RuleLifecycle.Draft,
+            CreatedAtUtc = utcNow,
+            UpdatedAtUtc = utcNow,
+            Version = 1,
+        };
+    }
+
+    public void ConfigureSetup(long expectedVersion, string name, string? description, IEnumerable<TemplateSetupDocumentInput> documents, IEnumerable<TemplateSetupRuleInput> rules, DateTime utcNow)
+    {
+        GuardVersion(expectedVersion);
+        ArgumentNullException.ThrowIfNull(documents);
+        ArgumentNullException.ThrowIfNull(rules);
+        List<RuleTemplateDocument> nextDocuments = documents.Select(x => RuleTemplateDocument.Create(Id, x.DocumentCode, x.IsEnabled, x.Disposition, x.SortOrder)).ToList();
+        if (nextDocuments.Select(x => x.DocumentCode).Distinct(StringComparer.Ordinal).Count() != nextDocuments.Count) Conflict("Template document codes must be unique.");
+        HashSet<string> codes = nextDocuments.Select(x => x.DocumentCode).ToHashSet(StringComparer.Ordinal);
+        List<RuleTemplateRule> nextRules = rules.Select(x => RuleTemplateRule.Create(Id, x.DocumentCode, x.RuleDefinitionId, x.IsEnabled)).ToList();
+        if (nextRules.Any(x => !codes.Contains(x.DocumentCode))) Conflict("Every template rule must belong to a template document.");
+        if (nextRules.Select(x => (x.DocumentCode, x.RuleDefinitionId)).Distinct().Count() != nextRules.Count) Conflict("A rule can be added to a document only once.");
+        _documents.Clear();
+        _documents.AddRange(nextDocuments);
+        _rules.Clear();
+        _rules.AddRange(nextRules);
+        Name = NormalizeRequired(name, 200);
+        Description = NormalizeOptional(description, 2000);
+        Touch(utcNow);
+    }
+
+    public RuleTemplateVersion PublishSetup(IEnumerable<TemplateDocumentRequirementInput> requirements, IEnumerable<TemplateRuleAssignmentInput> assignments, Guid userId, DateTime utcNow)
+    {
+        RuleTemplateVersion version = RuleTemplateVersion.Create(Id, _versions.Count == 0 ? 1 : _versions.Max(v => v.VersionNumber) + 1, userId, utcNow);
+        version.Configure(requirements, assignments);
+        version.SubmitForReview();
+        version.Publish(userId, utcNow);
+        if (CurrentPublishedVersionId is Guid currentId) _versions.Single(v => v.Id == currentId).Retire(utcNow);
+        _versions.Add(version);
+        CurrentPublishedVersionId = version.Id;
+        Lifecycle = RuleLifecycle.Published;
+        Touch(utcNow);
+        return version;
+    }
 
     public static RuleTemplate Create(string tenantId, string stableCode, string name, string? description, Guid userId, DateTime utcNow)
     {
@@ -190,6 +245,40 @@ public sealed class TemplateDocumentRequirement : BaseEntity<Guid>
         if (result.Length > 32) throw new ArgumentOutOfRangeException(nameof(value));
         if (result.Any(c => !(char.IsAsciiLetterOrDigit(c) || c is '-' or '_' or '.'))) throw new ArgumentException("DocumentCode contains invalid characters.", nameof(value));
         return result;
+    }
+}
+
+public sealed class RuleTemplateDocument : BaseEntity<Guid>
+{
+    public Guid RuleTemplateId { get; private set; }
+    public string DocumentCode { get; private set; } = default!;
+    public bool IsEnabled { get; private set; }
+    public TemplateDocumentDisposition Disposition { get; private set; }
+    public int SortOrder { get; private set; }
+
+    private RuleTemplateDocument() { }
+
+    internal static RuleTemplateDocument Create(Guid templateId, string documentCode, bool isEnabled, TemplateDocumentDisposition disposition, int sortOrder)
+    {
+        if (sortOrder is < 1 or > 1000) throw new ArgumentOutOfRangeException(nameof(sortOrder));
+        if (!Enum.IsDefined(disposition)) throw new ArgumentOutOfRangeException(nameof(disposition));
+        return new() { Id = Guid.CreateVersion7(), RuleTemplateId = templateId, DocumentCode = TemplateDocumentRequirement.NormalizeDocumentCode(documentCode), IsEnabled = isEnabled, Disposition = disposition, SortOrder = sortOrder };
+    }
+}
+
+public sealed class RuleTemplateRule : BaseEntity<Guid>
+{
+    public Guid RuleTemplateId { get; private set; }
+    public string DocumentCode { get; private set; } = default!;
+    public Guid RuleDefinitionId { get; private set; }
+    public bool IsEnabled { get; private set; }
+
+    private RuleTemplateRule() { }
+
+    internal static RuleTemplateRule Create(Guid templateId, string documentCode, Guid ruleDefinitionId, bool isEnabled)
+    {
+        if (ruleDefinitionId == Guid.Empty) throw new ArgumentException("Rule is required.", nameof(ruleDefinitionId));
+        return new() { Id = Guid.CreateVersion7(), RuleTemplateId = templateId, DocumentCode = TemplateDocumentRequirement.NormalizeDocumentCode(documentCode), RuleDefinitionId = ruleDefinitionId, IsEnabled = isEnabled };
     }
 }
 

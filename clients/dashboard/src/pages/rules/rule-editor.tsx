@@ -24,9 +24,12 @@ import { toast } from "sonner";
 import {
   cloneRule,
   createRule,
+  deleteRule,
   getRule,
+  isRuleDeletable,
   publishRule,
   retireRule,
+  searchRuleColumns,
   submitRuleForReview,
   updateRuleDraft,
   type RuleCategory,
@@ -55,18 +58,21 @@ import {
   astToTree,
   buildAst,
   defaultOutcome,
+  columnLabel,
   emptyField,
-  fieldsInRule,
+  formulaText,
+  indexColumns,
+  primaryDocument,
+  retargetDocument,
   newGroup,
   newId,
   parseOutcome,
   previewLines,
-  readRecentFields,
-  rememberFields,
   ruleTypeByKey,
   serializeOutcome,
   treeStats,
   validateTree,
+  type ColumnIndex,
   type GroupNode,
   type Issue,
   type RuleOutcome,
@@ -74,7 +80,9 @@ import {
   type SectionId,
 } from "./rule-model";
 import { RuleTestPanel } from "./rule-test-panel";
-import { FieldPicker, LifecycleBadge, SectionCard, Segmented, SeverityBadge, TagInput } from "./rule-ui";
+import { ColorPicker, ColumnPicker, DocumentPicker, LifecycleBadge, SectionCard, Segmented, SeverityBadge, TagInput } from "./rule-ui";
+
+type Picker = { columns: ColumnIndex; documentCode: string; showDocument: boolean };
 
 const textareaClass = "w-full rounded-lg border border-[var(--color-input)] bg-transparent px-3 py-2 text-sm shadow-xs outline-none placeholder:text-[var(--color-muted-foreground)] focus-visible:border-[var(--color-ring)] focus-visible:ring-[3px] focus-visible:ring-[oklch(from_var(--color-ring)_l_c_h_/_0.5)] disabled:opacity-60";
 
@@ -145,15 +153,25 @@ function RuleEditorLoader({ type, ruleId, fromId }: { type: RuleTypeConfig; rule
 
 function initialDraft(type: RuleTypeConfig, detail: RuleDefinitionDetailDto | null, version: RuleVersionMetadataDto | null, duplicate: boolean): Draft {
   if (!detail) return { code: "", name: "", description: "", category: type.defaultCategory, outcome: defaultOutcome(), tree: newGroup() };
-  const outcome = parseOutcome(version?.outcomeJson);
+  const parsed = parseOutcome(version?.outcomeJson);
+  const tree = astToTree(version?.astJson, parsed.mode);
   return {
     code: duplicate ? `${detail.stableCode}_COPY`.slice(0, 64) : detail.stableCode,
     name: duplicate ? `${detail.name} (copy)`.slice(0, 200) : detail.name,
     description: detail.description ?? "",
     category: type.categories.includes(detail.category) ? detail.category : type.defaultCategory,
-    outcome,
-    tree: astToTree(version?.astJson, outcome.mode),
+    outcome: { ...parsed, documentCode: primaryDocument(tree, parsed) },
+    tree,
   };
+}
+
+function useColumnIndex(type: RuleTypeConfig): ColumnIndex {
+  const query = useQuery({ queryKey: ["rule-columns", "active"], queryFn: () => searchRuleColumns({ isActive: true, pageSize: 500 }), staleTime: 60_000 });
+  return useMemo(() => {
+    const preferred = type.key === "header" ? "Header" : "Column";
+    const items = [...(query.data?.items ?? [])].sort((a, b) => Number(b.kind === preferred) - Number(a.kind === preferred) || a.name.localeCompare(b.name));
+    return indexColumns(items);
+  }, [query.data, type.key]);
 }
 
 function signature(draft: Draft, type: RuleTypeConfig) {
@@ -174,15 +192,17 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
   const [baseline, setBaseline] = useState(() => signature(initial, type));
   const [showIssues, setShowIssues] = useState(false);
   const [pending, setPending] = useState<Transition | null>(null);
-  const [recent] = useState(readRecentFields);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const skipBlock = useRef(false);
+  const columns = useColumnIndex(type);
 
   const current = signature(draft, type);
   const dirty = editable && current !== baseline;
   const set = (patch: Partial<Draft>) => setDraft((value) => ({ ...value, ...patch }));
   const setOutcome = (patch: Partial<RuleOutcome>) => setDraft((value) => ({ ...value, outcome: { ...value.outcome, ...patch } }));
 
-  const suggestions = useMemo(() => [...fieldsInRule(draft.tree, draft.outcome), ...recent], [draft.tree, draft.outcome, recent]);
+  const picker: Picker = { columns, documentCode: draft.outcome.documentCode, showDocument: draft.category === "CrossDocument" || type.key === "header" };
+  const changeDocument = (code: string) => setDraft((value) => ({ ...value, ...retargetDocument(value.tree, value.outcome, value.outcome.documentCode, code) }));
   const issues = useMemo(() => collectIssues(draft, type, isNew), [draft, type, isNew]);
   const issueMap = useMemo(() => new Map(issues.map((issue) => [issue.id, issue.message])), [issues]);
   const stats = useMemo(() => treeStats(draft.tree), [draft.tree]);
@@ -210,7 +230,6 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
       return detail.id;
     },
     onSuccess: async (id, input) => {
-      rememberFields(fieldsInRule(input.draft.tree, input.draft.outcome));
       setBaseline(signature(input.draft, type));
       toast.success(isNew ? "Rule created as draft" : "Draft saved");
       await queryClient.invalidateQueries({ queryKey: ["rules"] });
@@ -244,6 +263,19 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
     },
     onError: (error) => toast.error("Action failed", { description: describe(error) }),
   });
+
+  const remove = useMutation({
+    mutationFn: (input: { id: string; expected: number }) => deleteRule(input.id, input.expected),
+    onSuccess: () => {
+      toast.success("Rule deleted");
+      setConfirmDelete(false);
+      skipBlock.current = true;
+      navigate(`/rules/${type.key}`, { replace: true });
+      void queryClient.invalidateQueries({ queryKey: ["rules"] });
+    },
+    onError: (error) => toast.error("Delete failed", { description: describe(error) }),
+  });
+  const canDelete = Boolean(detail && can("Delete") && isRuleDeletable(detail));
 
   const onSave = () => {
     setShowIssues(true);
@@ -299,6 +331,11 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
                 {TRANSITION_COPY[kind].title}
               </Button>
             ))}
+            {canDelete && (
+              <Button variant="outline" aria-label="Delete rule" onClick={() => setConfirmDelete(true)} disabled={save.isPending || remove.isPending} className="text-[var(--color-destructive)]">
+                <Trash2 className="size-4" />Delete
+              </Button>
+            )}
             {editable && (
               <Button onClick={onSave} disabled={save.isPending || (!dirty && !isNew)}>
                 <Save className="size-4" />{save.isPending ? "Saving…" : isNew ? "Create draft" : "Save draft"}
@@ -318,7 +355,7 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[11rem_minmax(0,1fr)] xl:grid-cols-[11rem_minmax(0,1fr)_19rem]">
+      <div className="grid gap-6 lg:grid-cols-[11rem_minmax(0,1fr)] 2xl:grid-cols-[11rem_minmax(0,1fr)_19rem]">
         <nav aria-label="Rule sections" className="hidden lg:block">
           <ol className="sticky top-20 space-y-0.5">
             {sections.map((section, index) => {
@@ -351,7 +388,7 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
             <div key={section.id}>
               {section.id === "basics" && (
                 <SectionCard id="basics" step={index + 1} icon={Settings2} title="Basics" description="Identify the rule and how serious its findings are." issues={showIssues ? countFor("basics") : 0} complete={countFor("basics") === 0}>
-                  <BasicsSection draft={draft} type={type} isNew={isNew} disabled={!editable} showIssues={showIssues} issues={issueMap} set={set} setOutcome={setOutcome} />
+                  <BasicsSection draft={draft} type={type} isNew={isNew} disabled={!editable} showIssues={showIssues} issues={issueMap} set={set} setOutcome={setOutcome} onDocumentChange={changeDocument} />
                 </SectionCard>
               )}
               {section.id === "model" && (
@@ -387,17 +424,23 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
                       ? "Describe the problem. A finding is raised when these conditions match."
                       : "Describe the expected state. A finding is raised when these conditions do not match."}
                   </p>
-                  <ConditionBuilder root={draft.tree} onChange={(tree) => set({ tree })} disabled={!editable} suggestions={suggestions} issues={issueMap} showIssues={showIssues} />
+                  <ConditionBuilder root={draft.tree} onChange={(tree) => set({ tree })} disabled={!editable} columns={picker.columns} documentCode={picker.documentCode} showDocument={picker.showDocument} issues={issueMap} showIssues={showIssues} />
+                  <div className="mt-4 rounded-xl border border-[var(--color-border)] bg-[oklch(from_var(--color-muted)_l_c_h_/_0.35)] px-4 py-3">
+                    <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Formula</p>
+                    <code data-testid="rule-formula" className="block whitespace-pre-wrap break-words font-mono text-[12.5px] leading-relaxed text-[var(--color-foreground)]">
+                      {formulaText(draft.tree, { columns, documentCode: draft.outcome.documentCode })}
+                    </code>
+                  </div>
                 </SectionCard>
               )}
               {section.id === "messages" && (
                 <SectionCard id="messages" step={index + 1} icon={MessageSquareText} title="Messages" description="What reviewers see when this rule raises a finding." issues={showIssues ? countFor("messages") : 0} complete={countFor("messages") === 0}>
-                  <MessagesSection outcome={draft.outcome} disabled={!editable} suggestions={suggestions} showIssues={showIssues} issues={issueMap} setOutcome={setOutcome} />
+                  <MessagesSection outcome={draft.outcome} disabled={!editable} picker={picker} showIssues={showIssues} issues={issueMap} setOutcome={setOutcome} />
                 </SectionCard>
               )}
               {section.id === "output" && (
                 <SectionCard id="output" step={index + 1} icon={Highlighter} title="Output" description="How findings are grouped and highlighted in the report." issues={showIssues ? countFor("output") : 0} complete={countFor("output") === 0}>
-                  <OutputSection outcome={draft.outcome} disabled={!editable} suggestions={suggestions} showIssues={showIssues} issues={issueMap} setOutcome={setOutcome} />
+                  <OutputSection outcome={draft.outcome} disabled={!editable} picker={picker} showIssues={showIssues} issues={issueMap} setOutcome={setOutcome} />
                 </SectionCard>
               )}
               {section.id === "test" && (
@@ -409,10 +452,10 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
           ))}
         </div>
 
-        <aside className="hidden xl:block">
+        <aside className="hidden 2xl:block">
           <div className="sticky top-20 space-y-4">
             <RailCard title="Plain-English preview" icon={ListTree}>
-              <PreviewPanel draft={draft} />
+              <PreviewPanel draft={draft} columns={columns} />
             </RailCard>
             <RailCard title="Rule health" icon={issues.length ? AlertTriangle : CheckCircle2}>
               <dl className="grid grid-cols-3 gap-2 text-center">
@@ -476,6 +519,23 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
         </DialogContent>
       </Dialog>
 
+      <Dialog open={confirmDelete} onOpenChange={(open) => !open && !remove.isPending && setConfirmDelete(false)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete rule</DialogTitle>
+            <DialogDescription>
+              Permanently delete <strong>{detail?.name}</strong> (<code className="font-mono">{detail?.stableCode}</code>) and all its draft versions? It is also removed from document settings. This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDelete(false)} disabled={remove.isPending}>Cancel</Button>
+            <Button variant="destructive" disabled={remove.isPending} onClick={() => detail && remove.mutate({ id: detail.id, expected: detail.version })}>
+              {remove.isPending ? "Deleting…" : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={blocker.state === "blocked"} onOpenChange={(open) => !open && blocker.reset?.()}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -499,12 +559,13 @@ function collectIssues(draft: Draft, type: RuleTypeConfig, isNew: boolean): Issu
   if (!draft.name.trim()) issues.push({ id: "name", section: "basics", message: "Give the rule a display name." });
   if (draft.name.trim().length > 200) issues.push({ id: "name", section: "basics", message: "Display name must be 200 characters or fewer." });
   if (draft.description.trim().length > 2000) issues.push({ id: "description", section: "basics", message: "Description must be 2000 characters or fewer." });
+  if (!draft.outcome.documentCode) issues.push({ id: "document", section: "basics", message: "Choose the document this rule checks." });
   issues.push(...validateTree(draft.tree));
   const { outcome } = draft;
   if (!outcome.messages.some((message) => message.text.trim())) issues.push({ id: "messages", section: "messages", message: "Add at least one message so reviewers know what went wrong." });
   outcome.messages.forEach((message) => {
     if (message.text.trim().length > 1000) issues.push({ id: message.id, section: "messages", message: "Messages must be 1000 characters or fewer." });
-    if (message.text.includes("#PrimaryKey#") && !outcome.primaryKey?.path.trim()) issues.push({ id: message.id, section: "messages", message: "This message uses #PrimaryKey# but no primary key field is selected." });
+    if (message.text.includes("#PrimaryKey#") && !outcome.primaryKey?.path.trim()) issues.push({ id: message.id, section: "messages", message: "This message uses #PrimaryKey# but no primary key column is selected." });
     if (message.field.path.trim() && !message.field.documentCode) issues.push({ id: message.id, section: "messages", message: "Choose the document for the message column." });
   });
   if (type.showOutput) {
@@ -552,7 +613,7 @@ function IssueText({ id, issues, show }: { id: string; issues: ReadonlyMap<strin
   return message ? <p role="alert" className="text-[12px] text-[var(--color-warning)]">{message}</p> : null;
 }
 
-function BasicsSection({ draft, type, isNew, disabled, showIssues, issues, set, setOutcome }: {
+function BasicsSection({ draft, type, isNew, disabled, showIssues, issues, set, setOutcome, onDocumentChange }: {
   draft: Draft;
   type: RuleTypeConfig;
   isNew: boolean;
@@ -561,6 +622,7 @@ function BasicsSection({ draft, type, isNew, disabled, showIssues, issues, set, 
   issues: ReadonlyMap<string, string>;
   set: (patch: Partial<Draft>) => void;
   setOutcome: (patch: Partial<RuleOutcome>) => void;
+  onDocumentChange: (code: string) => void;
 }) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -581,6 +643,12 @@ function BasicsSection({ draft, type, isNew, disabled, showIssues, issues, set, 
           <textarea id="rule-description" rows={3} maxLength={2000} className={textareaClass} value={draft.description} disabled={disabled} onChange={(event) => set({ description: event.target.value })} />
         </Field>
         <IssueText id="description" issues={issues} show={showIssues} />
+      </div>
+      <div className="space-y-1.5" data-issue-id="document">
+        <span className="text-[11.5px] font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Document<span aria-hidden className="ml-1.5 text-[var(--color-destructive)]">·</span></span>
+        <DocumentPicker label="Rule document" value={draft.outcome.documentCode} disabled={disabled} placeholder="Select document" onChange={onDocumentChange} />
+        <p className="text-[11.5px] text-[var(--color-muted-foreground)]">The PPAP document whose columns this rule checks. Changing it moves every column to the new document.</p>
+        <IssueText id="document" issues={issues} show={showIssues} />
       </div>
       <div className="space-y-1.5">
         <span id="rule-severity-label" className="text-[11.5px] font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Severity</span>
@@ -636,10 +704,10 @@ function ModelSection({ outcome, disabled, showIssues, issues, setOutcome }: { o
   );
 }
 
-function MessagesSection({ outcome, disabled, suggestions, showIssues, issues, setOutcome }: {
+function MessagesSection({ outcome, disabled, picker, showIssues, issues, setOutcome }: {
   outcome: RuleOutcome;
   disabled: boolean;
-  suggestions: Parameters<typeof FieldPicker>[0]["suggestions"];
+  picker: Picker;
   showIssues: boolean;
   issues: ReadonlyMap<string, string>;
   setOutcome: (patch: Partial<RuleOutcome>) => void;
@@ -653,7 +721,7 @@ function MessagesSection({ outcome, disabled, suggestions, showIssues, issues, s
           <p className="text-[12.5px] font-semibold">Primary key</p>
           <p className="text-[11.5px] text-[var(--color-muted-foreground)]">Use <code className="rounded bg-[var(--color-card)] px-1 font-mono text-[11px] text-[var(--color-primary)]">#PrimaryKey#</code> in a message to insert this value.</p>
         </div>
-        <FieldPicker label="Primary key" value={outcome.primaryKey ?? emptyField()} disabled={disabled} suggestions={suggestions} onChange={(field) => setOutcome({ primaryKey: field.documentCode || field.path ? field : null, consolidate: field.path ? outcome.consolidate : false })} />
+        <ColumnPicker label="Primary key" value={outcome.primaryKey ?? emptyField()} disabled={disabled} columns={picker.columns} documentCode={picker.documentCode} showDocument={picker.showDocument} placeholder="Select primary key column" onChange={(field) => setOutcome({ primaryKey: field.path ? field : null, consolidate: field.path ? outcome.consolidate : false })} />
         {!disabled && outcome.primaryKey && <Button type="button" variant="ghost" size="sm" onClick={() => setOutcome({ primaryKey: null, consolidate: false })}>Clear</Button>}
       </div>
 
@@ -663,7 +731,7 @@ function MessagesSection({ outcome, disabled, suggestions, showIssues, issues, s
             <div className="grid gap-2 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)_auto] md:items-start">
               <div>
                 <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Column <span className="font-normal normal-case">(optional)</span></p>
-                <FieldPicker label={`Message ${index + 1} column`} value={message.field} disabled={disabled} suggestions={suggestions} compact onChange={(field) => updateMessage(message.id, { field })} />
+                <ColumnPicker label={`Message ${index + 1} column`} value={message.field} disabled={disabled} columns={picker.columns} documentCode={picker.documentCode} showDocument={picker.showDocument} onChange={(field) => updateMessage(message.id, { field })} />
               </div>
               <div>
                 <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">Message</p>
@@ -694,10 +762,10 @@ function MessagesSection({ outcome, disabled, suggestions, showIssues, issues, s
   );
 }
 
-function OutputSection({ outcome, disabled, suggestions, showIssues, issues, setOutcome }: {
+function OutputSection({ outcome, disabled, picker, showIssues, issues, setOutcome }: {
   outcome: RuleOutcome;
   disabled: boolean;
-  suggestions: Parameters<typeof FieldPicker>[0]["suggestions"];
+  picker: Picker;
   showIssues: boolean;
   issues: ReadonlyMap<string, string>;
   setOutcome: (patch: Partial<RuleOutcome>) => void;
@@ -711,7 +779,7 @@ function OutputSection({ outcome, disabled, suggestions, showIssues, issues, set
           <label htmlFor="rule-consolidate" className="text-[13px] font-semibold">Consolidate findings</label>
           <p className="text-[12px] text-[var(--color-muted-foreground)]">
             {hasPrimaryKey
-              ? <>Merge findings that share the same <code className="font-mono text-[11px]">{outcome.primaryKey!.documentCode} › {outcome.primaryKey!.path}</code> into one entry.</>
+              ? <>Merge findings that share the same <strong>{columnLabel(outcome.primaryKey!, picker.columns)}</strong> into one entry.</>
               : "Select a primary key in Messages to enable consolidation."}
           </p>
         </div>
@@ -728,9 +796,9 @@ function OutputSection({ outcome, disabled, suggestions, showIssues, issues, set
             <li key={item.id} data-issue-id={item.id} className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
                 <div className="min-w-[16rem] flex-1">
-                  <FieldPicker label={`Highlight ${index + 1}`} value={item.field} disabled={disabled} suggestions={suggestions} onChange={(field) => setOutcome({ highlights: outcome.highlights.map((value) => (value.id === item.id ? { ...value, field } : value)) })} />
+                  <ColumnPicker label={`Highlight ${index + 1} column`} value={item.field} disabled={disabled} columns={picker.columns} documentCode={picker.documentCode} showDocument={picker.showDocument} onChange={(field) => setOutcome({ highlights: outcome.highlights.map((value) => (value.id === item.id ? { ...value, field } : value)) })} />
                 </div>
-                <input aria-label={`Highlight ${index + 1} colour`} type="color" value={item.color} disabled={disabled} onChange={(event) => setOutcome({ highlights: outcome.highlights.map((value) => (value.id === item.id ? { ...value, color: event.target.value } : value)) })} className="h-9 w-12 cursor-pointer rounded-lg border border-[var(--color-input)] bg-transparent p-1" />
+                <ColorPicker label={`Highlight ${index + 1} colour`} value={item.color} disabled={disabled} onChange={(color) => setOutcome({ highlights: outcome.highlights.map((value) => (value.id === item.id ? { ...value, color } : value)) })} />
                 {!disabled && (
                   <Button type="button" variant="ghost" size="icon-xs" aria-label={`Remove highlight ${index + 1}`} onClick={() => setOutcome({ highlights: outcome.highlights.filter((value) => value.id !== item.id) })}>
                     <Trash2 />
@@ -742,7 +810,7 @@ function OutputSection({ outcome, disabled, suggestions, showIssues, issues, set
           ))}
         </ul>
         {!disabled && (
-          <Button type="button" variant="soft" size="sm" className="mt-3" disabled={outcome.highlights.length >= 20} onClick={() => setOutcome({ highlights: [...outcome.highlights, { id: newId("h"), field: emptyField(), color: SEVERITY_DEFAULT_COLOR[outcome.severity] }] })}>
+          <Button type="button" variant="soft" size="sm" className="mt-3" disabled={outcome.highlights.length >= 20} onClick={() => setOutcome({ highlights: [...outcome.highlights, { id: newId("h"), field: { documentCode: picker.documentCode, path: "" }, color: SEVERITY_DEFAULT_COLOR[outcome.severity] }] })}>
             <Plus />Add highlight
           </Button>
         )}
@@ -769,8 +837,8 @@ function OutputSection({ outcome, disabled, suggestions, showIssues, issues, set
   );
 }
 
-function PreviewPanel({ draft }: { draft: Draft }) {
-  const lines = useMemo(() => previewLines(draft.tree), [draft.tree]);
+function PreviewPanel({ draft, columns }: { draft: Draft; columns: ColumnIndex }) {
+  const lines = useMemo(() => previewLines(draft.tree, { columns, documentCode: draft.outcome.documentCode }), [draft.tree, columns, draft.outcome.documentCode]);
   const message = draft.outcome.messages.find((item) => item.text.trim())?.text;
   return (
     <div className="space-y-3 text-[12.5px]">
@@ -848,13 +916,13 @@ function EditorSkeleton() {
     <div role="status" aria-busy="true" className="space-y-6">
       <span className="sr-only">Loading rule…</span>
       <Skeleton className="h-14 w-full rounded-xl" />
-      <div className="grid gap-6 lg:grid-cols-[11rem_minmax(0,1fr)] xl:grid-cols-[11rem_minmax(0,1fr)_19rem]">
+      <div className="grid gap-6 lg:grid-cols-[11rem_minmax(0,1fr)] 2xl:grid-cols-[11rem_minmax(0,1fr)_19rem]">
         <Skeleton className="hidden h-48 rounded-xl lg:block" />
         <div className="space-y-6">
           <Skeleton className="h-64 rounded-2xl" />
           <Skeleton className="h-80 rounded-2xl" />
         </div>
-        <Skeleton className="hidden h-72 rounded-2xl xl:block" />
+        <Skeleton className="hidden h-72 rounded-2xl 2xl:block" />
       </div>
     </div>
   );

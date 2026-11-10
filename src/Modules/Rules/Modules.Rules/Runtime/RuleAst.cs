@@ -239,10 +239,11 @@ internal sealed class RuleEvaluator
 
     private static Outcome Compare(ComparisonNode c, RuleEvaluationContext context)
     {
-        Resolved left = Resolve(c.Left, context); if (left.Outcome is not null) return left.Outcome;
-        if (c.Operator is ComparisonOperator.IsEmpty or ComparisonOperator.IsNotEmpty)
+        bool unary = c.Operator is ComparisonOperator.IsEmpty or ComparisonOperator.IsNotEmpty;
+        Resolved left = Resolve(c.Left, context); if (left.Outcome is not null && !(unary && left.FieldMissing)) return left.Outcome;
+        if (unary)
         {
-            bool empty = left.Value.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined || left.Value.ValueKind == JsonValueKind.String && left.Value.GetString()!.Length == 0 || left.Value.ValueKind == JsonValueKind.Array && left.Value.GetArrayLength() == 0 || left.Value.ValueKind == JsonValueKind.Object && !left.Value.EnumerateObject().Any();
+            bool empty = left.FieldMissing || left.Value.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined || left.Value.ValueKind == JsonValueKind.String && left.Value.GetString()!.Length == 0 || left.Value.ValueKind == JsonValueKind.Array && left.Value.GetArrayLength() == 0 || left.Value.ValueKind == JsonValueKind.Object && !left.Value.EnumerateObject().Any();
             return Bool(c.Operator == ComparisonOperator.IsEmpty ? empty : !empty);
         }
         Resolved right = Resolve(c.Right!, context); if (right.Outcome is not null) return right.Outcome;
@@ -269,7 +270,7 @@ internal sealed class RuleEvaluator
         foreach (string segment in field.Path.Split('.'))
         {
             if (current.ValueKind != JsonValueKind.Object) return new(default, TypeError());
-            if (!current.TryGetProperty(segment, out current)) return new(default, new(RuleEvaluationStatus.NotEvaluated, "Field was not found."));
+            if (!current.TryGetProperty(segment, out current)) return new(default, new(RuleEvaluationStatus.NotEvaluated, "Field was not found."), FieldMissing: true);
         }
         return new(current, null);
     }
@@ -307,5 +308,5 @@ internal sealed class RuleEvaluator
     private static Outcome TypeError() => new(RuleEvaluationStatus.Error, "Operand types are incompatible.");
     private static void AddTrace(List<RuleTrace> trace, RuleTrace item) { if (trace.Count < MaxTrace) trace.Add(item); }
     private sealed record Outcome(RuleEvaluationStatus Status, string? Reason);
-    private readonly record struct Resolved(JsonElement Value, Outcome? Outcome);
+    private readonly record struct Resolved(JsonElement Value, Outcome? Outcome, bool FieldMissing = false);
 }

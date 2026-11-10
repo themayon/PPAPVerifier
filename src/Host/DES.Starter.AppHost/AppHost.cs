@@ -15,11 +15,14 @@ var appPrefix = builder.Environment.ApplicationName
 var infra = builder.Configuration.GetSection("Infrastructure");
 var postgresMode = infra.GetValue("Postgres:Mode", "Container");
 var redisMode = infra.GetValue("Redis:Mode", "Container");
+var rabbitMqMode = infra.GetValue("RabbitMQ:Mode", "Container");
 var storageMode = infra.GetValue("Storage:Mode", "Minio");
 
 var useContainerPostgres = string.Equals(postgresMode, "Container", StringComparison.OrdinalIgnoreCase);
 var useContainerRedis = string.Equals(redisMode, "Container", StringComparison.OrdinalIgnoreCase);
 var useExternalRedis = string.Equals(redisMode, "External", StringComparison.OrdinalIgnoreCase);
+var useContainerRabbitMq = string.Equals(rabbitMqMode, "Container", StringComparison.OrdinalIgnoreCase);
+var useExternalRabbitMq = string.Equals(rabbitMqMode, "External", StringComparison.OrdinalIgnoreCase);
 var useMinio = string.Equals(storageMode, "Minio", StringComparison.OrdinalIgnoreCase);
 var useExternalS3 = string.Equals(storageMode, "ExternalS3", StringComparison.OrdinalIgnoreCase);
 var useLocalStorage = string.Equals(storageMode, "Local", StringComparison.OrdinalIgnoreCase);
@@ -45,6 +48,11 @@ if (useExternalRedis && !string.IsNullOrEmpty(redisExternalConnectionString))
 if (!useContainerRedis && !useExternalRedis && !string.Equals(redisMode, "None", StringComparison.OrdinalIgnoreCase))
 {
     throw new InvalidOperationException($"Infrastructure:Redis:Mode must be 'Container', 'External', or 'None'. Got: '{redisMode}'.");
+}
+
+if (!useContainerRabbitMq && !useExternalRabbitMq && !string.Equals(rabbitMqMode, "None", StringComparison.OrdinalIgnoreCase))
+{
+    throw new InvalidOperationException($"Infrastructure:RabbitMQ:Mode must be 'Container', 'External', or 'None'. Got: '{rabbitMqMode}'.");
 }
 
 if (!useMinio && !useExternalS3 && !useLocalStorage)
@@ -109,6 +117,22 @@ else if (useExternalRedis)
     redisConnectionString = redisConnection.Resource.ConnectionStringExpression;
 }
 
+var rabbitMqUser = builder.AddParameter("rabbitmq-user", "ppap");
+var rabbitMqPassword = builder.AddParameter("rabbitmq-password", "ppap-password", secret: true);
+IResourceBuilder<ContainerResource>? rabbitMq = null;
+EndpointReference? rabbitMqEndpoint = null;
+if (useContainerRabbitMq)
+{
+    rabbitMq = builder.AddContainer("rabbitmq", "rabbitmq", "4.1-management")
+        .WithEndpoint(port: 5672, targetPort: 5672, scheme: "tcp", name: "amqp")
+        .WithHttpEndpoint(port: 15672, targetPort: 15672, name: "management")
+        .WithEnvironment("RABBITMQ_DEFAULT_USER", rabbitMqUser)
+        .WithEnvironment("RABBITMQ_DEFAULT_PASS", rabbitMqPassword)
+        .WithVolume($"{appPrefix}-rabbitmq-data", "/var/lib/rabbitmq")
+        .WithLifetime(ContainerLifetime.Persistent);
+    rabbitMqEndpoint = rabbitMq.GetEndpoint("amqp");
+}
+
 // Object storage (MinIO, S3-compatible). CORS via MINIO_API_CORS_ALLOW_ORIGIN so browser presigned PUTs from the admin (:5173)/dashboard (:5174) dev origins work without proxying through the API.
 const string MinioBucket = "fsh-uploads";
 const string AdminOrigin = "http://localhost:5173";
@@ -143,7 +167,7 @@ if (useMinio)
         mc anonymous set download local/{{MinioBucket}};
         """).ReplaceLineEndings("\n");
 
-    minioInit = builder.AddContainer("minio-init", "minio/mc")
+    minioInit = builder.AddContainer("minio-init", "minio/minio")
         .WithEntrypoint("/bin/sh")
         .WithArgs("-c", minioInitScript)
         .WithEnvironment("MC_USER", minioUser)
@@ -234,6 +258,55 @@ else if (useExternalS3)
 else
 {
     api = api.WithEnvironment("Storage__Provider", "local");
+}
+
+var validationWorker = builder.AddProject<Projects.DES_Ppap_ValidationWorker>($"{appPrefix}-ppap-validation-worker")
+    .WithEnvironment("ValidationWorker__Enabled", (useContainerRabbitMq || useExternalRabbitMq).ToString())
+    .WithEnvironment("ValidationWorker__ExchangeName", "fsh.events")
+    .WithEnvironment("ValidationWorker__RequestQueueName", "ppap.complex-validation.requests");
+if (rabbitMq is not null && rabbitMqEndpoint is not null)
+{
+    api = api
+        .WaitFor(rabbitMq)
+        .WithEnvironment("ComplexValidationOptions__Enabled", "true")
+        .WithEnvironment("ComplexValidationOptions__Host", rabbitMqEndpoint.Property(EndpointProperty.Host))
+        .WithEnvironment("ComplexValidationOptions__Port", rabbitMqEndpoint.Property(EndpointProperty.Port))
+        .WithEnvironment("ComplexValidationOptions__UserName", rabbitMqUser)
+        .WithEnvironment("ComplexValidationOptions__Password", rabbitMqPassword)
+        .WithEnvironment("ComplexValidationOptions__ExchangeName", "fsh.events")
+        .WithEnvironment("ComplexValidationOptions__RequestQueueName", "ppap.complex-validation.requests")
+        .WithEnvironment("ComplexValidationOptions__ResultQueueName", "ppap.complex-validation.results");
+    validationWorker = validationWorker
+        .WaitFor(rabbitMq)
+        .WithEnvironment("ValidationWorker__Host", rabbitMqEndpoint.Property(EndpointProperty.Host))
+        .WithEnvironment("ValidationWorker__Port", rabbitMqEndpoint.Property(EndpointProperty.Port))
+        .WithEnvironment("ValidationWorker__UserName", rabbitMqUser)
+        .WithEnvironment("ValidationWorker__Password", rabbitMqPassword);
+}
+else if (useExternalRabbitMq)
+{
+    string rabbitMqHost = infra["RabbitMQ:Host"] ?? "localhost";
+    string rabbitMqPort = infra["RabbitMQ:Port"] ?? "5672";
+    string rabbitMqExternalUser = infra["RabbitMQ:UserName"] ?? "guest";
+    string rabbitMqExternalPassword = infra["RabbitMQ:Password"] ?? "guest";
+    api = api
+        .WithEnvironment("ComplexValidationOptions__Enabled", "true")
+        .WithEnvironment("ComplexValidationOptions__Host", rabbitMqHost)
+        .WithEnvironment("ComplexValidationOptions__Port", rabbitMqPort)
+        .WithEnvironment("ComplexValidationOptions__UserName", rabbitMqExternalUser)
+        .WithEnvironment("ComplexValidationOptions__Password", rabbitMqExternalPassword)
+        .WithEnvironment("ComplexValidationOptions__VirtualHost", infra["RabbitMQ:VirtualHost"] ?? "/")
+        .WithEnvironment("ComplexValidationOptions__ExchangeName", "fsh.events")
+        .WithEnvironment("ComplexValidationOptions__RequestQueueName", "ppap.complex-validation.requests")
+        .WithEnvironment("ComplexValidationOptions__ResultQueueName", "ppap.complex-validation.results")
+        .WithEnvironment("ComplexValidationOptions__UseSsl", infra["RabbitMQ:UseSsl"] ?? "false");
+    validationWorker = validationWorker
+        .WithEnvironment("ValidationWorker__Host", rabbitMqHost)
+        .WithEnvironment("ValidationWorker__Port", rabbitMqPort)
+        .WithEnvironment("ValidationWorker__UserName", rabbitMqExternalUser)
+        .WithEnvironment("ValidationWorker__Password", rabbitMqExternalPassword)
+        .WithEnvironment("ValidationWorker__VirtualHost", infra["RabbitMQ:VirtualHost"] ?? "/")
+        .WithEnvironment("ValidationWorker__UseSsl", infra["RabbitMQ:UseSsl"] ?? "false");
 }
 
 //#if (frontend)

@@ -14,4 +14,7 @@ public sealed record PpapSubmissionDto(
     DateTime CreatedAtUtc,
     DateTime? UpdatedAtUtc,
     DateTime? SubmittedAtUtc,
-    DateTime? CancelledAtUtc);
+    DateTime? CancelledAtUtc,
+    string Decision = "None",
+    string? DecisionComment = null,
+    DateTime? DecidedAtUtc = null);

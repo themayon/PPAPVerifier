@@ -19,13 +19,14 @@ namespace DES.Modules.Ppap.IntegrationEventHandlers;
 public sealed class DocumentExtractionCompletedIntegrationEventHandler(
     PpapDbContext dbContext,
     IOutboxWriter outbox,
-    IJobService jobService)
+    IJobService jobService,
+    IComplexValidationRequestScheduler validationScheduler)
     : IIntegrationEventHandler<DocumentExtractionCompletedIntegrationEvent>
 {
     public Task HandleAsync(DocumentExtractionCompletedIntegrationEvent @event, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
-        return DocumentExtractionTerminalEventProcessor.ProcessCompletedAsync(dbContext, outbox, jobService, @event, ct);
+        return DocumentExtractionTerminalEventProcessor.ProcessCompletedAsync(dbContext, outbox, jobService, validationScheduler, @event, ct);
     }
 }
 
@@ -53,13 +54,16 @@ internal static class DocumentExtractionTerminalEventProcessor
         PpapDbContext dbContext,
         IOutboxWriter outbox,
         IJobService jobService,
+        IComplexValidationRequestScheduler validationScheduler,
         DocumentExtractionCompletedIntegrationEvent @event,
         CancellationToken cancellationToken) => ProcessAsync(
             dbContext,
             outbox,
             jobService,
+            validationScheduler,
             @event.TenantId,
             @event.CorrelationId,
+            @event.OccurredOnUtc,
             @event.SubmissionDocumentId,
             @event.OwnerUserId,
             document => document.RecordExtractionCompleted(
@@ -69,6 +73,14 @@ internal static class DocumentExtractionTerminalEventProcessor
                 @event.CanonicalDocumentId,
                 @event.RawResponseFileAssetId,
                 @event.GeneratedExcelFileAssetId,
+                @event.OccurredOnUtc),
+            revision => revision.RecordExtractionCompleted(
+                @event.ExtractionAttemptId,
+                @event.CanonicalDocumentId,
+                @event.RawResponseFileAssetId,
+                @event.GeneratedExcelFileAssetId,
+                @event.Provider,
+                @event.Model,
                 @event.OccurredOnUtc),
             cancellationToken);
 
@@ -90,8 +102,10 @@ internal static class DocumentExtractionTerminalEventProcessor
             dbContext,
             outbox,
             jobService,
+            null,
             @event.TenantId,
             @event.CorrelationId,
+            @event.OccurredOnUtc,
             @event.SubmissionDocumentId,
             @event.OwnerUserId,
             document => document.RecordExtractionFailed(
@@ -101,6 +115,10 @@ internal static class DocumentExtractionTerminalEventProcessor
                 terminalStatus,
                 @event.ErrorCode,
                 @event.OccurredOnUtc),
+            revision => revision.RecordExtractionFailed(
+                @event.ExtractionAttemptId,
+                @event.ErrorCode,
+                @event.OccurredOnUtc),
             cancellationToken);
     }
 
@@ -108,11 +126,14 @@ internal static class DocumentExtractionTerminalEventProcessor
         PpapDbContext dbContext,
         IOutboxWriter outbox,
         IJobService jobService,
+        IComplexValidationRequestScheduler? validationScheduler,
         string tenantId,
         string correlationId,
+        DateTime occurredOnUtc,
         Guid submissionDocumentId,
         Guid ownerUserId,
         Func<PpapSubmissionDocument, bool> applyTerminalEvent,
+        Func<PpapDocumentRevision, bool> applyRevisionTerminalEvent,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
@@ -144,16 +165,35 @@ internal static class DocumentExtractionTerminalEventProcessor
 
         PpapSubmissionDocument document = submission.Documents.Single(x => x.Id == submissionDocumentId);
         _ = applyTerminalEvent(document);
+        PpapDocumentRevision? revision = await dbContext.PpapDocumentRevisions
+            .FirstOrDefaultAsync(
+                x => x.SubmissionDocumentId == submissionDocumentId && x.IsCurrent,
+                cancellationToken)
+            .ConfigureAwait(false);
+        if (revision is not null) _ = applyRevisionTerminalEvent(revision);
+        if (validationScheduler is not null)
+        {
+            await validationScheduler.ScheduleReadyAsync(submission, correlationId, occurredOnUtc, cancellationToken).ConfigureAwait(false);
+        }
 
-        PpapJob job = await dbContext.PpapJobs
+        PpapJob? job = await dbContext.PpapJobs
             .FirstOrDefaultAsync(
                 x => x.TenantId == tenantId
                     && x.SubmissionId == submission.Id
                     && x.SubmissionVersion == submission.Version
                     && x.OwnerUserId == ownerUserId,
                 cancellationToken)
-            .ConfigureAwait(false)
-            ?? throw Conflict("The extraction event does not correlate to the PPAP processing job.");
+            .ConfigureAwait(false);
+        if (job is null)
+        {
+            if (submission.Status != SubmissionStatus.Draft)
+            {
+                throw Conflict("The extraction event does not correlate to the PPAP processing job.");
+            }
+            await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+            return;
+        }
 
         PpapSubmissionDocument[] requestedDocuments = submission.Documents
             .Where(x => x.Status == SubmissionDocumentStatus.Available

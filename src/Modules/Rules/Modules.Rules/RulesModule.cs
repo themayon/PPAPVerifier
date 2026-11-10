@@ -26,11 +26,12 @@ public sealed class RulesModule : IModule
         builder.Services.AddHeroDbContext<RulesDbContext>(); builder.Services.AddScoped<IDbInitializer, RulesDbInitializer>();
         builder.Services.AddScoped<IRuleEvaluationService, RuleEvaluationService>();
         builder.Services.AddScoped<IRuleEvaluationResultReader, RuleEvaluationResultReader>();
+        builder.Services.AddScoped<IComplexValidationPlanReader, ComplexValidationPlanReader>();
         builder.Services.AddHealthChecks().AddDbContextCheck<RulesDbContext>("db:rules", HealthStatus.Unhealthy);
     }
     public void MapEndpoints(IEndpointRouteBuilder endpoints)
     {
         ArgumentNullException.ThrowIfNull(endpoints); var versions = endpoints.NewApiVersionSet().HasApiVersion(new ApiVersion(1)).ReportApiVersions().Build();
-        RouteGroupBuilder group = endpoints.MapGroup("api/v{version:apiVersion}/rules").WithTags("Rules").WithApiVersionSet(versions).RequireAuthorization(); group.MapRules(); group.MapTemplates();
+        RouteGroupBuilder group = endpoints.MapGroup("api/v{version:apiVersion}/rules").WithTags("Rules").WithApiVersionSet(versions).RequireAuthorization(); group.MapTemplateSetup(); group.MapRules(); group.MapTemplates(); group.MapColumns();
     }
 }

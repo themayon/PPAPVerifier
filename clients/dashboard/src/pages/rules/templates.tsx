@@ -1,49 +1,146 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ChevronRight, PanelsTopLeft, Plus, RefreshCw, Trash2 } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { FileStack, ListChecks, PanelsTopLeft, Plus, RefreshCw, Search } from "lucide-react";
 import { toast } from "sonner";
-import { cloneTemplate, configureTemplateDraft, createTemplate, getTemplate, publishTemplate, retireTemplate, searchTemplates, submitTemplateForReview, type RuleLifecycle, type RuleTemplateVersionDto, type TemplateDocumentDisposition } from "@/api/rules";
+import { createTemplateFromDocumentSettings, searchTemplateSetups, type TemplateSetupSummaryDto } from "@/api/rules";
 import { useAuth } from "@/auth/use-auth";
-import { EntityEmpty, EntityPageHeader, EntityPager, EntityStatusBadge, ErrorBand } from "@/components/list";
+import { EntityEmpty, EntityPageHeader, EntityPager, EntityStatusBadge, ErrorBand, Field } from "@/components/list";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogBody, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/cn";
 import { describe } from "@/lib/list-helpers";
 
-const lifecycles: RuleLifecycle[] = ["Draft", "InReview", "Published", "Retired"];
-const codePattern = /^[A-Za-z0-9_.-]+$/; const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-type DocumentRow = { key: string; documentCode: string; disposition: TemplateDocumentDisposition; sortOrder: string };
-type AssignmentRow = { key: string; ruleVersionId: string; documentCode: string; parametersJson: string };
-type Transition = { kind: "submit" | "publish" | "retire" | "clone"; version: RuleTemplateVersionDto };
-const selectClass = "h-10 rounded-lg border bg-[var(--color-card)] px-3 text-sm";
+const CODE_PATTERN = /^[A-Za-z0-9_.-]{1,64}$/;
 
 export function RuleTemplatesPage() {
-  const { user, permissionsHydrated } = useAuth(); const queryClient = useQueryClient(); const perms = user?.permissions ?? []; const canView = perms.includes("Permissions.Templates.View"); const canCreate = perms.includes("Permissions.Templates.Create");
-  const [page, setPage] = useState(1); const [search, setSearch] = useState(""); const [status, setStatus] = useState<RuleLifecycle | "">(""); const [createOpen, setCreateOpen] = useState(false); const [selected, setSelected] = useState<string | null>(null);
-  const query = useQuery({ queryKey: ["rule-templates", { page, search, status }], queryFn: () => searchTemplates({ pageNumber: page, pageSize: 20, search: search || undefined, status: status || undefined }), placeholderData: keepPreviousData, enabled: permissionsHydrated && canView });
-  if (permissionsHydrated && !canView) return <EntityEmpty icon={PanelsTopLeft} title="Templates unavailable" body="You do not have permission to view rule templates." />;
-  return <div className="space-y-6"><EntityPageHeader icon={PanelsTopLeft} title="Rule templates" total={query.data?.totalCount} unit="template" description="Compose document requirements and published rules into governed templates."><Button variant="outline" onClick={() => query.refetch()} disabled={query.isFetching}><RefreshCw className={query.isFetching ? "size-4 animate-spin" : "size-4"} />Refresh</Button>{canCreate && <Button onClick={() => setCreateOpen(true)}><Plus className="size-4" />New template</Button>}</EntityPageHeader>
-    <div className="flex gap-2"><Input className="max-w-sm" placeholder="Search code or name" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} /><select aria-label="Template status" className={selectClass} value={status} onChange={(event) => { setStatus(event.target.value as RuleLifecycle | ""); setPage(1); }}><option value="">All statuses</option>{lifecycles.map((value) => <option key={value}>{value}</option>)}</select></div>
-    {query.isError && <ErrorBand message={describe(query.error)} />}{query.isLoading && <Skeleton className="h-48" />}{query.data?.items.length === 0 && <EntityEmpty icon={PanelsTopLeft} title="No templates match" />}
-    <ol className="divide-y rounded-xl border bg-[var(--color-card)]">{query.data?.items.map((item) => <li key={item.id}><button className="grid w-full gap-2 p-4 text-left sm:grid-cols-[1fr_2fr_auto_auto]" onClick={() => setSelected(item.id)}><code className="text-xs">{item.stableCode}</code><span><strong className="block">{item.name}</strong><small className="text-[var(--color-muted-foreground)]">{item.description || "No description"}</small></span><EntityStatusBadge tone={item.lifecycle === "Published" ? "success" : item.lifecycle === "InReview" ? "warning" : "default"}>{item.lifecycle}</EntityStatusBadge><span className="flex">v{item.version}<ChevronRight className="size-4" /></span></button></li>)}</ol>{query.data && <EntityPager page={query.data.pageNumber} totalPages={query.data.totalPages} hasPrev={query.data.hasPrevious} hasNext={query.data.hasNext} onPrev={() => setPage((value) => Math.max(1, value - 1))} onNext={() => setPage((value) => value + 1)} />}
-    <CreateTemplate open={createOpen} onClose={() => setCreateOpen(false)} onCreated={(id) => { void queryClient.invalidateQueries({ queryKey: ["rule-templates"] }); setSelected(id); }} /><TemplateDetail id={selected} onClose={() => setSelected(null)} />
-  </div>;
-}
-function CreateTemplate({ open, onClose, onCreated }: { open: boolean; onClose: () => void; onCreated: (id: string) => void }) { const [code, setCode] = useState(""); const [name, setName] = useState(""); const [description, setDescription] = useState(""); const [error, setError] = useState(""); const mutation = useMutation({ mutationFn: createTemplate, onSuccess: (id) => { toast.success("Template created"); onClose(); onCreated(id); }, onError: (value) => toast.error("Create failed", { description: describe(value) }) }); const submit = (event: FormEvent) => { event.preventDefault(); if (!codePattern.test(code.trim()) || !name.trim()) { setError("Enter a name and a stable code using letters, numbers, dots, underscores, or hyphens."); return; } mutation.mutate({ stableCode: code.trim(), name: name.trim(), description: description.trim() || null }); }; return <Dialog open={open} onOpenChange={(value) => { if (!value) onClose(); }}><DialogContent><form onSubmit={submit}><DialogHeader><DialogTitle>New rule template</DialogTitle><DialogDescription>Create the template identity, then configure its draft.</DialogDescription></DialogHeader><DialogBody className="space-y-4"><div><Label htmlFor="template-code">Stable code</Label><Input id="template-code" value={code} onChange={(event) => setCode(event.target.value)} /></div><div><Label htmlFor="template-name">Name</Label><Input id="template-name" value={name} onChange={(event) => setName(event.target.value)} /></div><div><Label htmlFor="template-description">Description</Label><Input id="template-description" value={description} onChange={(event) => setDescription(event.target.value)} /></div>{error && <p role="alert" className="text-sm text-[var(--color-destructive)]">{error}</p>}</DialogBody><DialogFooter><Button type="button" variant="outline" onClick={onClose}>Cancel</Button><Button type="submit" disabled={mutation.isPending}>{mutation.isPending ? "Creating…" : "Create template"}</Button></DialogFooter></form></DialogContent></Dialog>; }
+  const { user, permissionsHydrated } = useAuth();
+  const perms = user?.permissions ?? [];
+  const canView = perms.includes("Permissions.Templates.View");
+  const canCreate = perms.includes("Permissions.Templates.Create");
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
+  const query = useQuery({
+    queryKey: ["template-setups", { page, search }],
+    queryFn: () => searchTemplateSetups({ pageNumber: page, pageSize: 24, search: search || undefined }),
+    placeholderData: keepPreviousData,
+    enabled: permissionsHydrated && canView,
+  });
 
-function TemplateDetail({ id, onClose }: { id: string | null; onClose: () => void }) {
-  const { user } = useAuth(); const perms = user?.permissions ?? []; const client = useQueryClient(); const [versionId, setVersionId] = useState(""); const [pending, setPending] = useState<Transition | null>(null);
-  const query = useQuery({ queryKey: ["rule-template", id], queryFn: () => getTemplate(id!), enabled: Boolean(id) }); useEffect(() => { if (query.data?.versions[0]) setVersionId(query.data.versions[0].id); }, [query.data]); const version = query.data?.versions.find((item) => item.id === versionId) ?? query.data?.versions[0];
-  const transition = useMutation({ mutationFn: async (value: { kind: Transition["kind"]; id: string; versionId: string; aggregate: number }) => { const input = { versionId: value.versionId, expectedAggregateVersion: value.aggregate }; if (value.kind === "submit") await submitTemplateForReview(value.id, input); else if (value.kind === "publish") await publishTemplate(value.id, { ...input, retireCurrent: true }); else if (value.kind === "retire") await retireTemplate(value.id, input); else await cloneTemplate(value.id, input); }, onSuccess: async () => { toast.success("Template updated"); setPending(null); await Promise.all([client.invalidateQueries({ queryKey: ["rule-template", id] }), client.invalidateQueries({ queryKey: ["rule-templates"] })]); }, onError: (error) => toast.error("Action failed", { description: describe(error) }) });
-  return <Dialog open={Boolean(id)} onOpenChange={(open) => { if (!open) onClose(); }}><DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-4xl"><DialogHeader><DialogTitle>{query.data?.name ?? "Template detail"}</DialogTitle><DialogDescription>{query.data?.stableCode}</DialogDescription></DialogHeader><DialogBody className="space-y-4">{query.isLoading && <Skeleton className="h-32" />}{query.isError && <ErrorBand message={describe(query.error)} />}{query.data && version && <><div className="flex flex-wrap gap-2">{query.data.versions.map((item) => <Button key={item.id} size="sm" variant={item.id === version.id ? "default" : "outline"} onClick={() => setVersionId(item.id)}>v{item.versionNumber} · {item.status}</Button>)}</div><div className="flex gap-2">{version.status === "Draft" && perms.includes("Permissions.Templates.Review") && <Button size="sm" onClick={() => setPending({ kind: "submit", version })}>Submit review</Button>}{version.status === "InReview" && perms.includes("Permissions.Templates.Publish") && <Button size="sm" onClick={() => setPending({ kind: "publish", version })}>Publish</Button>}{version.status === "Published" && perms.includes("Permissions.Templates.Retire") && <Button size="sm" variant="destructive" onClick={() => setPending({ kind: "retire", version })}>Retire</Button>}{version.status === "Published" && perms.includes("Permissions.Templates.Edit") && <Button size="sm" variant="outline" onClick={() => setPending({ kind: "clone", version })}>Clone draft</Button>}</div>{version.status === "Draft" && perms.includes("Permissions.Templates.Edit") ? <ConfigureForm id={query.data.id} aggregate={query.data.version} version={version} name={query.data.name} description={query.data.description ?? ""} /> : <Summary version={version} />}</>}</DialogBody>{pending && query.data && <DialogFooter><Button variant="outline" onClick={() => setPending(null)}>Cancel</Button><Button variant={pending.kind === "retire" ? "destructive" : "default"} disabled={transition.isPending} onClick={() => transition.mutate({ kind: pending.kind, id: query.data.id, versionId: pending.version.id, aggregate: query.data.version })}>{transition.isPending ? "Saving…" : `Confirm ${pending.kind}`}</Button></DialogFooter>}</DialogContent></Dialog>;
+  if (permissionsHydrated && !canView) return <EntityEmpty icon={PanelsTopLeft} title="Templates unavailable" body="You do not have permission to view templates." />;
+  const items = query.data?.items ?? [];
+
+  return (
+    <div className="space-y-6 fsh-enter">
+      <EntityPageHeader icon={PanelsTopLeft} title="Templates" total={query.data?.totalCount ?? null} unit="template" description="Each template is a copy of Document settings where you switch documents and rules on or off for a group of suppliers. Assign a template to a part.">
+        <Button variant="outline" aria-label="Refresh templates" disabled={query.isFetching} onClick={() => void query.refetch()}><RefreshCw className={cn("size-4", query.isFetching && "animate-spin")} /></Button>
+        {canCreate && <Button onClick={() => setCreateOpen(true)}><Plus className="size-4" />New template</Button>}
+      </EntityPageHeader>
+
+      <div className="relative max-w-md">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--color-muted-foreground)]" />
+        <input aria-label="Search templates" value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search template code or name" className="h-10 w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] pl-9 pr-3 text-sm outline-none focus:border-[oklch(from_var(--color-ring)_l_c_h_/_0.4)]" />
+      </div>
+
+      {query.isError && <ErrorBand message={describe(query.error)} />}
+      {query.isLoading && <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 6 }).map((_, index) => <Skeleton key={index} className="h-40 rounded-2xl" />)}</div>}
+      {!query.isLoading && !query.isError && items.length === 0 && (
+        <EntityEmpty icon={PanelsTopLeft} title="No templates yet" body="Create a template to copy every document and rule from Document settings, then switch off what a supplier doesn't need." action={canCreate ? <Button onClick={() => setCreateOpen(true)}><Plus className="size-4" />New template</Button> : undefined} />
+      )}
+      <ul className={cn("grid gap-3 sm:grid-cols-2 xl:grid-cols-3", query.isPlaceholderData && "opacity-70")}>
+        {items.map((template) => <li key={template.id}><TemplateCard template={template} /></li>)}
+      </ul>
+      {query.data && <EntityPager page={query.data.pageNumber} totalPages={query.data.totalPages} hasPrev={query.data.hasPrevious} hasNext={query.data.hasNext} onPrev={() => setPage((value) => Math.max(1, value - 1))} onNext={() => setPage((value) => value + 1)} />}
+
+      <CreateTemplateDialog open={createOpen} onClose={() => setCreateOpen(false)} />
+    </div>
+  );
 }
-function ConfigureForm({ id, aggregate, version, name: initialName, description: initialDescription }: { id: string; aggregate: number; version: RuleTemplateVersionDto; name: string; description: string }) {
-  const client = useQueryClient(); const [name, setName] = useState(initialName); const [description, setDescription] = useState(initialDescription); const [documents, setDocuments] = useState<DocumentRow[]>(() => version.documentRequirements.map((item) => ({ key: item.id, documentCode: item.documentCode, disposition: item.disposition, sortOrder: String(item.sortOrder) }))); const [assignments, setAssignments] = useState<AssignmentRow[]>(() => version.ruleAssignments.map((item) => ({ key: item.id, ruleVersionId: item.ruleVersionId, documentCode: item.documentCode ?? "", parametersJson: item.parametersJson }))); const [error, setError] = useState("");
-  useEffect(() => { setName(initialName); setDescription(initialDescription); setDocuments(version.documentRequirements.map((item) => ({ key: item.id, documentCode: item.documentCode, disposition: item.disposition, sortOrder: String(item.sortOrder) }))); setAssignments(version.ruleAssignments.map((item) => ({ key: item.id, ruleVersionId: item.ruleVersionId, documentCode: item.documentCode ?? "", parametersJson: item.parametersJson }))); }, [version, initialName, initialDescription]);
-  const mutation = useMutation({ mutationFn: (input: Parameters<typeof configureTemplateDraft>[1]) => configureTemplateDraft(id, input), onSuccess: async () => { toast.success("Draft configured"); await Promise.all([client.invalidateQueries({ queryKey: ["rule-template", id] }), client.invalidateQueries({ queryKey: ["rule-templates"] })]); }, onError: (value) => toast.error("Configure failed", { description: describe(value) }) });
-  const submit = (event: FormEvent) => { event.preventDefault(); try { if (!name.trim() || documents.some((item) => !codePattern.test(item.documentCode.trim()) || Number(item.sortOrder) < 1) || assignments.some((item) => !uuidPattern.test(item.ruleVersionId) || (item.documentCode && !codePattern.test(item.documentCode)) || typeof JSON.parse(item.parametersJson) !== "object")) throw new Error("Check required values, IDs, document codes, sort order, and parameters JSON."); mutation.mutate({ versionId: version.id, expectedAggregateVersion: aggregate, name: name.trim(), description: description.trim() || null, documentRequirements: documents.map((item) => ({ documentCode: item.documentCode.trim(), disposition: item.disposition, isRequired: item.disposition !== "Retain", sortOrder: Number(item.sortOrder) })), ruleAssignments: assignments.map((item) => ({ ruleVersionId: item.ruleVersionId, documentCode: item.documentCode.trim() || null, parametersJson: JSON.stringify(JSON.parse(item.parametersJson)) })) }); } catch (value) { setError(value instanceof Error ? value.message : "Invalid configuration."); } };
-  return <form className="space-y-5 border-t pt-4" onSubmit={submit}><div className="grid gap-3 sm:grid-cols-2"><div><Label>Name</Label><Input value={name} onChange={(event) => setName(event.target.value)} /></div><div><Label>Description</Label><Input value={description} onChange={(event) => setDescription(event.target.value)} /></div></div><section className="space-y-2"><div className="flex justify-between"><h3 className="font-semibold">Document requirements</h3><Button type="button" size="sm" variant="outline" onClick={() => setDocuments((items) => [...items, { key: crypto.randomUUID(), documentCode: "", disposition: "Submit", sortOrder: String(items.length + 1) }])}><Plus className="size-4" />Add document</Button></div>{documents.map((item, index) => <div className="grid gap-2 rounded-lg border p-3 sm:grid-cols-[1fr_7rem_8rem_auto]" key={item.key}><Input aria-label={`Document code ${index + 1}`} value={item.documentCode} onChange={(event) => setDocuments((items) => items.map((value) => value.key === item.key ? { ...value, documentCode: event.target.value } : value))} /><Input aria-label={`Sort order ${index + 1}`} type="number" value={item.sortOrder} onChange={(event) => setDocuments((items) => items.map((value) => value.key === item.key ? { ...value, sortOrder: event.target.value } : value))} /><select className={selectClass} value={item.disposition} onChange={(event) => setDocuments((items) => items.map((value) => value.key === item.key ? { ...value, disposition: event.target.value as TemplateDocumentDisposition } : value))}><option>Submit</option><option>Retain</option><option>Available</option></select><Button type="button" variant="ghost" onClick={() => setDocuments((items) => items.filter((value) => value.key !== item.key))}><Trash2 className="size-4" /></Button></div>)}</section><section className="space-y-2"><div className="flex justify-between"><h3 className="font-semibold">Rule assignments</h3><Button type="button" size="sm" variant="outline" onClick={() => setAssignments((items) => [...items, { key: crypto.randomUUID(), ruleVersionId: "", documentCode: "", parametersJson: "{}" }])}><Plus className="size-4" />Assign rule</Button></div>{assignments.map((item, index) => <div className="grid gap-2 rounded-lg border p-3 sm:grid-cols-2" key={item.key}><Input aria-label={`Rule version ${index + 1}`} placeholder="Published RuleVersion ID" value={item.ruleVersionId} onChange={(event) => setAssignments((items) => items.map((value) => value.key === item.key ? { ...value, ruleVersionId: event.target.value } : value))} /><Input placeholder="Optional document code" value={item.documentCode} onChange={(event) => setAssignments((items) => items.map((value) => value.key === item.key ? { ...value, documentCode: event.target.value } : value))} /><textarea aria-label={`Parameters JSON ${index + 1}`} className="rounded-lg border bg-transparent p-2 font-mono text-xs sm:col-span-2" value={item.parametersJson} onChange={(event) => setAssignments((items) => items.map((value) => value.key === item.key ? { ...value, parametersJson: event.target.value } : value))} /><Button type="button" variant="ghost" onClick={() => setAssignments((items) => items.filter((value) => value.key !== item.key))}><Trash2 className="size-4" />Remove</Button></div>)}</section>{error && <p role="alert" className="text-sm text-[var(--color-destructive)]">{error}</p>}<div className="flex justify-end"><Button type="submit" disabled={mutation.isPending}>{mutation.isPending ? "Saving…" : "Save draft"}</Button></div></form>;
+
+function TemplateCard({ template }: { template: TemplateSetupSummaryDto }) {
+  const live = Boolean(template.currentPublishedVersionId);
+  return (
+    <Link
+      to={`/rule-templates/${template.id}`}
+      data-testid="template-card"
+      className="group flex h-full flex-col rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)]"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <code className="truncate rounded-md bg-[var(--color-muted)] px-1.5 py-0.5 font-mono text-[11px] font-semibold">{template.stableCode}</code>
+        <EntityStatusBadge tone={live ? "success" : "default"} withDot={live}>{live ? "Live" : "Not live"}</EntityStatusBadge>
+      </div>
+      <h3 className="mt-2 line-clamp-1 font-display text-[15px] font-semibold">{template.name}</h3>
+      <p className="mt-1 line-clamp-2 min-h-[2.5rem] text-[12.5px] text-[var(--color-muted-foreground)]">{template.description || "No description"}</p>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <Stat icon={FileStack} label="Documents" value={`${template.enabledDocumentCount} / ${template.documentCount}`} />
+        <Stat icon={ListChecks} label="Rules" value={`${template.enabledRuleCount} / ${template.ruleCount}`} />
+      </div>
+      <p className="mt-3 text-[11px] text-[var(--color-muted-foreground)]">Updated {new Date(template.updatedAtUtc).toLocaleDateString()}</p>
+    </Link>
+  );
 }
-function Summary({ version }: { version: RuleTemplateVersionDto }) { return <div className="grid gap-4 sm:grid-cols-2"><section><h3 className="font-semibold">Documents ({version.documentRequirements.length})</h3><ul className="mt-2 space-y-1 text-sm">{version.documentRequirements.map((item) => <li key={item.id}>{item.sortOrder}. {item.documentCode} · {item.disposition}</li>)}</ul></section><section><h3 className="font-semibold">Rules ({version.ruleAssignments.length})</h3><ul className="mt-2 space-y-1 font-mono text-xs">{version.ruleAssignments.map((item) => <li key={item.id}>{item.ruleVersionId}</li>)}</ul></section></div>; }
+
+function Stat({ icon: Icon, label, value }: { icon: typeof FileStack; label: string; value: string }) {
+  return (
+    <div className="rounded-xl bg-[oklch(from_var(--color-muted)_l_c_h_/_0.5)] px-3 py-2">
+      <p className="flex items-center gap-1 text-[10.5px] uppercase tracking-wider text-[var(--color-muted-foreground)]"><Icon className="size-3" />{label}</p>
+      <p className="font-display text-[15px] font-semibold">{value}</p>
+    </div>
+  );
+}
+
+function CreateTemplateDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [code, setCode] = useState("");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [error, setError] = useState("");
+  const create = useMutation({
+    mutationFn: createTemplateFromDocumentSettings,
+    onSuccess: (result) => {
+      toast.success("Template created from Document settings");
+      void queryClient.invalidateQueries({ queryKey: ["template-setups"] });
+      onClose();
+      navigate(`/rule-templates/${result.templateId}`);
+    },
+    onError: (failure) => setError(describe(failure)),
+  });
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    if (!CODE_PATTERN.test(code.trim())) return setError("Code: letters, numbers, dots, dashes, or underscores (max 64).");
+    if (!name.trim()) return setError("Name is required.");
+    create.mutate({ stableCode: code.trim().toUpperCase(), name: name.trim(), description: description.trim() || null });
+  };
+  return (
+    <Dialog open={open} onOpenChange={(value) => { if (!value) { setError(""); onClose(); } }}>
+      <DialogContent className="sm:max-w-lg">
+        <form onSubmit={submit}>
+          <DialogHeader>
+            <DialogTitle>New template</DialogTitle>
+            <DialogDescription>All documents and their mapped rules are copied from Document settings. You can switch them on or off afterwards.</DialogDescription>
+          </DialogHeader>
+          <DialogBody className="grid gap-4">
+            <Field id="template-code" label="Template code" required hint="e.g. SUPPLIER-TIER-1. Cannot change later.">
+              <Input id="template-code" value={code} maxLength={64} className="font-mono uppercase" onChange={(event) => setCode(event.target.value.toUpperCase())} />
+            </Field>
+            <Field id="template-name" label="Template name" required>
+              <Input id="template-name" value={name} maxLength={200} placeholder="Tier 1 suppliers - full PPAP" onChange={(event) => setName(event.target.value)} />
+            </Field>
+            <Field id="template-description" label="Description">
+              <Input id="template-description" value={description} maxLength={2000} onChange={(event) => setDescription(event.target.value)} />
+            </Field>
+            {error && <p role="alert" className="text-[12.5px] text-[var(--color-destructive)]">{error}</p>}
+          </DialogBody>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose} disabled={create.isPending}>Cancel</Button>
+            <Button type="submit" disabled={create.isPending}>{create.isPending ? "Creating…" : "Create template"}</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

@@ -26,5 +26,6 @@ internal static class RulesEndpoints
         e.MapPost("/definitions/{id:guid}/publish", (Guid id, PublishRuleRequest r, IMediator m, CancellationToken ct) => m.Send(new PublishRuleCommand(id, r.VersionId, r.ExpectedAggregateVersion, r.RetireCurrent), ct)).RequirePermission(RulesPermissions.Definitions.Publish).WithIdempotency();
         e.MapPost("/definitions/{id:guid}/retire", (Guid id, RuleVersionTransitionRequest r, IMediator m, CancellationToken ct) => m.Send(new RetireRuleCommand(id, r.VersionId, r.ExpectedAggregateVersion), ct)).RequirePermission(RulesPermissions.Definitions.Retire).WithIdempotency();
         e.MapPost("/definitions/{id:guid}/clone", (Guid id, RuleVersionTransitionRequest r, IMediator m, CancellationToken ct) => m.Send(new ClonePublishedRuleCommand(id, r.VersionId, r.ExpectedAggregateVersion), ct)).RequirePermission(RulesPermissions.Definitions.Edit).WithIdempotency();
+        e.MapDelete("/definitions/{id:guid}", (Guid id, long expectedVersion, IMediator m, CancellationToken ct) => m.Send(new DeleteRuleCommand(id, expectedVersion), ct)).RequirePermission(RulesPermissions.Definitions.Delete);
     }
 }

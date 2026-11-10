@@ -64,7 +64,10 @@ public sealed class SearchMyPpapSubmissionsQueryHandler(
                 x.CreatedAtUtc,
                 x.UpdatedAtUtc,
                 x.SubmittedAtUtc,
-                x.CancelledAtUtc))
+                x.CancelledAtUtc,
+                x.Decision.ToString(),
+                x.DecisionComment,
+                x.DecidedAtUtc))
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 

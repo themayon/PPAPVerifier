@@ -23,6 +23,148 @@ namespace DES.Starter.Migrations.PostgreSQL.Rules
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("DES.Modules.Rules.Domain.DocumentSetting", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DefaultDisposition")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<string>("DocumentCode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "DocumentCode")
+                        .IsUnique();
+
+                    b.ToTable("DocumentSettings", "rules");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
+            modelBuilder.Entity("DES.Modules.Rules.Domain.DocumentSettingRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DocumentSettingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RuleDefinitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RuleDefinitionId");
+
+                    b.HasIndex("DocumentSettingId", "RuleDefinitionId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_DocumentSettingRules_DocumentSettingId_RuleDefinitionId");
+
+                    b.ToTable("DocumentSettingRules", "rules");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
+            modelBuilder.Entity("DES.Modules.Rules.Domain.RuleColumn", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DataType")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("HeaderNames")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTime>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "Kind", "Key")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "Kind", "Name")
+                        .IsUnique();
+
+                    b.ToTable("RuleColumns", "rules");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
             modelBuilder.Entity("DES.Modules.Rules.Domain.RuleDefinition", b =>
                 {
                     b.Property<Guid>("Id")
@@ -246,6 +388,81 @@ namespace DES.Starter.Migrations.PostgreSQL.Rules
                     b.HasAnnotation("Finbuckle:MultiTenant", true);
                 });
 
+            modelBuilder.Entity("DES.Modules.Rules.Domain.RuleTemplateDocument", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Disposition")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<string>("DocumentCode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("RuleTemplateId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RuleTemplateId", "DocumentCode", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_RuleTemplateDocuments_RuleTemplateId_DocumentCode");
+
+                    b.ToTable("RuleTemplateDocuments", "rules");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
+            modelBuilder.Entity("DES.Modules.Rules.Domain.RuleTemplateRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DocumentCode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("RuleDefinitionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RuleTemplateId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RuleDefinitionId");
+
+                    b.HasIndex("RuleTemplateId", "DocumentCode", "RuleDefinitionId", "TenantId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_RuleTemplateRules_RuleTemplateId_DocumentCode_RuleDefinitio~");
+
+                    b.ToTable("RuleTemplateRules", "rules");
+
+                    b.HasAnnotation("Finbuckle:MultiTenant", true);
+                });
+
             modelBuilder.Entity("DES.Modules.Rules.Domain.RuleTemplateVersion", b =>
                 {
                     b.Property<Guid>("Id")
@@ -417,6 +634,21 @@ namespace DES.Starter.Migrations.PostgreSQL.Rules
                     b.HasAnnotation("Finbuckle:MultiTenant", true);
                 });
 
+            modelBuilder.Entity("DES.Modules.Rules.Domain.DocumentSettingRule", b =>
+                {
+                    b.HasOne("DES.Modules.Rules.Domain.DocumentSetting", null)
+                        .WithMany("Rules")
+                        .HasForeignKey("DocumentSettingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DES.Modules.Rules.Domain.RuleDefinition", null)
+                        .WithMany()
+                        .HasForeignKey("RuleDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("DES.Modules.Rules.Domain.RuleEvaluationResultRecord", b =>
                 {
                     b.HasOne("DES.Modules.Rules.Domain.RuleDefinition", null)
@@ -444,6 +676,30 @@ namespace DES.Starter.Migrations.PostgreSQL.Rules
                         .WithMany()
                         .HasForeignKey("TemplateVersionId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DES.Modules.Rules.Domain.RuleTemplateDocument", b =>
+                {
+                    b.HasOne("DES.Modules.Rules.Domain.RuleTemplate", null)
+                        .WithMany("Documents")
+                        .HasForeignKey("RuleTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DES.Modules.Rules.Domain.RuleTemplateRule", b =>
+                {
+                    b.HasOne("DES.Modules.Rules.Domain.RuleDefinition", null)
+                        .WithMany()
+                        .HasForeignKey("RuleDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DES.Modules.Rules.Domain.RuleTemplate", null)
+                        .WithMany("Rules")
+                        .HasForeignKey("RuleTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -489,6 +745,11 @@ namespace DES.Starter.Migrations.PostgreSQL.Rules
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DES.Modules.Rules.Domain.DocumentSetting", b =>
+                {
+                    b.Navigation("Rules");
+                });
+
             modelBuilder.Entity("DES.Modules.Rules.Domain.RuleDefinition", b =>
                 {
                     b.Navigation("Versions");
@@ -501,6 +762,10 @@ namespace DES.Starter.Migrations.PostgreSQL.Rules
 
             modelBuilder.Entity("DES.Modules.Rules.Domain.RuleTemplate", b =>
                 {
+                    b.Navigation("Documents");
+
+                    b.Navigation("Rules");
+
                     b.Navigation("Versions");
                 });
 

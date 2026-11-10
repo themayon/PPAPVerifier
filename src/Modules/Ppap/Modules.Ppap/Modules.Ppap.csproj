@@ -7,12 +7,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="RabbitMQ.Client" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\..\..\BuildingBlocks\Eventing\Eventing.csproj" />
 		<ProjectReference Include="..\..\..\BuildingBlocks\Jobs\Jobs.csproj" />
 		<ProjectReference Include="..\..\..\BuildingBlocks\Persistence\Persistence.csproj" />
 		<ProjectReference Include="..\..\..\BuildingBlocks\Web\Web.csproj" />
 		<ProjectReference Include="..\..\DocumentIntelligence\Modules.DocumentIntelligence.Contracts\Modules.DocumentIntelligence.Contracts.csproj" />
 		<ProjectReference Include="..\..\Files\Modules.Files.Contracts\Modules.Files.Contracts.csproj" />
+		<ProjectReference Include="..\..\Identity\Modules.Identity.Contracts\Modules.Identity.Contracts.csproj" />
 		<ProjectReference Include="..\..\Rules\Modules.Rules.Contracts\Modules.Rules.Contracts.csproj" />
 		<ProjectReference Include="..\Modules.Ppap.Contracts\Modules.Ppap.Contracts.csproj" />
 	</ItemGroup>

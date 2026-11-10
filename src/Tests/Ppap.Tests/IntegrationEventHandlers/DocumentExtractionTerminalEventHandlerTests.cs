@@ -32,7 +32,7 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
         await using TestContext test = await CreateTestContextAsync(2);
         PpapSubmissionDocument first = test.Submission.Documents.First();
         PpapSubmissionDocument second = test.Submission.Documents.Last();
-        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService);
+        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
 
         await handler.HandleAsync(Completed(first));
         test.Job.CurrentStage.ShouldBe(PpapJobStage.PreprocessingExtraction);
@@ -93,7 +93,7 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
         PpapSubmissionDocument first = test.Submission.Documents.First();
         PpapSubmissionDocument second = test.Submission.Documents.Last();
         DocumentExtractionFailedIntegrationEventHandler failedHandler = new(test.DbContext, test.Outbox, test.JobService);
-        DocumentExtractionCompletedIntegrationEventHandler completedHandler = new(test.DbContext, test.Outbox, test.JobService);
+        DocumentExtractionCompletedIntegrationEventHandler completedHandler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
 
         await failedHandler.HandleAsync(Failed(first, "Failed", "Provider/Unavailable"));
         await completedHandler.HandleAsync(Completed(second));
@@ -111,7 +111,7 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
     {
         await using TestContext test = await CreateTestContextAsync(2);
         PpapSubmissionDocument document = test.Submission.Documents.First();
-        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService);
+        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
         DocumentExtractionCompletedIntegrationEvent completed = Completed(document);
         await handler.HandleAsync(completed);
 

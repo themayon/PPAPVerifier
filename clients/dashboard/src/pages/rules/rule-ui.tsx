@@ -1,10 +1,10 @@
-import { useId, useMemo, useState, type KeyboardEvent, type ReactNode } from "react";
-import { AlertTriangle, CheckCircle2, X, type LucideIcon } from "lucide-react";
-import type { RuleLifecycle } from "@/api/rules";
+import { useMemo, useState, type KeyboardEvent, type ReactNode } from "react";
+import { AlertTriangle, Check, CheckCircle2, X, type LucideIcon } from "lucide-react";
+import type { RuleColumnDto, RuleLifecycle } from "@/api/rules";
 import { Combobox, EntityStatusBadge, type EntityStatusTone } from "@/components/list";
-import { Input } from "@/components/ui/input";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/cn";
-import { LIFECYCLE_LABELS, PPAP_DOCUMENTS, type FieldRef, type Severity } from "./rule-model";
+import { LIFECYCLE_LABELS, PPAP_DOCUMENTS, type ColumnIndex, type FieldRef, type Severity } from "./rule-model";
 
 const SEVERITY_TONE: Record<Severity, EntityStatusTone> = { Error: "danger", Warning: "warning", Info: "info" };
 
@@ -74,62 +74,134 @@ export function Segmented<T extends string>({
   );
 }
 
-export function FieldPicker({
+export function DocumentPicker({ label, value, onChange, disabled, placeholder = "Document", className }: { label: string; value: string; onChange: (code: string) => void; disabled?: boolean; placeholder?: string; className?: string }) {
+  const options = useMemo(() => {
+    const known = PPAP_DOCUMENTS.map((doc) => ({ value: doc.code, label: doc.code, hint: doc.name }));
+    return value && !known.some((option) => option.value === value) ? [{ value, label: value, hint: "custom" }, ...known] : known;
+  }, [value]);
+  return (
+    <div role="group" aria-label={label} className={className}>
+      <Combobox label={label} value={value || null} onChange={(code) => onChange(code ?? "")} options={options} placeholder={placeholder} searchable disabled={disabled} />
+    </div>
+  );
+}
+
+export function ColumnPicker({
   label,
   value,
   onChange,
+  columns,
+  documentCode,
+  showDocument,
   disabled,
-  suggestions,
   invalid,
-  compact,
+  placeholder = "Select column",
+  className,
 }: {
   label: string;
   value: FieldRef;
-  onChange: (value: FieldRef) => void;
+  onChange: (value: FieldRef, column: RuleColumnDto | undefined) => void;
+  columns: ColumnIndex;
+  documentCode: string;
+  showDocument?: boolean;
   disabled?: boolean;
-  suggestions: readonly FieldRef[];
   invalid?: boolean;
-  compact?: boolean;
+  placeholder?: string;
+  className?: string;
 }) {
-  const listId = useId();
-  const documentOptions = useMemo(() => {
-    const known = PPAP_DOCUMENTS.map((doc) => ({ value: doc.code, label: doc.code, hint: doc.name }));
-    return value.documentCode && !known.some((option) => option.value === value.documentCode)
-      ? [{ value: value.documentCode, label: value.documentCode, hint: "custom" }, ...known]
-      : known;
-  }, [value.documentCode]);
-  const paths = useMemo(
-    () => [...new Set(suggestions.filter((field) => field.documentCode === value.documentCode).map((field) => field.path))].slice(0, 50),
-    [suggestions, value.documentCode],
-  );
+  const options = useMemo(() => {
+    const list = columns.list.map((column) => ({
+      value: column.key,
+      label: column.name,
+      hint: column.kind === "Header" ? `Header · ${column.dataType}` : column.dataType,
+    }));
+    return value.path && !columns.byKey.has(value.path) ? [{ value: value.path, label: value.path, hint: "not in master" }, ...list] : list;
+  }, [columns, value.path]);
+  const differentDocument = Boolean(value.documentCode && documentCode && value.documentCode !== documentCode);
   return (
-    <div className={cn("flex min-w-0 items-stretch", compact ? "gap-1" : "gap-1.5")}>
-      <Combobox
-        label={`${label} document`}
-        value={value.documentCode || null}
-        onChange={(code) => onChange({ ...value, documentCode: code ?? "" })}
-        options={documentOptions}
-        placeholder="Document"
-        searchable
-        disabled={disabled}
-        className={cn("w-[7.5rem] shrink-0", invalid && !value.documentCode && "border-[var(--color-destructive)]")}
-      />
-      <Input
-        aria-label={`${label} field`}
-        list={paths.length > 0 ? listId : undefined}
-        placeholder="field.path"
-        value={value.path}
-        disabled={disabled}
-        aria-invalid={invalid && !value.path.trim() ? true : undefined}
-        onChange={(event) => onChange({ ...value, path: event.target.value })}
-        className="min-w-0 flex-1 font-mono text-[12.5px]"
-      />
-      {paths.length > 0 && (
-        <datalist id={listId}>
-          {paths.map((path) => <option key={path} value={path} />)}
-        </datalist>
+    <div role="group" aria-label={label} className={cn("flex min-w-0 items-stretch gap-1", className)}>
+      {(showDocument || differentDocument) && (
+        <DocumentPicker
+          label={`${label} document`}
+          value={value.documentCode || documentCode}
+          disabled={disabled}
+          onChange={(code) => onChange({ ...value, documentCode: code }, columns.byKey.get(value.path))}
+          className="w-[6.5rem] shrink-0"
+        />
       )}
+      <div className={cn("min-w-0 flex-1 rounded-md", invalid && !value.path && "ring-1 ring-[var(--color-destructive)]")}>
+        <Combobox
+          label={label}
+          value={value.path || null}
+          onChange={(key) => onChange({ documentCode: value.documentCode || documentCode, path: key ?? "" }, key ? columns.byKey.get(key) : undefined)}
+          options={options}
+          placeholder={placeholder}
+          searchable
+          disabled={disabled}
+        />
+      </div>
     </div>
+  );
+}
+
+const COLOR_SWATCHES = [
+  "#ef4444", "#f97316", "#f59e0b", "#eab308", "#84cc16", "#22c55e",
+  "#10b981", "#14b8a6", "#06b6d4", "#3b82f6", "#6366f1", "#8b5cf6",
+  "#a855f7", "#ec4899", "#f43f5e", "#fecaca", "#fde68a", "#bbf7d0",
+  "#bfdbfe", "#e9d5ff", "#ffffff", "#d1d5db", "#6b7280", "#111827",
+] as const;
+const HEX_PATTERN = /^#[0-9a-fA-F]{6}$/;
+
+export function ColorPicker({ label, value, onChange, disabled }: { label: string; value: string; onChange: (color: string) => void; disabled?: boolean }) {
+  const [hex, setHex] = useState(value);
+  const commitHex = (next: string) => {
+    const normalized = next.startsWith("#") ? next : `#${next}`;
+    if (HEX_PATTERN.test(normalized)) onChange(normalized.toLowerCase());
+  };
+  return (
+    <DropdownMenu onOpenChange={(open) => open && setHex(value)}>
+      <DropdownMenuTrigger asChild disabled={disabled}>
+        <button
+          type="button"
+          aria-label={label}
+          title={value}
+          disabled={disabled}
+          className="grid h-9 w-12 cursor-pointer place-items-center rounded-lg border border-[var(--color-input)] bg-transparent p-1 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <span aria-hidden className="size-full rounded-md ring-1 ring-inset ring-black/10" style={{ backgroundColor: value }} />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-0 w-[13.5rem] p-2">
+        <div role="group" aria-label={`${label} swatches`} className="grid grid-cols-6 gap-1.5">
+          {COLOR_SWATCHES.map((swatch) => {
+            const selected = swatch.toLowerCase() === value.toLowerCase();
+            return (
+              <DropdownMenuItem
+                key={swatch}
+                aria-label={swatch}
+                onSelect={() => onChange(swatch)}
+                className="m-0 grid size-7 place-items-center rounded-md p-0 ring-1 ring-inset ring-black/10 data-[highlighted]:ring-2 data-[highlighted]:ring-[var(--color-ring)]"
+                style={{ backgroundColor: swatch }}
+              >
+                {selected && <Check className="size-3.5 text-white mix-blend-difference" />}
+              </DropdownMenuItem>
+            );
+          })}
+        </div>
+        <div className="mt-2 flex items-center gap-2">
+          <span aria-hidden className="size-7 shrink-0 rounded-md ring-1 ring-inset ring-black/10" style={{ backgroundColor: HEX_PATTERN.test(hex) ? hex : value }} />
+          <input
+            aria-label={`${label} hex`}
+            value={hex}
+            maxLength={7}
+            spellCheck={false}
+            onChange={(event) => { setHex(event.target.value); commitHex(event.target.value); }}
+            onKeyDown={(event) => { if (event.key !== "Escape") event.stopPropagation(); }}
+            className="h-7 min-w-0 flex-1 rounded-md border border-[var(--color-input)] bg-transparent px-2 font-mono text-[12px] uppercase outline-none focus:border-[var(--color-ring)]"
+          />
+        </div>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

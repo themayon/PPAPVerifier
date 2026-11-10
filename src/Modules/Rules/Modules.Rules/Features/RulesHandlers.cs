@@ -71,6 +71,22 @@ public sealed class ClonePublishedRuleCommandHandler(RulesDbContext db, ICurrent
 {
     public async ValueTask<Guid> Handle(ClonePublishedRuleCommand c, CancellationToken ct) { RuleDefinition r = await GetRuleQueryHandler.Load(db, c.DefinitionId, true, ct).ConfigureAwait(false); RuleVersion v = r.ClonePublished(c.VersionId, c.ExpectedAggregateVersion, user.GetUserId(), DateTime.UtcNow); await CreateRuleCommandHandler.Save(db, ct).ConfigureAwait(false); return v.Id; }
 }
+public sealed class DeleteRuleCommandHandler(RulesDbContext db) : ICommandHandler<DeleteRuleCommand>
+{
+    public async ValueTask<Unit> Handle(DeleteRuleCommand c, CancellationToken ct)
+    {
+        RuleDefinition r = await GetRuleQueryHandler.Load(db, c.DefinitionId, true, ct).ConfigureAwait(false);
+        r.EnsureDeletable(c.ExpectedAggregateVersion);
+        Guid[] versionIds = r.Versions.Select(v => v.Id).ToArray();
+        if (await db.TemplateRuleAssignments.AnyAsync(x => versionIds.Contains(x.RuleVersionId), ct).ConfigureAwait(false))
+            throw new CustomException("The rule is assigned to a rule template version and cannot be deleted.", (IEnumerable<string>?)null, HttpStatusCode.Conflict);
+        if (await db.RuleEvaluationResults.AnyAsync(x => x.RuleDefinitionId == r.Id, ct).ConfigureAwait(false))
+            throw new CustomException("The rule has evaluation history and cannot be deleted.", (IEnumerable<string>?)null, HttpStatusCode.Conflict);
+        db.RuleDefinitions.Remove(r);
+        await CreateRuleCommandHandler.Save(db, ct).ConfigureAwait(false);
+        return Unit.Value;
+    }
+}
 public sealed class TestRuleCommandHandler : ICommandHandler<TestRuleCommand, RuleEvaluationResultDto>
 {
     public ValueTask<RuleEvaluationResultDto> Handle(TestRuleCommand c, CancellationToken ct) { ct.ThrowIfCancellationRequested(); var docs = new Dictionary<string, JsonElement>(StringComparer.Ordinal); foreach ((string code, string json) in c.Documents) { using JsonDocument d = JsonDocument.Parse(json); docs.Add(code, d.RootElement.Clone()); } IReadOnlyDictionary<string, JsonElement> parameters = RuleParameterContext.Parse(c.ParametersJson); RuleEvaluationResult result = new RuleEvaluator().Evaluate(RuleAstSerializer.Parse(c.AstJson), new(docs, parameters)); return ValueTask.FromResult(new RuleEvaluationResultDto(result.Status, result.Reason, result.Trace.Select(x => new RuleTraceDto(x.Node, x.Operator, x.Left, x.Right, x.Status, x.Reason)).ToArray())); }

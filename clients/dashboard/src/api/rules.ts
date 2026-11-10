@@ -27,7 +27,39 @@ export type SearchTemplatesParams = { search?: string; status?: RuleLifecycle; p
 export type CreateTemplateInput = { stableCode: string; name: string; description?: string | null };
 export type ConfigureTemplateDraftInput = { versionId: string; expectedAggregateVersion: number; name: string; description?: string | null; documentRequirements: Array<{ documentCode: string; isRequired: boolean; sortOrder: number; disposition: TemplateDocumentDisposition }>; ruleAssignments: Array<{ ruleVersionId: string; documentCode?: string | null; parametersJson: string }> };
 
+export type RuleColumnKind = "Column" | "Header";
+export type RuleColumnDataType = "Text" | "Number" | "Date" | "Boolean";
+export type RuleColumnDto = { id: string; name: string; key: string; kind: RuleColumnKind; dataType: RuleColumnDataType; headerNames?: string | null; description?: string | null; isActive: boolean; createdAtUtc: string; updatedAtUtc: string; version: number };
+export type SearchRuleColumnsParams = { search?: string; kind?: RuleColumnKind; dataType?: RuleColumnDataType; isActive?: boolean; pageNumber?: number; pageSize?: number; sort?: "name" | "-name" | "key" | "-updated" };
+export type CreateRuleColumnInput = { name: string; key: string; kind: RuleColumnKind; dataType: RuleColumnDataType; headerNames?: string | null; description?: string | null };
+export type UpdateRuleColumnInput = Omit<CreateRuleColumnInput, "kind"> & { expectedVersion: number; isActive: boolean };
+
+export type DocumentSettingDto = { id: string; documentCode: string; name: string; isEnabled: boolean; sortOrder: number; defaultDisposition: TemplateDocumentDisposition; ruleDefinitionIds: string[]; updatedAtUtc: string; version: number };
+export type UpdateDocumentSettingInput = { expectedVersion: number; name: string; isEnabled: boolean; sortOrder: number; defaultDisposition: TemplateDocumentDisposition; ruleDefinitionIds: string[] };
+export type RuleLookupDto = { id: string; stableCode: string; name: string; description?: string | null; category: RuleCategory; lifecycle: RuleLifecycle; isLive: boolean; latestOutcomeJson?: string | null };
+export type TemplateSetupDocument = { documentCode: string; isEnabled: boolean; disposition: TemplateDocumentDisposition; sortOrder: number };
+export type TemplateSetupRule = { documentCode: string; ruleDefinitionId: string; isEnabled: boolean };
+export type TemplateSetupDto = { id: string; stableCode: string; name: string; description?: string | null; lifecycle: RuleLifecycle; currentPublishedVersionId?: string | null; updatedAtUtc: string; version: number; documents: TemplateSetupDocument[]; rules: TemplateSetupRule[] };
+export type TemplateSetupSummaryDto = { id: string; stableCode: string; name: string; description?: string | null; lifecycle: RuleLifecycle; currentPublishedVersionId?: string | null; enabledDocumentCount: number; documentCount: number; enabledRuleCount: number; ruleCount: number; updatedAtUtc: string; version: number };
+export type TemplateSetupSaveResultDto = { templateId: string; publishedVersionId: string; version: number; skippedRuleDefinitionIds: string[] };
+export type SaveTemplateSetupInput = { expectedVersion: number; name: string; description?: string | null; documents: TemplateSetupDocument[]; rules: TemplateSetupRule[] };
+
 const BASE = "/api/v1/rules";
+
+export const getDocumentSettings = () => apiFetch<DocumentSettingDto[]>(`${BASE}/document-settings`);
+export const updateDocumentSetting = (id: string, input: UpdateDocumentSettingInput) => apiFetch<DocumentSettingDto>(`${BASE}/document-settings/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(input) });
+export const getRuleLookup = () => apiFetch<RuleLookupDto[]>(`${BASE}/definitions/lookup`);
+export function searchTemplateSetups(params: { search?: string; pageNumber?: number; pageSize?: number; sort?: "name" | "-name" | "-updated" } = {}) {
+  const value = new URLSearchParams({ PageNumber: String(params.pageNumber ?? 1), PageSize: String(params.pageSize ?? 50) });
+  if (params.search?.trim()) value.set("Search", params.search.trim());
+  if (params.sort) value.set("Sort", params.sort);
+  return apiFetch<PagedResponse<TemplateSetupSummaryDto>>(`${BASE}/template-setups?${value.toString()}`);
+}
+export const getTemplateSetup = (id: string) => apiFetch<TemplateSetupDto>(`${BASE}/template-setups/${encodeURIComponent(id)}`);
+export const createTemplateFromDocumentSettings = (input: { stableCode: string; name: string; description?: string | null }) =>
+  apiFetch<TemplateSetupSaveResultDto>(`${BASE}/template-setups`, { method: "POST", body: JSON.stringify(input) });
+export const saveTemplateSetup = (id: string, input: SaveTemplateSetupInput) =>
+  apiFetch<TemplateSetupSaveResultDto>(`${BASE}/template-setups/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(input) });
 function query(params: SearchRulesParams | SearchTemplatesParams) {
   const value = new URLSearchParams({ PageNumber: String(params.pageNumber ?? 1), PageSize: String(params.pageSize ?? 20) });
   if (params.search?.trim()) value.set("Search", params.search.trim());
@@ -49,7 +81,22 @@ export const submitRuleForReview = (id: string, input: RuleVersionTransitionInpu
 export const publishRule = (id: string, input: RuleVersionTransitionInput & { retireCurrent?: boolean }) => apiFetch<void>(`${BASE}/definitions/${encodeURIComponent(id)}/publish`, body(input));
 export const retireRule = (id: string, input: RuleVersionTransitionInput) => apiFetch<void>(`${BASE}/definitions/${encodeURIComponent(id)}/retire`, body(input));
 export const cloneRule = (id: string, input: RuleVersionTransitionInput) => apiFetch<string>(`${BASE}/definitions/${encodeURIComponent(id)}/clone`, body(input));
+export const deleteRule = (id: string, expectedVersion: number) => apiFetch<void>(`${BASE}/definitions/${encodeURIComponent(id)}?expectedVersion=${expectedVersion}`, { method: "DELETE" });
+export const isRuleDeletable = (rule: Pick<RuleDefinitionSummaryDto, "lifecycle" | "currentPublishedVersionId">) =>
+  !rule.currentPublishedVersionId && (rule.lifecycle === "Draft" || rule.lifecycle === "InReview");
 export const testRule = (input: TestRuleInput) => apiFetch<RuleEvaluationResultDto>(`${BASE}/definitions/test`, body(input));
+export function searchRuleColumns(params: SearchRuleColumnsParams = {}) {
+  const value = new URLSearchParams({ PageNumber: String(params.pageNumber ?? 1), PageSize: String(params.pageSize ?? 50) });
+  if (params.search?.trim()) value.set("Search", params.search.trim());
+  if (params.kind) value.set("Kind", params.kind);
+  if (params.dataType) value.set("DataType", params.dataType);
+  if (params.isActive !== undefined) value.set("IsActive", String(params.isActive));
+  if (params.sort) value.set("Sort", params.sort);
+  return apiFetch<PagedResponse<RuleColumnDto>>(`${BASE}/columns?${value.toString()}`);
+}
+export const createRuleColumn = (input: CreateRuleColumnInput) => apiFetch<string>(`${BASE}/columns`, body(input));
+export const updateRuleColumn = (id: string, input: UpdateRuleColumnInput) => apiFetch<void>(`${BASE}/columns/${encodeURIComponent(id)}`, { method: "PUT", body: JSON.stringify(input) });
+export const deleteRuleColumn = (id: string) => apiFetch<void>(`${BASE}/columns/${encodeURIComponent(id)}`, { method: "DELETE" });
 export const searchTemplates = (params: SearchTemplatesParams = {}) => apiFetch<PagedResponse<RuleTemplateSummaryDto>>(`${BASE}/templates?${query(params)}`);
 export const getTemplate = (id: string) => apiFetch<RuleTemplateDetailDto>(`${BASE}/templates/${encodeURIComponent(id)}`);
 export const createTemplate = (input: CreateTemplateInput) => apiFetch<string>(`${BASE}/templates`, body(input));

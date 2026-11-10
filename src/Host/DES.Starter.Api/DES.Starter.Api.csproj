@@ -20,6 +20,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Mediator.Abstractions" />
+		<PackageReference Include="Serilog.Sinks.File" />
 		<PackageReference Include="Mediator.SourceGenerator">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

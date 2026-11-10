@@ -51,16 +51,17 @@ internal sealed class RuleEvaluationService(
         }
 
         Guid[] assignedVersionIds = templateVersion.RuleAssignments.Select(x => x.RuleVersionId).Distinct().ToArray();
-        List<RuleDefinition> definitions = await db.RuleDefinitions
+        var definitions = await db.RuleDefinitions
             .AsNoTracking()
             .Where(x => x.TenantId == tenantId && x.Versions.Any(v => assignedVersionIds.Contains(v.Id)))
-            .Include(x => x.Versions.Where(v => assignedVersionIds.Contains(v.Id)))
-            .AsSplitQuery()
+            .Select(x => new { x.Id, x.CurrentPublishedVersionId, AssignedVersionIds = x.Versions.Where(v => assignedVersionIds.Contains(v.Id)).Select(v => v.Id).ToList() })
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
+        Guid[] loadIds = definitions.SelectMany(x => x.AssignedVersionIds).Concat(definitions.Where(x => x.CurrentPublishedVersionId.HasValue).Select(x => x.CurrentPublishedVersionId!.Value)).Distinct().ToArray();
+        Dictionary<Guid, RuleVersion> loaded = await db.RuleVersions.AsNoTracking().Where(x => loadIds.Contains(x.Id)).ToDictionaryAsync(x => x.Id, cancellationToken).ConfigureAwait(false);
         Dictionary<Guid, (Guid DefinitionId, RuleVersion Version)> versions = definitions
-            .SelectMany(x => x.Versions.Select(v => (DefinitionId: x.Id, Version: v)))
-            .ToDictionary(x => x.Version.Id);
+            .SelectMany(d => d.AssignedVersionIds.Select(assigned => (Assigned: assigned, d.Id, Effective: d.CurrentPublishedVersionId ?? assigned)))
+            .ToDictionary(x => x.Assigned, x => (x.Id, loaded[x.Effective]));
         if (versions.Count != assignedVersionIds.Length
             || versions.Values.Any(x => x.Version.Status is not (RuleLifecycle.Published or RuleLifecycle.Retired)))
         {

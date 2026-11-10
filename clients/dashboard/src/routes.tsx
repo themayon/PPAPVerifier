@@ -120,6 +120,10 @@ const PpapSubmissionPage = lazyNamed(
   () => import("@/pages/ppap/submission"),
   "PpapSubmissionPage",
 );
+const PpapSubmissionConceptPage = lazyNamed(
+  () => import("@/pages/ppap/submission-concept"),
+  "PpapSubmissionConceptPage",
+);
 const PpapProcessingPage = lazyNamed(
   () => import("@/pages/ppap/processing"),
   "PpapProcessingPage",
@@ -138,6 +142,12 @@ const PpapReportReviewPage = lazyNamed(
 );
 const RulesListPage = lazyNamed(() => import("@/pages/rules/rules-list"), "RulesListPage");
 const RuleEditorPage = lazyNamed(() => import("@/pages/rules/rule-editor"), "RuleEditorPage");
+const RuleColumnsPage = lazyNamed(() => import("@/pages/rules/columns"), "RuleColumnsPage");
+const DocumentSettingsPage = lazyNamed(() => import("@/pages/rules/document-settings"), "DocumentSettingsPage");
+const TemplateEditorPage = lazyNamed(() => import("@/pages/rules/template-editor"), "TemplateEditorPage");
+const PpapSuppliersPage = lazyNamed(() => import("@/pages/ppap/suppliers"), "PpapSuppliersPage");
+const SupplierProfilePage = lazyNamed(() => import("@/pages/ppap/supplier-profile"), "SupplierProfilePage");
+const PartEditorPage = lazyNamed(() => import("@/pages/ppap/part-editor"), "PartEditorPage");
 const RuleTemplatesPage = lazyNamed(
   () => import("@/pages/rules/templates"),
   "RuleTemplatesPage",
@@ -183,6 +193,11 @@ function withSuspense(node: React.ReactNode) {
 }
 
 export const router = createBrowserRouter([
+  {
+    path: "/ppap-submission-concept",
+    element: withSuspense(<PpapSubmissionConceptPage />),
+    errorElement: <RouteError />,
+  },
   {
     path: "/login",
     element: withSuspense(<LoginPage />),
@@ -235,16 +250,24 @@ export const router = createBrowserRouter([
           { path: "activity", element: withSuspense(<ActivityPage />) },
           { path: "ppap", element: withSuspense(<PpapHomePage />) },
           { path: "ppap/parts", element: withSuspense(<PpapPartsPage />) },
+          { path: "ppap/parts/new", element: withSuspense(<PartEditorPage />) },
+          { path: "ppap/parts/:partId/edit", element: withSuspense(<PartEditorPage />) },
           { path: "ppap/submissions/:submissionId", element: withSuspense(<PpapSubmissionPage />) },
           { path: "ppap/processing/:jobId", element: withSuspense(<PpapProcessingPage />) },
           { path: "ppap/reports/:reportId", element: withSuspense(<PpapReportPage />) },
           { path: "ppap/operations", element: withSuspense(<PpapOperationsPage />) },
           { path: "ppap/reports/:reportId/review", element: withSuspense(<PpapReportReviewPage />) },
           { path: "rules", element: <Navigate to="/rules/validation" replace /> },
+          { path: "rules/columns", element: withSuspense(<RuleColumnsPage />) },
+          { path: "rules/document-settings", element: withSuspense(<DocumentSettingsPage />) },
           { path: "rules/:type", element: withSuspense(<RulesListPage />) },
           { path: "rules/:type/new", element: withSuspense(<RuleEditorPage />) },
           { path: "rules/:type/:ruleId", element: withSuspense(<RuleEditorPage />) },
           { path: "rule-templates", element: withSuspense(<RuleTemplatesPage />) },
+          { path: "rule-templates/:templateId", element: withSuspense(<TemplateEditorPage />) },
+          { path: "ppap/suppliers", element: withSuspense(<PpapSuppliersPage />) },
+          { path: "ppap/suppliers/new", element: withSuspense(<SupplierProfilePage />) },
+          { path: "ppap/suppliers/:supplierId", element: withSuspense(<SupplierProfilePage />) },
           { path: "extraction-attempts", element: withSuspense(<ExtractionAttemptsPage />) },
           { path: "subscription", element: withSuspense(<SubscriptionPage />) },
           { path: "wallet", element: withSuspense(<WalletPage />) },

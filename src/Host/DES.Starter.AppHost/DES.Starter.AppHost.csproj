@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\DES.Starter.Api\DES.Starter.Api.csproj" />
     <ProjectReference Include="..\DES.Starter.DbMigrator\DES.Starter.DbMigrator.csproj" />
+    <ProjectReference Include="..\..\Workers\DES.Ppap.ValidationWorker\DES.Ppap.ValidationWorker.csproj" />
   </ItemGroup>
 
 </Project>

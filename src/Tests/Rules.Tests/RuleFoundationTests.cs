@@ -1,4 +1,5 @@
 using System.Text.Json;
+using DES.Framework.Core.Exceptions;
 using DES.Modules.Rules.Contracts;
 using DES.Modules.Rules.Domain;
 using DES.Modules.Rules.Runtime;
@@ -57,6 +58,26 @@ public sealed class RuleFoundationTests
     {
         string ast = $"{{\"type\":\"comparison\",\"operator\":\"{op}\",\"left\":{{\"type\":\"literal\",\"value\":{value}}}}}";
         new RuleEvaluator().Evaluate(RuleAstSerializer.Parse(ast), new(new Dictionary<string, JsonElement>())).Status.ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData("""{"targetDate":"2026-01-01"}""", "IsNotEmpty", RuleEvaluationStatus.Passed)]
+    [InlineData("""{"targetDate":null}""", "IsNotEmpty", RuleEvaluationStatus.Failed)]
+    [InlineData("""{"targetDate":""}""", "IsNotEmpty", RuleEvaluationStatus.Failed)]
+    [InlineData("""{"other":1}""", "IsNotEmpty", RuleEvaluationStatus.Failed)]
+    [InlineData("""{"other":1}""", "IsEmpty", RuleEvaluationStatus.Passed)]
+    public void Evaluate_Should_TreatMissingFieldAsNull_ForNullChecks(string document, string op, RuleEvaluationStatus expected)
+    {
+        using JsonDocument doc = JsonDocument.Parse(document);
+        string ast = """{"type":"comparison","operator":"OP","left":{"type":"field","documentCode":"DFMEA","path":"targetDate"}}""".Replace("OP", op, StringComparison.Ordinal);
+        new RuleEvaluator().Evaluate(RuleAstSerializer.Parse(ast), new(new Dictionary<string, JsonElement> { ["DFMEA"] = doc.RootElement.Clone() })).Status.ShouldBe(expected);
+    }
+
+    [Fact]
+    public void Evaluate_Should_StayNotEvaluated_ForNullCheckOnMissingDocument()
+    {
+        const string ast = """{"type":"comparison","operator":"IsNotEmpty","left":{"type":"field","documentCode":"DFMEA","path":"targetDate"}}""";
+        new RuleEvaluator().Evaluate(RuleAstSerializer.Parse(ast), new(new Dictionary<string, JsonElement>())).Status.ShouldBe(RuleEvaluationStatus.NotEvaluated);
     }
 
     [Fact] public void Evaluate_Should_ReturnNotEvaluatedForMissingCaseSensitiveField()
@@ -163,5 +184,35 @@ public sealed class RuleFoundationTests
         Should.Throw<Exception>(() => rule.UpdateDraft(first.Id, 3, "x", null, RuleCategory.Row, Comparison(), "{}", now));
         RuleVersion clone = rule.ClonePublished(first.Id, 3, user, now); clone.VersionNumber.ShouldBe(2); rule.StableCode.ShouldBe("CODE");
     }
+
+    [Fact]
+    public void EnsureDeletable_Should_Allow_WhenRuleWasNeverPublished()
+    {
+        DateTime now = DateTime.UnixEpoch; Guid user = Guid.NewGuid();
+        RuleDefinition draft = RuleDefinition.Create("tenant", "DRAFT", "Name", null, RuleCategory.Header, Comparison(), "{}", user, now);
+        Should.NotThrow(() => draft.EnsureDeletable(1));
+        RuleDefinition inReview = RuleDefinition.Create("tenant", "REVIEW", "Name", null, RuleCategory.Header, Comparison(), "{}", user, now);
+        inReview.SubmitForReview(inReview.Versions.Single().Id, 1, now);
+        Should.NotThrow(() => inReview.EnsureDeletable(2));
+    }
+
+    [Fact]
+    public void EnsureDeletable_Should_Throw_WhenRuleWasPublishedOrRetired()
+    {
+        DateTime now = DateTime.UnixEpoch; Guid user = Guid.NewGuid();
+        RuleDefinition rule = RuleDefinition.Create("tenant", "LIVE", "Name", null, RuleCategory.Header, Comparison(), "{}", user, now);
+        RuleVersion first = rule.Versions.Single(); rule.SubmitForReview(first.Id, 1, now); rule.Publish(first.Id, 2, true, user, now);
+        Should.Throw<CustomException>(() => rule.EnsureDeletable(3));
+        rule.Retire(first.Id, 3, now);
+        Should.Throw<CustomException>(() => rule.EnsureDeletable(4));
+    }
+
+    [Fact]
+    public void EnsureDeletable_Should_Throw_WhenExpectedVersionIsStale()
+    {
+        RuleDefinition rule = RuleDefinition.Create("tenant", "STALE", "Name", null, RuleCategory.Header, Comparison(), "{}", Guid.NewGuid(), DateTime.UnixEpoch);
+        Should.Throw<CustomException>(() => rule.EnsureDeletable(5));
+    }
+
     private static string Comparison() => """{"type":"comparison","operator":"Equal","left":{"type":"literal","value":1},"right":{"type":"literal","value":1}}""";
 }

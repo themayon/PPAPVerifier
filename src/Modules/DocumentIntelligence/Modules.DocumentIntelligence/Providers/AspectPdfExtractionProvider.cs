@@ -53,10 +53,16 @@ internal sealed class AspectPdfExtractionProvider(
             request.OwnerUserId.ToString(),
             cancellationToken).ConfigureAwait(false))
         {
-            if (!string.Equals(Path.GetExtension(source.FileName), ".pdf", StringComparison.OrdinalIgnoreCase)
-                || !string.Equals(source.ContentType, "application/pdf", StringComparison.OrdinalIgnoreCase))
+            string extension = Path.GetExtension(source.FileName).ToUpperInvariant();
+            bool supportedAsyncSource = extension is ".PDF" or ".DOCX" or ".XLSX" or ".PPTX";
+            if ((_options.UseAsyncTaskApi && !supportedAsyncSource)
+                || (!_options.UseAsyncTaskApi
+                    && (!string.Equals(extension, ".PDF", StringComparison.Ordinal)
+                        || !string.Equals(source.ContentType, "application/pdf", StringComparison.OrdinalIgnoreCase))))
             {
-                return Failed("InvalidSourceType", "The source artifact must be a PDF.");
+                return Failed("InvalidSourceType", _options.UseAsyncTaskApi
+                    ? "The source artifact must be a PDF, DOCX, XLSX, or PPTX file."
+                    : "The source artifact must be a PDF.");
             }
 
             if (source.SizeBytes > _options.MaxSourceBytes)
@@ -75,6 +81,15 @@ internal sealed class AspectPdfExtractionProvider(
             }
 
             sourceFileName = BuildSourceFileName(request.ExtractionAttemptId, source.FileName);
+        }
+
+        if (_options.UseAsyncTaskApi)
+        {
+            return await ExtractWithTaskApiAsync(
+                request,
+                sourceBytes,
+                sourceFileName,
+                cancellationToken).ConfigureAwait(false);
         }
 
         HttpResponseMessage extractionResponse;
@@ -268,6 +283,277 @@ internal sealed class AspectPdfExtractionProvider(
         }
     }
 
+    private async Task<ExtractionProviderResult> ExtractWithTaskApiAsync(
+        ExtractionProviderRequest request,
+        byte[] sourceBytes,
+        string sourceFileName,
+        CancellationToken cancellationToken)
+    {
+        string taskId;
+        try
+        {
+            using HttpResponseMessage submission = await SendWithRetryAsync(
+                () => CreateTaskSubmissionRequest(request, sourceBytes, sourceFileName),
+                TransientStatuses,
+                cancellationToken).ConfigureAwait(false);
+            byte[] body = await ReadResponseBoundedAsync(submission, _options.MaxResponseBytes, cancellationToken)
+                .ConfigureAwait(false);
+            if (!submission.IsSuccessStatusCode)
+            {
+                return Failed("ProviderHttpError", "The extraction provider rejected the asynchronous task submission.");
+            }
+            JsonNode root = JsonNode.Parse(body) ?? throw new JsonException("The task submission response is empty.");
+            taskId = TryGetString(root, "task_id", out string? value) && Guid.TryParse(value, out Guid parsed) && parsed != Guid.Empty
+                ? value!
+                : throw new JsonException("The task submission response has no valid task_id.");
+        }
+        catch (HttpRequestException)
+        {
+            return Failed("ProviderUnavailable", "The extraction provider could not be reached.");
+        }
+        catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
+        {
+            return Failed("ProviderTimeout", "The extraction provider task submission timed out.");
+        }
+        catch (JsonException)
+        {
+            return Failed("InvalidProviderResponse", "The extraction provider returned an invalid task submission response.");
+        }
+
+        while (true)
+        {
+            using HttpRequestMessage statusRequest = CreateAuthenticatedRequest(
+                HttpMethod.Get,
+                $"v1/extraction-tasks/{Uri.EscapeDataString(taskId)}",
+                "application/json");
+            using HttpResponseMessage statusResponse = await httpClient.SendAsync(
+                statusRequest,
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken).ConfigureAwait(false);
+            byte[] statusBytes = await ReadResponseBoundedAsync(
+                statusResponse,
+                _options.MaxResponseBytes,
+                cancellationToken).ConfigureAwait(false);
+            if (!statusResponse.IsSuccessStatusCode)
+            {
+                return Failed("ProviderHttpError", "The extraction provider task status request failed.");
+            }
+
+            JsonNode statusRoot;
+            try
+            {
+                statusRoot = JsonNode.Parse(statusBytes) ?? throw new JsonException();
+            }
+            catch (JsonException)
+            {
+                return Failed("InvalidProviderResponse", "The extraction provider returned an invalid task status response.");
+            }
+            if (!TryGetString(statusRoot, "task_id", out string? correlatedId)
+                || !string.Equals(taskId, correlatedId, StringComparison.Ordinal))
+            {
+                return Failed("TaskCorrelationMismatch", "The extraction provider task status did not match the submitted task.");
+            }
+            if (!TryGetString(statusRoot, "status", out string? taskStatus))
+            {
+                return Failed("InvalidProviderResponse", "The extraction provider task status is missing.");
+            }
+
+            string normalizedStatus = taskStatus!.Trim().ToUpperInvariant();
+            if (normalizedStatus == "FAILED")
+            {
+                string? code = statusRoot["error"]?["code"]?.GetValue<string>();
+                return Failed(string.IsNullOrWhiteSpace(code) ? "ProviderError" : code, "The extraction provider task failed.");
+            }
+            if (normalizedStatus == "SUCCEEDED")
+            {
+                return await CompleteTaskAsync(request, taskId, statusRoot, cancellationToken).ConfigureAwait(false);
+            }
+            if (normalizedStatus is not ("QUEUED" or "RUNNING"))
+            {
+                return Failed("InvalidProviderResponse", "The extraction provider returned an unsupported task status.");
+            }
+            await Task.Delay(TimeSpan.FromSeconds(_options.PollIntervalSeconds), cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    private async Task<ExtractionProviderResult> CompleteTaskAsync(
+        ExtractionProviderRequest request,
+        string taskId,
+        JsonNode statusRoot,
+        CancellationToken cancellationToken)
+    {
+        JsonArray? artifactNodes = statusRoot["artifacts"] as JsonArray;
+        string? resultUrl = FindArtifactUrl(artifactNodes, "result.json", taskId);
+        string? workbookUrl = FindArtifactUrl(artifactNodes, "output.xlsx", taskId);
+        if (resultUrl is null || workbookUrl is null)
+        {
+            return Failed("MissingTaskArtifact", "The extraction provider task did not publish its result and workbook artifacts.");
+        }
+
+        byte[] resultBytes = await DownloadTaskArtifactAsync(
+            resultUrl,
+            "application/json",
+            _options.MaxResponseBytes,
+            cancellationToken).ConfigureAwait(false);
+        byte[] workbookBytes = await DownloadTaskArtifactAsync(
+            workbookUrl,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            _options.MaxExcelBytes,
+            cancellationToken).ConfigureAwait(false);
+        JsonNode resultNode;
+        try
+        {
+            resultNode = JsonNode.Parse(resultBytes) ?? throw new JsonException();
+        }
+        catch (JsonException)
+        {
+            return Failed("InvalidProviderResponse", "The extraction provider result artifact contains invalid JSON.");
+        }
+
+        byte[] sanitized = SanitizeResponse(resultNode);
+        GeneratedFileArtifactResult rawArtifact = await artifacts.CreatePrivateAsync(
+            new GeneratedFileArtifactRequest(
+                OwnerType,
+                request.ExtractionAttemptId,
+                $"{request.ExtractionAttemptId:N}_aspect-result.json",
+                "application/json",
+                sanitized),
+            request.OwnerUserId.ToString(),
+            cancellationToken).ConfigureAwait(false);
+        if (rawArtifact.FileAssetStatus != FileAssetStatus.Available)
+        {
+            return Failed("RawResponseUnavailable", "The extraction provider result artifact was not available.");
+        }
+
+        using JsonDocument resultDocument = JsonDocument.Parse(sanitized);
+        JsonElement root = resultDocument.RootElement;
+        string? processId = ScalarString(FindProperty(root, "process_id")) ?? taskId;
+        string? coversheet = ScalarString(FindPropertyRecursive(root, "coversheet_msg"));
+        AspectProcessingMetadata metadata = new(coversheet, ReadMetrics(root));
+        if (IsNo(ScalarString(FindProperty(root, "Is_Valid"))) || IsYes(coversheet))
+        {
+            return Invalid(rawArtifact.FileAssetId, processId, metadata, "InvalidDocument", "The provider determined that the document is invalid.");
+        }
+        if (!IsYes(ScalarString(FindProperty(root, "Is_Valid"))))
+        {
+            return FailedWithRaw(rawArtifact.FileAssetId, processId, metadata, "InvalidProviderResponse", "The provider did not confirm document validity.");
+        }
+
+        string canonicalJson;
+        try
+        {
+            canonicalJson = XlsxCanonicalizer.Canonicalize(workbookBytes, request.DocumentCode);
+        }
+        catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or XmlException)
+        {
+            return FailedWithRaw(rawArtifact.FileAssetId, processId, metadata, "InvalidExcel", "The generated workbook is not a valid supported XLSX file.");
+        }
+        GeneratedFileArtifactResult workbookArtifact = await artifacts.CreatePrivateAsync(
+            new GeneratedFileArtifactRequest(
+                OwnerType,
+                request.ExtractionAttemptId,
+                $"{request.ExtractionAttemptId:N}_aspect-output.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                workbookBytes),
+            request.OwnerUserId.ToString(),
+            cancellationToken).ConfigureAwait(false);
+        if (workbookArtifact.FileAssetStatus != FileAssetStatus.Available)
+        {
+            return FailedWithRaw(rawArtifact.FileAssetId, processId, metadata, "ExcelArtifactUnavailable", "The generated workbook artifact was not available.");
+        }
+
+        return new ExtractionProviderResult(
+            ExtractionProviderOutcome.Succeeded,
+            processId,
+            "1.0",
+            canonicalJson,
+            rawArtifact.FileAssetId,
+            workbookArtifact.FileAssetId,
+            metadata,
+            null,
+            null);
+    }
+
+    private async Task<byte[]> DownloadTaskArtifactAsync(
+        string relativeUrl,
+        string accept,
+        long maximumBytes,
+        CancellationToken cancellationToken)
+    {
+        using HttpRequestMessage request = CreateAuthenticatedRequest(HttpMethod.Get, relativeUrl, accept);
+        using HttpResponseMessage response = await httpClient.SendAsync(
+            request,
+            HttpCompletionOption.ResponseHeadersRead,
+            cancellationToken).ConfigureAwait(false);
+        if (!response.IsSuccessStatusCode) throw new HttpRequestException("The extraction task artifact download failed.", null, response.StatusCode);
+        return await ReadResponseBoundedAsync(response, maximumBytes, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static string? FindArtifactUrl(JsonArray? artifacts, string name, string taskId)
+    {
+        if (artifacts is null) return null;
+        foreach (JsonNode? artifact in artifacts)
+        {
+            if (!string.Equals(artifact?["name"]?.GetValue<string>(), name, StringComparison.Ordinal)) continue;
+            string? url = artifact?["download_url"]?.GetValue<string>();
+            string expectedPrefix = $"/v1/extraction-tasks/{Uri.EscapeDataString(taskId)}/artifacts/";
+            return url is not null
+                && !Uri.TryCreate(url, UriKind.Absolute, out _)
+                && url.StartsWith(expectedPrefix, StringComparison.Ordinal)
+                && !url.Contains('\\', StringComparison.Ordinal)
+                && !url.Contains('?', StringComparison.Ordinal)
+                && !url.Contains('#', StringComparison.Ordinal)
+                    ? url
+                    : null;
+        }
+        return null;
+    }
+
+#pragma warning disable CA2000
+    private HttpRequestMessage CreateTaskSubmissionRequest(
+        ExtractionProviderRequest request,
+        byte[] sourceBytes,
+        string sourceFileName)
+    {
+        ByteArrayContent file = new(sourceBytes);
+        file.Headers.ContentType = new MediaTypeHeaderValue(ContentTypeFor(sourceFileName));
+        MultipartFormDataContent form = new()
+        {
+            { file, "file", sourceFileName },
+            { new StringContent(request.DocumentCode), "doc_type" },
+            { new StringContent(bool.TrueString), "generate_excel" },
+            { new StringContent(_options.Provider), "provider" },
+            { new StringContent(string.IsNullOrWhiteSpace(request.Model) ? _options.Model! : request.Model), "model" }
+        };
+        HttpRequestMessage message = new(HttpMethod.Post, "v1/extraction-tasks") { Content = form };
+        AddHeaders(message);
+        return message;
+    }
+#pragma warning restore CA2000
+
+    private HttpRequestMessage CreateAuthenticatedRequest(HttpMethod method, string url, string accept)
+    {
+        HttpRequestMessage message = new(method, url);
+        message.Headers.TryAddWithoutValidation("X-API-Key", _options.ApiKey);
+        message.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+        return message;
+    }
+
+    private static string ContentTypeFor(string fileName) => Path.GetExtension(fileName).ToUpperInvariant() switch
+    {
+        ".PDF" => "application/pdf",
+        ".DOCX" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ".XLSX" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ".PPTX" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        _ => "application/octet-stream"
+    };
+
+    private static bool TryGetString(JsonNode node, string propertyName, out string? value)
+    {
+        value = node[propertyName]?.GetValue<string>();
+        return !string.IsNullOrWhiteSpace(value);
+    }
+
     private async Task<HttpResponseMessage> SendWithRetryAsync(
         Func<HttpRequestMessage> requestFactory,
         HashSet<HttpStatusCode> retryStatuses,
@@ -395,7 +681,14 @@ internal sealed class AspectPdfExtractionProvider(
             safeName = "source";
         }
 
-        return $"{attemptId:N}_{safeName}.pdf";
+        string extension = Path.GetExtension(originalFileName).ToUpperInvariant() switch
+        {
+            ".DOCX" => ".docx",
+            ".XLSX" => ".xlsx",
+            ".PPTX" => ".pptx",
+            _ => ".pdf"
+        };
+        return $"{attemptId:N}_{safeName}{extension}";
     }
 
     private static bool TryValidateDownloadUrl(string fileName, string downloadUrl, out string safeFileName)

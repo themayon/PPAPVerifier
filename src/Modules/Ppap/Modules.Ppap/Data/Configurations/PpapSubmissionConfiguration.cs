@@ -21,11 +21,14 @@ public sealed class PpapSubmissionConfiguration : IEntityTypeConfiguration<PpapS
         builder.Property(x => x.RuleTemplateId);
         builder.Property(x => x.RuleTemplateVersionId);
         builder.Property(x => x.Status).IsRequired().HasConversion<string>().HasMaxLength(16);
+        builder.Property(x => x.Decision).IsRequired().HasConversion<string>().HasMaxLength(16).HasDefaultValue(SubmissionDecision.None);
+        builder.Property(x => x.DecisionComment).HasMaxLength(1000);
         builder.Property(x => x.Version).IsRequired().IsConcurrencyToken();
         builder.Property(x => x.CreatedAtUtc).IsRequired();
         builder.HasIndex(x => x.OwnerUserId);
         builder.HasIndex(x => x.PartId);
         builder.HasIndex(x => x.Status);
+        builder.HasIndex(x => new { x.TenantId, x.Status, x.Decision });
         builder.HasIndex(x => x.CreatedAtUtc);
         builder.HasIndex(x => new { x.TenantId, x.PartNumber });
         builder.HasIndex(x => new { x.TenantId, x.OwnerUserId, x.Status });

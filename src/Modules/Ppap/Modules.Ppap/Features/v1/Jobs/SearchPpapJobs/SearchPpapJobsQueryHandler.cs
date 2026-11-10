@@ -51,33 +51,40 @@ public sealed class SearchPpapJobsQueryHandler(
         IQueryable<PpapReport> reports = dbContext.PpapReports
             .AsNoTracking()
             .Where(x => x.TenantId == tenantId);
-        IQueryable<PpapAdminJobDto> results =
+        IQueryable<JobRow> rows =
             from job in jobs
             join submission in submissions on job.SubmissionId equals submission.Id
             join report in reports on job.Id equals report.JobId into jobReports
             from report in jobReports.DefaultIfEmpty()
-            select new PpapAdminJobDto(
-                job.Id,
-                job.SubmissionId,
-                job.SubmissionVersion,
-                submission.PartName,
-                submission.PartNumber,
-                job.OwnerUserId,
-                job.Status.ToString(),
-                job.CurrentStage.ToString(),
-                job.ProgressPercent,
-                job.CreatedAtUtc,
-                job.StartedAtUtc,
-                job.CompletedAtUtc,
-                job.FailedAtUtc,
-                job.ErrorCode,
-                job.ErrorMessage,
-                report == null ? null : report.Id);
+            select new JobRow
+            {
+                Job = job,
+                PartName = submission.PartName,
+                PartNumber = submission.PartNumber,
+                ReportId = report == null ? null : report.Id
+            };
 
-        long totalCount = await results.LongCountAsync(cancellationToken).ConfigureAwait(false);
-        List<PpapAdminJobDto> items = await ApplySort(results, query.Sort)
+        long totalCount = await rows.LongCountAsync(cancellationToken).ConfigureAwait(false);
+        List<PpapAdminJobDto> items = await ApplySort(rows, query.Sort)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
+            .Select(x => new PpapAdminJobDto(
+                x.Job.Id,
+                x.Job.SubmissionId,
+                x.Job.SubmissionVersion,
+                x.PartName,
+                x.PartNumber,
+                x.Job.OwnerUserId,
+                x.Job.Status.ToString(),
+                x.Job.CurrentStage.ToString(),
+                x.Job.ProgressPercent,
+                x.Job.CreatedAtUtc,
+                x.Job.StartedAtUtc,
+                x.Job.CompletedAtUtc,
+                x.Job.FailedAtUtc,
+                x.Job.ErrorCode,
+                x.Job.ErrorMessage,
+                x.ReportId))
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
@@ -91,21 +98,29 @@ public sealed class SearchPpapJobsQueryHandler(
         };
     }
 
-    private static IOrderedQueryable<PpapAdminJobDto> ApplySort(
-        IQueryable<PpapAdminJobDto> jobs,
+    private static IOrderedQueryable<JobRow> ApplySort(
+        IQueryable<JobRow> rows,
         string? sort) => sort?.ToUpperInvariant() switch
         {
-            "CREATEDATUTC" => jobs.OrderBy(x => x.CreatedAtUtc).ThenBy(x => x.Id),
-            "STATUS" => jobs.OrderBy(x => x.Status).ThenBy(x => x.Id),
-            "-STATUS" => jobs.OrderByDescending(x => x.Status).ThenByDescending(x => x.Id),
-            "PROGRESSPERCENT" => jobs.OrderBy(x => x.ProgressPercent).ThenBy(x => x.Id),
-            "-PROGRESSPERCENT" => jobs.OrderByDescending(x => x.ProgressPercent).ThenByDescending(x => x.Id),
-            "PARTNAME" => jobs.OrderBy(x => x.PartName).ThenBy(x => x.Id),
-            "-PARTNAME" => jobs.OrderByDescending(x => x.PartName).ThenByDescending(x => x.Id),
-            "PARTNUMBER" => jobs.OrderBy(x => x.PartNumber).ThenBy(x => x.Id),
-            "-PARTNUMBER" => jobs.OrderByDescending(x => x.PartNumber).ThenByDescending(x => x.Id),
-            "OWNERUSERID" => jobs.OrderBy(x => x.OwnerUserId).ThenBy(x => x.Id),
-            "-OWNERUSERID" => jobs.OrderByDescending(x => x.OwnerUserId).ThenByDescending(x => x.Id),
-            _ => jobs.OrderByDescending(x => x.CreatedAtUtc).ThenByDescending(x => x.Id)
+            "CREATEDATUTC" => rows.OrderBy(x => x.Job.CreatedAtUtc).ThenBy(x => x.Job.Id),
+            "STATUS" => rows.OrderBy(x => x.Job.Status).ThenBy(x => x.Job.Id),
+            "-STATUS" => rows.OrderByDescending(x => x.Job.Status).ThenByDescending(x => x.Job.Id),
+            "PROGRESSPERCENT" => rows.OrderBy(x => x.Job.ProgressPercent).ThenBy(x => x.Job.Id),
+            "-PROGRESSPERCENT" => rows.OrderByDescending(x => x.Job.ProgressPercent).ThenByDescending(x => x.Job.Id),
+            "PARTNAME" => rows.OrderBy(x => x.PartName).ThenBy(x => x.Job.Id),
+            "-PARTNAME" => rows.OrderByDescending(x => x.PartName).ThenByDescending(x => x.Job.Id),
+            "PARTNUMBER" => rows.OrderBy(x => x.PartNumber).ThenBy(x => x.Job.Id),
+            "-PARTNUMBER" => rows.OrderByDescending(x => x.PartNumber).ThenByDescending(x => x.Job.Id),
+            "OWNERUSERID" => rows.OrderBy(x => x.Job.OwnerUserId).ThenBy(x => x.Job.Id),
+            "-OWNERUSERID" => rows.OrderByDescending(x => x.Job.OwnerUserId).ThenByDescending(x => x.Job.Id),
+            _ => rows.OrderByDescending(x => x.Job.CreatedAtUtc).ThenByDescending(x => x.Job.Id)
         };
+
+    private sealed class JobRow
+    {
+        public PpapJob Job { get; init; } = default!;
+        public string PartName { get; init; } = default!;
+        public string PartNumber { get; init; } = default!;
+        public Guid? ReportId { get; init; }
+    }
 }

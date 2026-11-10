@@ -14,12 +14,17 @@ namespace DES.Modules.Ppap.Features.v1.Parts;
 public static class SearchMyPpapPartsEndpoint
 {
     internal static RouteHandlerBuilder MapSearchMyPpapPartsEndpoint(this IEndpointRouteBuilder endpoints) =>
-        endpoints.MapGet("/parts", async (string? search, int? pageNumber, int? pageSize, string? sort, IMediator mediator, CancellationToken ct) =>
-        {
-            SearchMyPpapPartsQuery query = new() { Search = search, PageNumber = pageNumber ?? 1, PageSize = pageSize ?? 20, Sort = sort };
-            return Results.Ok(await mediator.Send(query, ct));
-        }).WithName("SearchMyPpapParts").WithSummary("Search my PPAP parts")
+        endpoints.MapGet("/parts", async ([AsParameters] SearchMyPpapPartsQuery query, IMediator mediator, CancellationToken ct) => Results.Ok(await mediator.Send(query, ct)))
+            .WithName("SearchMyPpapParts").WithSummary("Search PPAP parts (own parts, or all parts for submission approvers)")
             .RequirePermission(PpapPermissions.Parts.View).Produces<PagedResponse<PpapPartDto>>();
+}
+
+public static class GetPpapPartsSummaryEndpoint
+{
+    internal static RouteHandlerBuilder MapGetPpapPartsSummaryEndpoint(this IEndpointRouteBuilder endpoints) =>
+        endpoints.MapGet("/parts/summary", async (IMediator mediator, CancellationToken ct) => Results.Ok(await mediator.Send(new GetPpapPartsSummaryQuery(), ct)))
+            .WithName("GetPpapPartsSummary").WithSummary("Part directory statistics")
+            .RequirePermission(PpapPermissions.Parts.View).Produces<PpapPartsSummaryDto>();
 }
 
 public static class CreatePpapPartEndpoint
@@ -46,11 +51,11 @@ public static class UpdatePpapPartEndpoint
 {
     internal static RouteHandlerBuilder MapUpdatePpapPartEndpoint(this IEndpointRouteBuilder endpoints) =>
         endpoints.MapPut("/parts/{id:guid}", async (Guid id, [FromBody] UpdatePartRequest body, IMediator mediator, CancellationToken ct) =>
-            Results.Ok(await mediator.Send(new UpdatePartCommand(id, body.PartName, body.PartNumber, body.DrawingRevision, body.ExpectedVersion), ct)))
+            Results.Ok(await mediator.Send(new UpdatePartCommand(id, body.PartName, body.PartNumber, body.DrawingRevision, body.ExpectedVersion, body.SupplierId, body.PpapLevel, body.Classification), ct)))
             .WithName("UpdatePpapPart").WithSummary("Update my PPAP part")
             .RequirePermission(PpapPermissions.Parts.Update).Produces<PpapPartDto>();
 
-    public sealed record UpdatePartRequest(string PartName, string PartNumber, string DrawingRevision, int ExpectedVersion);
+    public sealed record UpdatePartRequest(string PartName, string PartNumber, string DrawingRevision, int ExpectedVersion, Guid? SupplierId = null, int? PpapLevel = null, string? Classification = null);
 }
 
 public static class AssignPpapPartTemplateEndpoint

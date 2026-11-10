@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
-import { keepPreviousData, useQueries, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Copy, Filter, Hash, LayoutGrid, MessageSquareText, MoreHorizontal, Plus, RefreshCw, Rows3, Search, SquarePen, X } from "lucide-react";
+import { Copy, Filter, Hash, LayoutGrid, MessageSquareText, MoreHorizontal, Plus, RefreshCw, Rows3, Search, SquarePen, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import { searchRules, type RuleCategory, type RuleDefinitionSummaryDto, type RuleLifecycle, type RuleSort } from "@/api/rules";
+import { deleteRule, isRuleDeletable, searchRules, type RuleCategory, type RuleDefinitionSummaryDto, type RuleLifecycle, type RuleSort } from "@/api/rules";
 import { useAuth } from "@/auth/use-auth";
 import { Combobox, EntityEmpty, EntityListCard, EntityListHeader, EntityListRow, EntityPageHeader, EntityPager, ErrorBand } from "@/components/list";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/cn";
@@ -40,6 +41,20 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
   const perms = user?.permissions ?? [];
   const canView = perms.includes("Permissions.Definitions.View");
   const canCreate = perms.includes("Permissions.Definitions.Create");
+  const canDelete = perms.includes("Permissions.Definitions.Delete");
+  const queryClient = useQueryClient();
+  const [deleting, setDeleting] = useState<RuleDefinitionSummaryDto | null>(null);
+  const remove = useMutation({
+    mutationFn: (rule: RuleDefinitionSummaryDto) => deleteRule(rule.id, rule.version),
+    onSuccess: (_result, rule) => {
+      toast.success(`Rule ${rule.stableCode} deleted`);
+      setDeleting(null);
+      void queryClient.invalidateQueries({ queryKey: ["rules"] });
+      queryClient.removeQueries({ queryKey: ["rule", rule.id] });
+    },
+    onError: (error) => toast.error("Delete failed", { description: describe(error) }),
+  });
+  const onDelete = canDelete ? setDeleting : null;
   const [params, setParams] = useSearchParams();
   const [view, setView] = useState<View>(() => (localStorage.getItem(VIEW_KEY) === "list" ? "list" : "grid"));
   const searchRef = useRef<HTMLInputElement>(null);
@@ -229,7 +244,7 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
         <ul className={cn("grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4", query.isPlaceholderData && "opacity-70")}>
           {items.map((rule) => (
             <li key={rule.id}>
-              <RuleCard rule={rule} type={type} canCreate={canCreate} onTag={(value) => patch({ tag: value })} />
+              <RuleCard rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} onTag={(value) => patch({ tag: value })} />
             </li>
           ))}
         </ul>
@@ -243,7 +258,7 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
                 <span>Code</span><span>Rule</span><span>Severity</span><span>Conditions</span><span>Status</span><span>Updated</span><span className="sr-only">Actions</span>
               </EntityListHeader>
               {items.map((rule, index) => (
-                <RuleRow key={rule.id} rule={rule} type={type} isLast={index === items.length - 1} canCreate={canCreate} />
+                <RuleRow key={rule.id} rule={rule} type={type} isLast={index === items.length - 1} canCreate={canCreate} onDelete={onDelete} />
               ))}
             </div>
           </div>
@@ -260,6 +275,21 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
           onNext={() => patch({ page: String(page + 1) }, false)}
         />
       )}
+
+      <Dialog open={deleting !== null} onOpenChange={(open) => !open && !remove.isPending && setDeleting(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete rule</DialogTitle>
+            <DialogDescription>
+              Permanently delete <strong>{deleting?.name}</strong> (<code className="font-mono">{deleting?.stableCode}</code>) and all its draft versions? It is also removed from document settings. This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleting(null)} disabled={remove.isPending}>Cancel</Button>
+            <Button variant="destructive" disabled={remove.isPending} onClick={() => deleting && remove.mutate(deleting)}>{remove.isPending ? "Deleting…" : "Delete"}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -268,7 +298,9 @@ function useRuleMeta(rule: RuleDefinitionSummaryDto) {
   return useMemo(() => outcomeSummary(rule.latestOutcomeJson), [rule.latestOutcomeJson]);
 }
 
-function RuleMenu({ rule, type, canCreate }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; canCreate: boolean }) {
+type OnDelete = ((rule: RuleDefinitionSummaryDto) => void) | null;
+
+function RuleMenu({ rule, type, canCreate, onDelete }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; canCreate: boolean; onDelete: OnDelete }) {
   const navigate = useNavigate();
   return (
     <DropdownMenu>
@@ -287,12 +319,18 @@ function RuleMenu({ rule, type, canCreate }: { rule: RuleDefinitionSummaryDto; t
         {canCreate && <DropdownMenuItem onSelect={() => navigate(`/rules/${type.key}/new?from=${rule.id}`)}><Copy className="size-4" />Duplicate</DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => { void navigator.clipboard?.writeText(rule.stableCode); toast.success("Rule code copied"); }}><Hash className="size-4" />Copy code</DropdownMenuItem>
+        {onDelete && isRuleDeletable(rule) && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem destructive onSelect={() => onDelete(rule)}><Trash2 className="size-4" />Delete</DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
 
-function RuleCard({ rule, type, canCreate, onTag }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; canCreate: boolean; onTag: (tag: string) => void }) {
+function RuleCard({ rule, type, canCreate, onDelete, onTag }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; canCreate: boolean; onDelete: OnDelete; onTag: (tag: string) => void }) {
   const meta = useRuleMeta(rule);
   const href = `/rules/${type.key}/${rule.id}`;
   return (
@@ -310,7 +348,7 @@ function RuleCard({ rule, type, canCreate, onTag }: { rule: RuleDefinitionSummar
           <code className="truncate rounded-md bg-[var(--color-muted)] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-[var(--color-foreground)]">{rule.stableCode}</code>
           <SeverityBadge severity={meta.severity} />
         </div>
-        <div className="relative z-[1]"><RuleMenu rule={rule} type={type} canCreate={canCreate} /></div>
+        <div className="relative z-[1]"><RuleMenu rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} /></div>
       </div>
       <Link to={href} className="flex-1 px-4 pl-5 outline-none after:absolute after:inset-0 after:content-['']">
         <h3 className="line-clamp-1 font-display text-[15px] font-semibold text-[var(--color-foreground)]">{rule.name}</h3>
@@ -339,7 +377,7 @@ function RuleCard({ rule, type, canCreate, onTag }: { rule: RuleDefinitionSummar
   );
 }
 
-function RuleRow({ rule, type, isLast, canCreate }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; isLast: boolean; canCreate: boolean }) {
+function RuleRow({ rule, type, isLast, canCreate, onDelete }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; isLast: boolean; canCreate: boolean; onDelete: OnDelete }) {
   const meta = useRuleMeta(rule);
   const navigate = useNavigate();
   return (
@@ -356,7 +394,7 @@ function RuleRow({ rule, type, isLast, canCreate }: { rule: RuleDefinitionSummar
       <span className="font-mono text-[12px] text-[var(--color-muted-foreground)]">{rule.conditionCount ?? 0}</span>
       <span><LifecycleBadge status={rule.lifecycle} /></span>
       <span className="text-[12px] text-[var(--color-muted-foreground)]">{new Date(rule.updatedAtUtc).toLocaleDateString()}</span>
-      <span className="flex justify-end"><RuleMenu rule={rule} type={type} canCreate={canCreate} /></span>
+      <span className="flex justify-end"><RuleMenu rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} /></span>
     </EntityListRow>
   );
 }

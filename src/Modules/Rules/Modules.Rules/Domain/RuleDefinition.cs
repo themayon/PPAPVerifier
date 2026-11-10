@@ -79,6 +79,13 @@ public sealed class RuleDefinition : AggregateRoot<Guid>, IHasTenant
         _versions.Add(clone); Lifecycle = RuleLifecycle.Draft; Touch(utcNow); return clone;
     }
 
+    public void EnsureDeletable(long expectedVersion)
+    {
+        GuardVersion(expectedVersion);
+        if (CurrentPublishedVersionId is not null || _versions.Any(v => v.Status is RuleLifecycle.Published or RuleLifecycle.Retired))
+            Conflict("Only rules that have never been published can be deleted. Retire the rule instead.");
+    }
+
     private RuleVersion Find(Guid id) => _versions.SingleOrDefault(v => v.Id == id) ?? throw new CustomException("Rule version was not found.", (IEnumerable<string>?)null, HttpStatusCode.NotFound);
     private void GuardVersion(long expected) { if (Version != expected) Conflict("The rule was modified by another request."); }
     private void Touch(DateTime now) { UpdatedAtUtc = now; Version++; }

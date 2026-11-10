@@ -11,12 +11,17 @@ public sealed class PpapPart : AggregateRoot<Guid>, IHasTenant
     public string PartName { get; private set; } = default!;
     public string PartNumber { get; private set; } = default!;
     public string DrawingRevision { get; private set; } = default!;
+    public Guid? SupplierId { get; private set; }
+    public int PpapLevel { get; private set; } = DefaultPpapLevel;
+    public PartClassification Classification { get; private set; }
     public Guid? RuleTemplateId { get; private set; }
     public Guid? RuleTemplateVersionId { get; private set; }
     public bool IsActive { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime UpdatedAtUtc { get; private set; }
     public int Version { get; private set; }
+
+    public const int DefaultPpapLevel = 3;
 
     private PpapPart() { }
 
@@ -25,9 +30,13 @@ public sealed class PpapPart : AggregateRoot<Guid>, IHasTenant
         Guid ownerUserId,
         string partName,
         string partNumber,
-        string drawingRevision)
+        string drawingRevision,
+        Guid? supplierId = null,
+        int ppapLevel = DefaultPpapLevel,
+        PartClassification classification = PartClassification.Standard)
     {
         ValidateIdentity(tenantId, ownerUserId);
+        ValidateSetup(ppapLevel, classification);
         return new PpapPart
         {
             Id = Guid.CreateVersion7(),
@@ -36,6 +45,9 @@ public sealed class PpapPart : AggregateRoot<Guid>, IHasTenant
             PartName = NormalizeRequired(partName, 200, nameof(partName)),
             PartNumber = NormalizeRequired(partNumber, 100, nameof(partNumber)),
             DrawingRevision = NormalizeRequired(drawingRevision, 50, nameof(drawingRevision)),
+            SupplierId = supplierId == Guid.Empty ? null : supplierId,
+            PpapLevel = ppapLevel,
+            Classification = classification,
             IsActive = true,
             CreatedAtUtc = DateTime.UtcNow,
             UpdatedAtUtc = DateTime.UtcNow,
@@ -43,13 +55,29 @@ public sealed class PpapPart : AggregateRoot<Guid>, IHasTenant
         };
     }
 
-    public void UpdateDetails(string partName, string partNumber, string drawingRevision, int expectedVersion)
+    public void UpdateDetails(string partName, string partNumber, string drawingRevision, int expectedVersion) =>
+        UpdateDetails(partName, partNumber, drawingRevision, SupplierId, expectedVersion);
+
+    public void UpdateDetails(string partName, string partNumber, string drawingRevision, Guid? supplierId, int expectedVersion) =>
+        UpdateDetails(partName, partNumber, drawingRevision, supplierId, PpapLevel, Classification, expectedVersion);
+
+    public void UpdateDetails(string partName, string partNumber, string drawingRevision, Guid? supplierId, int ppapLevel, PartClassification classification, int expectedVersion)
     {
         GuardVersion(expectedVersion);
+        ValidateSetup(ppapLevel, classification);
         PartName = NormalizeRequired(partName, 200, nameof(partName));
         PartNumber = NormalizeRequired(partNumber, 100, nameof(partNumber));
         DrawingRevision = NormalizeRequired(drawingRevision, 50, nameof(drawingRevision));
+        SupplierId = supplierId == Guid.Empty ? null : supplierId;
+        PpapLevel = ppapLevel;
+        Classification = classification;
         Touch();
+    }
+
+    private static void ValidateSetup(int ppapLevel, PartClassification classification)
+    {
+        if (ppapLevel is < 1 or > 5) throw new ArgumentOutOfRangeException(nameof(ppapLevel), "PPAP level must be between 1 and 5.");
+        if (!Enum.IsDefined(classification)) throw new ArgumentOutOfRangeException(nameof(classification));
     }
 
     public void AssignTemplate(Guid ruleTemplateId, Guid ruleTemplateVersionId, int expectedVersion)

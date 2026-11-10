@@ -2,9 +2,12 @@ import {
   Activity,
   BookOpenCheck,
   BrainCircuit,
+  Building2,
   ClipboardCheck,
+  Columns3,
   CreditCard,
   FileCog,
+  FileStack,
   FileSpreadsheet,
   FolderOpen,
   HeartPulse,
@@ -59,6 +62,7 @@ export type NavSection = {
 export const topNavTop: NavSpec[] = [
   { to: "/ppap", label: "PPAP Workspace", icon: ClipboardCheck, perm: "Permissions.Ppap.Submissions.View" },
   { to: "/ppap/parts", label: "Parts", icon: Package, perm: "Permissions.Ppap.Parts.View" },
+  { to: "/ppap/suppliers", label: "Suppliers", icon: Building2, perm: "Permissions.Ppap.Suppliers.View" },
   { to: "/files", label: "Documents", icon: FolderOpen, perm: "Permissions.Files.Upload" },
 ];
 
@@ -103,7 +107,9 @@ export const sections: NavSection[] = [
       { to: "/rules/special", label: "Special rules", icon: Sparkles, perm: "Permissions.Definitions.View" },
       { to: "/rules/custom", label: "Custom rules", icon: FileCog, perm: "Permissions.Definitions.View" },
       { to: "/rules/ml", label: "ML rules", icon: BrainCircuit, perm: "Permissions.Definitions.View" },
-      { to: "/rule-templates", label: "Rule templates", icon: PanelsTopLeft, perm: "Permissions.Templates.View" },
+      { to: "/rules/columns", label: "Column master", icon: Columns3, perm: "Permissions.RuleColumns.View" },
+      { to: "/rules/document-settings", label: "Document settings", icon: FileStack, perm: "Permissions.RuleDocumentSettings.View" },
+      { to: "/rule-templates", label: "Templates", icon: PanelsTopLeft, perm: "Permissions.Templates.View" },
     ],
   },
   {
