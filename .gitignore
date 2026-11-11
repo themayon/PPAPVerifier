@@ -520,3 +520,12 @@ clients/**/.env.local
 # Audit dead-letter queue — runtime fallback when the audit pipeline cannot
 # reach its persistent sink. Local-only by design; never commit.
 **/audit-dlq/
+
+
+# Python extractors
+extractors/**/.env
+extractors/**/Venv_*/
+extractors/**/.venv/
+extractors/**/venv/
+extractors/**/__pycache__/
+extractors/**/*.pyc

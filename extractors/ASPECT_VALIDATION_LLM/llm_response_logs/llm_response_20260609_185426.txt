@@ -1,0 +1,309 @@
+LLM RESPONSES LOG - 20260609_185426
+====================================================================================================
+Total Responses: 3
+Doc Type: MSA
+Pages selected by classifier: 3 / total in PDF
+====================================================================================================
+
+page_index: 1
+Timestamp: 2026-06-09 18:54:25
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+```json
+[
+  {
+    "Header_content": {
+      "Part_Name": "BUSHING,MOUNTING",
+      "Part_Number": "38367105 002D",
+      "Revision_Number": "NOT PRESENT"
+    },
+    "Column_Present": {
+      "MSA_Study_Type": "GRR",
+      "Gage Type": "Variable",
+      "Characteristic": "PRESENT",
+      "Number_of_parts": "PRESENT",
+      "Number_of_repetitions": "PRESENT",
+      "Number_of_inspectors": "PRESENT",
+      "Bubble Number": "NOT PRESENT",
+      "Nominal": "PRESENT",
+      "Upper Limit": "PRESENT",
+      "Lower Limit": "PRESENT",
+      "Tolerance_1": "PRESENT",
+      "Tolerance_2": "PRESENT",
+      "Special Characteristics": "NOT PRESENT",
+      "Special Characteristics Symbol": "NOT PRESENT",
+      "Gauge name": "PRESENT",
+      "Gauge number": "PRESENT",
+      "grr total per": "PRESENT",
+      "ndc": "PRESENT",
+      "Linearity": "NOT PRESENT",
+      "Bias": "NOT PRESENT",
+      "Specification": "PRESENT",
+      "Between Inspector": "NOT PRESENT",
+      "All Inspectors versus Std": "NOT PRESENT",
+      "Inspector 1 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 2 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 3 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 1 Bad Part %": "NOT PRESENT",
+      "Inspector 2 Bad Part %": "NOT PRESENT",
+      "Inspector 3 Bad Part %": "NOT PRESENT",
+      "Kappa": "NOT PRESENT"
+    },
+    "msa_data": [
+      {
+        "MSA_Study_Type": "GRR",
+        "Gage Type": "Variable",
+        "Characteristic": "Height",
+        "Number_of_parts": "10",
+        "Number_of_repetitions": "3",
+        "Number_of_inspectors": "3",
+        "Bubble Number": "NOT PRESENT",
+        "Nominal": "NOT PRESENT",
+        "Upper Limit": "NOT PRESENT",
+        "Lower Limit": "NOT PRESENT",
+        "Tolerance_1": "NOT PRESENT",
+        "Tolerance_2": "NOT PRESENT",
+        "Special Characteristics": "NOT PRESENT",
+        "Special Characteristics Symbol": "NOT PRESENT",
+        "Gauge name": "Dial caliper",
+        "Gauge number": "LS53 0632",
+        "grr total per": "8.83",
+        "ndc": "15",
+        "Linearity": "NOT PRESENT",
+        "Bias": "NOT PRESENT",
+        "Specification": "(0-150)mm",
+        "Between Inspector": "NOT PRESENT",
+        "All Inspectors versus Std": "NOT PRESENT",
+        "Inspector 1 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 2 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 3 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 1 Bad Part %": "NOT PRESENT",
+        "Inspector 2 Bad Part %": "NOT PRESENT",
+        "Inspector 3 Bad Part %": "NOT PRESENT",
+        "Kappa": "NOT PRESENT"
+      }
+    ]
+  }
+]
+```
+====================================================================================================
+
+page_index: 2
+Timestamp: 2026-06-09 18:54:26
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+**Expert 1 Opinion:**
+The document is a GAGE REPEATABILITY AND REPRODUCIBILITY DATA SHEET (AVONA) VARIABLE DATA RESULTS.
+I have extracted the header content, determined the column presence, and extracted the MSA data based on the provided instructions.
+- **Part Name**: "BUSHING,MOUNTING"
+- **Part Number**: "38367105 002D"
+- **Revision Number**: Not present.
+- **MSA Study Type**: "GRR" as indicated by the document title and content.
+- **Gage Type**: "Variable" based on the document title ("VARIABLE DATA RESULTS") and the presence of GRR/ndc values, and absence of attribute-specific fields (Rule 17).
+- **Characteristic**: "ID"
+- **Number of parts**: "10" from "Parts" field.
+- **Number of repetitions**: "3" from "Trials" field.
+- **Number of inspectors**: "3" from "Appraisers" field.
+- **Specification**: "Φ 15.8-16.2". From this, Upper Limit is "16.2" and Lower Limit is "15.8". Nominal, Tolerance_1, Tolerance_2 are "NOT PRESENT" as the format `(Ø 10.036±0.009)` is not present.
+- **Gauge name**: "Projector"
+- **Gauge number**: "CS160014"
+- **grr total per**: "6.92" from "合计量具 R&R" row under "研究变异 (%SV)" column, with the percentage symbol removed.
+- **ndc**: "20" from "可区分的类别数 = 20".
+- All other fields are "NOT PRESENT" as per the rules.
+
+Confidence Score: 5/5
+
+**Expert 2 Opinion:**
+I concur with Expert 1's analysis. The document clearly indicates a GRR study for variable data.
+- Header information (Part Name, Part Number) is correctly identified. Revision Number is absent.
+- The determination of "MSA_Study_Type" as "GRR" and "Gage Type" as "Variable" is accurate, following the explicit title and Rule 17.
+- Characteristic "ID" and Specification "Φ 15.8-16.2" are correctly extracted. The derived Upper and Lower Limits are also correct. Nominal and Tolerance fields are correctly marked "NOT PRESENT" as per the specific extraction rules.
+- Number of parts, repetitions, and inspectors are correctly extracted from the labeled fields.
+- Gauge name "Projector" and Gauge number "CS160014" are correct.
+- The "grr total per" value of "6.92" is correctly extracted from the "合计量具 R&R" row under the "%SV" column, with the percentage removed.
+- The "ndc" value of "20" is correctly identified from "可区分的类别数 = 20".
+- All "Column_Present" flags are correctly set based on the visible content.
+- No special characteristics, bubble numbers, linearity, bias, or attribute-specific fields are present.
+
+Confidence Score: 5/5
+
+**Expert 3 Opinion:**
+I agree with the findings of Expert 1 and Expert 2. The extraction adheres strictly to the provided instructions.
+- The document's header details (Part Name, Part Number) are accurately captured. Revision Number is indeed not present.
+- The MSA Study Type is correctly identified as "GRR" and Gage Type as "Variable" based on the document's explicit title and the presence of relevant data points (GRR, ndc) as per the rules.
+- Characteristic "ID" and Specification "Φ 15.8-16.2" are correctly extracted, leading to accurate Upper and Lower Limits. The absence of Nominal and Tolerance values is correctly noted.
+- The counts for parts, repetitions, and inspectors are correctly extracted.
+- Gauge name and number are correctly identified.
+- The "grr total per" value of "6.92" is correctly extracted and formatted (percentage removed).
+- The "ndc" value of "20" is correctly extracted.
+- All "Column_Present" indicators are correctly set to "PRESENT" or "NOT PRESENT".
+- The absence of other fields like Special Characteristics, Bubble Number, Linearity, Bias, and all Attribute-specific fields is correctly reported.
+
+Confidence Score: 5/5
+
+Final Answer based on consensus:
+```json
+[
+  {
+    "Header_content": {
+      "Part_Name": "BUSHING,MOUNTING",
+      "Part_Number": "38367105 002D",
+      "Revision_Number": "NOT PRESENT"
+    },
+    "Column_Present": {
+      "MSA_Study_Type": "GRR",
+      "Gage Type": "Variable",
+      "Characteristic": "PRESENT",
+      "Number_of_parts": "PRESENT",
+      "Number_of_repetitions": "PRESENT",
+      "Number_of_inspectors": "PRESENT",
+      "Bubble Number": "NOT PRESENT",
+      "Nominal": "NOT PRESENT",
+      "Upper Limit": "PRESENT",
+      "Lower Limit": "PRESENT",
+      "Tolerance_1": "NOT PRESENT",
+      "Tolerance_2": "NOT PRESENT",
+      "Special Characteristics": "NOT PRESENT",
+      "Special Characteristics Symbol": "NOT PRESENT",
+      "Gauge name": "PRESENT",
+      "Gauge number": "PRESENT",
+      "grr total per": "PRESENT",
+      "ndc": "PRESENT",
+      "Linearity": "NOT PRESENT",
+      "Bias": "NOT PRESENT",
+      "Specification": "PRESENT",
+      "Between Inspector": "NOT PRESENT",
+      "All Inspectors versus Std": "NOT PRESENT",
+      "Inspector 1 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 2 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 3 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 1 Bad Part %": "NOT PRESENT",
+      "Inspector 2 Bad Part %": "NOT PRESENT",
+      "Inspector 3 Bad Part %": "NOT PRESENT",
+      "Kappa": "NOT PRESENT"
+    },
+    "msa_data": [
+      {
+        "MSA_Study_Type": "GRR",
+        "Gage Type": "Variable",
+        "Characteristic": "ID",
+        "Number_of_parts": "10",
+        "Number_of_repetitions": "3",
+        "Number_of_inspectors": "3",
+        "Bubble Number": "NOT PRESENT",
+        "Nominal": "NOT PRESENT",
+        "Upper Limit": "16.2",
+        "Lower Limit": "15.8",
+        "Tolerance_1": "NOT PRESENT",
+        "Tolerance_2": "NOT PRESENT",
+        "Special Characteristics": "NOT PRESENT",
+        "Special Characteristics Symbol": "NOT PRESENT",
+        "Gauge name": "Projector",
+        "Gauge number": "CS160014",
+        "grr total per": "6.92",
+        "ndc": "20",
+        "Linearity": "NOT PRESENT",
+        "Bias": "NOT PRESENT",
+        "Specification": "Φ 15.8-16.2",
+        "Between Inspector": "NOT PRESENT",
+        "All Inspectors versus Std": "NOT PRESENT",
+        "Inspector 1 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 2 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 3 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 1 Bad Part %": "NOT PRESENT",
+        "Inspector 2 Bad Part %": "NOT PRESENT",
+        "Inspector 3 Bad Part %": "NOT PRESENT",
+        "Kappa": "NOT PRESENT"
+      }
+    ]
+  }
+]
+```
+====================================================================================================
+
+page_index: 3
+Timestamp: 2026-06-09 18:54:20
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+```json
+[
+  {
+    "Header_content": {
+      "Part_Name": "BUSHING,MOUNTING",
+      "Part_Number": "38367105 002D",
+      "Revision_Number": "NOT PRESENT"
+    },
+    "Column_Present": {
+      "MSA_Study_Type": "GRR",
+      "Gage Type": "Variable",
+      "Characteristic": "PRESENT",
+      "Number_of_parts": "PRESENT",
+      "Number_of_repetitions": "PRESENT",
+      "Number_of_inspectors": "PRESENT",
+      "Bubble Number": "NOT PRESENT",
+      "Nominal": "NOT PRESENT",
+      "Upper Limit": "NOT PRESENT",
+      "Lower Limit": "NOT PRESENT",
+      "Tolerance_1": "NOT PRESENT",
+      "Tolerance_2": "NOT PRESENT",
+      "Special Characteristics": "NOT PRESENT",
+      "Special Characteristics Symbol": "NOT PRESENT",
+      "Gauge name": "PRESENT",
+      "Gauge number": "PRESENT",
+      "grr total per": "PRESENT",
+      "ndc": "PRESENT",
+      "Linearity": "NOT PRESENT",
+      "Bias": "NOT PRESENT",
+      "Specification": "PRESENT",
+      "Between Inspector": "NOT PRESENT",
+      "All Inspectors versus Std": "NOT PRESENT",
+      "Inspector 1 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 2 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 3 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 1 Bad Part %": "NOT PRESENT",
+      "Inspector 2 Bad Part %": "NOT PRESENT",
+      "Inspector 3 Bad Part %": "NOT PRESENT",
+      "Kappa": "NOT PRESENT"
+    },
+    "msa_data": [
+      {
+        "MSA_Study_Type": "GRR",
+        "Gage Type": "Variable",
+        "Characteristic": "Displacement",
+        "Number_of_parts": "10",
+        "Number_of_repetitions": "3",
+        "Number_of_inspectors": "3",
+        "Bubble Number": "NOT PRESENT",
+        "Nominal": "NOT PRESENT",
+        "Upper Limit": "NOT PRESENT",
+        "Lower Limit": "NOT PRESENT",
+        "Tolerance_1": "NOT PRESENT",
+        "Tolerance_2": "NOT PRESENT",
+        "Special Characteristics": "NOT PRESENT",
+        "Special Characteristics Symbol": "NOT PRESENT",
+        "Gauge name": "CM",
+        "Gauge number": "CS50008",
+        "grr total per": "8.03",
+        "ndc": "17",
+        "Linearity": "NOT PRESENT",
+        "Bias": "NOT PRESENT",
+        "Specification": "0.250",
+        "Between Inspector": "NOT PRESENT",
+        "All Inspectors versus Std": "NOT PRESENT",
+        "Inspector 1 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 2 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 3 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 1 Bad Part %": "NOT PRESENT",
+        "Inspector 2 Bad Part %": "NOT PRESENT",
+        "Inspector 3 Bad Part %": "NOT PRESENT",
+        "Kappa": "NOT PRESENT"
+      }
+    ]
+  }
+]
+```
+====================================================================================================
+

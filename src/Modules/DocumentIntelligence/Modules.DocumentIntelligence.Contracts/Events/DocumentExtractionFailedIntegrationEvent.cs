@@ -15,4 +15,5 @@ public sealed record DocumentExtractionFailedIntegrationEvent(
     string Provider,
     string Model,
     string Outcome,
-    string ErrorCode) : IIntegrationEvent;
+    string ErrorCode,
+    Guid? SourceFileAssetId = null) : IIntegrationEvent;

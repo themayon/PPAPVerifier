@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, Navigate, useBlocker, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import {
   AlertTriangle,
+  Archive,
+  ArchiveRestore,
   ArrowLeft,
   BrainCircuit,
   CheckCircle2,
@@ -28,6 +30,7 @@ import {
   getRule,
   isRuleDeletable,
   publishRule,
+  restoreRule,
   retireRule,
   searchRuleColumns,
   submitRuleForReview,
@@ -186,7 +189,8 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
   const [, setParams] = useSearchParams();
   const queryClient = useQueryClient();
   const isNew = !detail;
-  const editable = isNew ? can("Create") : version?.status === "Draft" && can("Edit");
+  const archived = Boolean(detail?.isArchived);
+  const editable = isNew ? can("Create") : !archived && version?.status === "Draft" && can("Edit");
 
   const [draft, setDraft] = useState<Draft>(initial);
   const [baseline, setBaseline] = useState(() => signature(initial, type));
@@ -266,16 +270,32 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
 
   const remove = useMutation({
     mutationFn: (input: { id: string; expected: number }) => deleteRule(input.id, input.expected),
-    onSuccess: () => {
-      toast.success("Rule deleted");
+    onSuccess: async (result, input) => {
       setConfirmDelete(false);
+      void queryClient.invalidateQueries({ queryKey: ["rules"] });
+      void queryClient.invalidateQueries({ queryKey: ["rule-lookup"] });
+      if (result?.outcome === "Archived") {
+        toast.success("Rule archived", { description: "It has evaluation history, so it was archived instead of deleted." });
+        await queryClient.invalidateQueries({ queryKey: ["rule", input.id] });
+        return;
+      }
+      toast.success("Rule deleted");
       skipBlock.current = true;
       navigate(`/rules/${type.key}`, { replace: true });
-      void queryClient.invalidateQueries({ queryKey: ["rules"] });
     },
     onError: (error) => toast.error("Delete failed", { description: describe(error) }),
   });
+  const restore = useMutation({
+    mutationFn: (input: { id: string; expected: number }) => restoreRule(input.id, input.expected),
+    onSuccess: async (_result, input) => {
+      toast.success("Rule restored");
+      void queryClient.invalidateQueries({ queryKey: ["rule-lookup"] });
+      await Promise.all([queryClient.invalidateQueries({ queryKey: ["rule", input.id] }), queryClient.invalidateQueries({ queryKey: ["rules"] })]);
+    },
+    onError: (error) => toast.error("Restore failed", { description: describe(error) }),
+  });
   const canDelete = Boolean(detail && can("Delete") && isRuleDeletable(detail));
+  const canRestore = Boolean(detail && archived && can("Delete"));
 
   const onSave = () => {
     setShowIssues(true);
@@ -297,7 +317,7 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
   ];
   const activeSection = useActiveSection(sections.map((section) => section.id));
 
-  const actions: Transition[] = !detail || !version || dirty ? [] : [
+  const actions: Transition[] = !detail || !version || dirty || archived ? [] : [
     ...(version.status === "Draft" && can("Review") ? ["submit" as const] : []),
     ...(version.status === "InReview" && can("Publish") ? ["publish" as const] : []),
     ...(version.status === "Published" && can("Edit") && !detail.versions.some((item) => item.status === "Draft") ? ["clone" as const] : []),
@@ -315,6 +335,7 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
               {draft.code && <code className="rounded-md bg-[var(--color-muted)] px-1.5 py-0.5 font-mono text-[11px] font-semibold">{draft.code}</code>}
               <h1 className="truncate font-display text-[17px] font-semibold">{draft.name.trim() || `New ${type.label.toLowerCase()}`}</h1>
               {version && <LifecycleBadge status={version.status} />}
+              {archived && <span className="inline-flex h-5 items-center gap-1 rounded-full bg-[var(--color-muted)] px-2 text-[10.5px] font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]"><Archive className="size-3" />Archived</span>}
               {dirty && <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--color-warning)]"><span className="size-1.5 rounded-full bg-current" />Unsaved changes</span>}
             </div>
             <p className="text-[11.5px] text-[var(--color-muted-foreground)]">
@@ -331,6 +352,11 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
                 {TRANSITION_COPY[kind].title}
               </Button>
             ))}
+            {canRestore && (
+              <Button variant="outline" onClick={() => detail && restore.mutate({ id: detail.id, expected: detail.version })} disabled={restore.isPending}>
+                <ArchiveRestore className="size-4" />{restore.isPending ? "Restoring…" : "Restore"}
+              </Button>
+            )}
             {canDelete && (
               <Button variant="outline" aria-label="Delete rule" onClick={() => setConfirmDelete(true)} disabled={save.isPending || remove.isPending} className="text-[var(--color-destructive)]">
                 <Trash2 className="size-4" />Delete
@@ -345,7 +371,17 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
         </div>
       </header>
 
-      {!editable && version && (
+      {archived && (
+        <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-muted)] px-4 py-3 text-[13px]">
+          <Archive className="size-4 text-[var(--color-muted-foreground)]" />
+          <span className="flex-1">
+            This rule is <strong>archived</strong>. It is kept for evaluation history but is hidden from the library, excluded from templates, and skipped in new evaluations.
+            {canRestore ? " Restore it to make changes." : ""}
+          </span>
+        </div>
+      )}
+
+      {!archived && !editable && version && (
         <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-[oklch(from_var(--color-info)_l_c_h_/_0.3)] bg-[oklch(from_var(--color-info)_l_c_h_/_0.07)] px-4 py-3 text-[13px]">
           <Lock className="size-4 text-[var(--color-info)]" />
           <span className="flex-1">
@@ -524,7 +560,15 @@ function RuleEditor({ type, detail, version, initial }: { type: RuleTypeConfig; 
           <DialogHeader>
             <DialogTitle>Delete rule</DialogTitle>
             <DialogDescription>
-              Permanently delete <strong>{detail?.name}</strong> (<code className="font-mono">{detail?.stableCode}</code>) and all its draft versions? It is also removed from document settings. This cannot be undone.
+              {detail?.hasEvaluationHistory ? (
+                <>
+                  <strong>{detail?.name}</strong> (<code className="font-mono">{detail?.stableCode}</code>) has evaluation history, so it will be <strong>archived</strong> instead of deleted. Past results stay intact, it is hidden from the library and skipped in new evaluations. You can restore it later.
+                </>
+              ) : (
+                <>
+                  Permanently delete <strong>{detail?.name}</strong> (<code className="font-mono">{detail?.stableCode}</code>) and all its versions? It is also removed from templates and document settings. This cannot be undone.
+                </>
+              )}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

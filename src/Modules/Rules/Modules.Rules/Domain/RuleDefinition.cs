@@ -16,6 +16,9 @@ public sealed class RuleDefinition : AggregateRoot<Guid>, IHasTenant
     public RuleCategory Category { get; private set; }
     public RuleLifecycle Lifecycle { get; private set; }
     public Guid? CurrentPublishedVersionId { get; private set; }
+    public DateTime? ArchivedAtUtc { get; private set; }
+    public Guid? ArchivedByUserId { get; private set; }
+    public bool IsArchived => ArchivedAtUtc is not null;
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime UpdatedAtUtc { get; private set; }
     public long Version { get; private set; }
@@ -37,7 +40,7 @@ public sealed class RuleDefinition : AggregateRoot<Guid>, IHasTenant
 
     public void UpdateDraft(Guid versionId, long expectedVersion, string name, string? description, RuleCategory category, string astJson, string outcomeJson, DateTime utcNow)
     {
-        GuardVersion(expectedVersion);
+        GuardVersion(expectedVersion); GuardNotArchived();
         RuleVersion version = Find(versionId);
         version.UpdateDraft(astJson, outcomeJson);
         Name = NormalizeRequired(name, 200); Description = NormalizeOptional(description, 2000); Category = category;
@@ -46,12 +49,12 @@ public sealed class RuleDefinition : AggregateRoot<Guid>, IHasTenant
 
     public void SubmitForReview(Guid versionId, long expectedVersion, DateTime utcNow)
     {
-        GuardVersion(expectedVersion); Find(versionId).SubmitForReview(); Lifecycle = RuleLifecycle.InReview; Touch(utcNow);
+        GuardVersion(expectedVersion); GuardNotArchived(); Find(versionId).SubmitForReview(); Lifecycle = RuleLifecycle.InReview; Touch(utcNow);
     }
 
     public void Publish(Guid versionId, long expectedVersion, bool retireCurrent, Guid userId, DateTime utcNow)
     {
-        GuardVersion(expectedVersion);
+        GuardVersion(expectedVersion); GuardNotArchived();
         RuleVersion selected = Find(versionId);
         RuleVersion? current = CurrentPublishedVersionId is Guid currentId ? _versions.Single(v => v.Id == currentId) : null;
         if (current is not null && current.Id != selected.Id)
@@ -65,7 +68,7 @@ public sealed class RuleDefinition : AggregateRoot<Guid>, IHasTenant
 
     public void Retire(Guid versionId, long expectedVersion, DateTime utcNow)
     {
-        GuardVersion(expectedVersion); RuleVersion selected = Find(versionId); selected.Retire(utcNow);
+        GuardVersion(expectedVersion); GuardNotArchived(); RuleVersion selected = Find(versionId); selected.Retire(utcNow);
         if (CurrentPublishedVersionId == selected.Id) CurrentPublishedVersionId = null;
         Lifecycle = _versions.Any(v => v.Status == RuleLifecycle.Published) ? RuleLifecycle.Published : RuleLifecycle.Retired;
         Touch(utcNow);
@@ -73,21 +76,31 @@ public sealed class RuleDefinition : AggregateRoot<Guid>, IHasTenant
 
     public RuleVersion ClonePublished(Guid versionId, long expectedVersion, Guid userId, DateTime utcNow)
     {
-        GuardVersion(expectedVersion); RuleVersion source = Find(versionId);
+        GuardVersion(expectedVersion); GuardNotArchived(); RuleVersion source = Find(versionId);
         if (source.Status != RuleLifecycle.Published) Conflict("Only a published version can be cloned.");
         var clone = RuleVersion.Create(Id, _versions.Max(v => v.VersionNumber) + 1, source.AstJson, source.OutcomeJson, userId, utcNow);
         _versions.Add(clone); Lifecycle = RuleLifecycle.Draft; Touch(utcNow); return clone;
     }
 
-    public void EnsureDeletable(long expectedVersion)
+    public void EnsureDeletable(long expectedVersion) => GuardVersion(expectedVersion);
+
+    public void Archive(long expectedVersion, Guid userId, DateTime utcNow)
     {
         GuardVersion(expectedVersion);
-        if (CurrentPublishedVersionId is not null || _versions.Any(v => v.Status is RuleLifecycle.Published or RuleLifecycle.Retired))
-            Conflict("Only rules that have never been published can be deleted. Retire the rule instead.");
+        if (IsArchived) Conflict("The rule is already archived.");
+        ArchivedAtUtc = utcNow; ArchivedByUserId = userId; Touch(utcNow);
+    }
+
+    public void Restore(long expectedVersion, DateTime utcNow)
+    {
+        GuardVersion(expectedVersion);
+        if (!IsArchived) Conflict("The rule is not archived.");
+        ArchivedAtUtc = null; ArchivedByUserId = null; Touch(utcNow);
     }
 
     private RuleVersion Find(Guid id) => _versions.SingleOrDefault(v => v.Id == id) ?? throw new CustomException("Rule version was not found.", (IEnumerable<string>?)null, HttpStatusCode.NotFound);
     private void GuardVersion(long expected) { if (Version != expected) Conflict("The rule was modified by another request."); }
+    private void GuardNotArchived() { if (IsArchived) Conflict("The rule is archived. Restore the rule first."); }
     private void Touch(DateTime now) { UpdatedAtUtc = now; Version++; }
     private static void Conflict(string message) => throw new CustomException(message, (IEnumerable<string>?)null, HttpStatusCode.Conflict);
     private static string NormalizeCode(string value) { string result = NormalizeRequired(value, 64).ToUpperInvariant(); if (result.Any(c => !(char.IsAsciiLetterOrDigit(c) || c is '-' or '_' or '.'))) throw new ArgumentException("StableCode contains invalid characters.", nameof(value)); return result; }

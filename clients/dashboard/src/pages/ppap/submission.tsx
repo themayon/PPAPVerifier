@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, CheckCircle2, FilePlus2, RefreshCw, Send, Upload } from "lucide-react";
+import { ArrowLeft, CheckCircle2, FilePlus2, RefreshCw, Send, Trash2, Upload } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   addSubmissionDocument,
+  deleteDocumentRevision,
   getMyCreditBalance,
   getPpapSubmission,
   getSubmissionDocuments,
@@ -133,6 +134,15 @@ export function PpapSubmissionPage() {
     },
     onError: (error) => toast.error("Unable to mark document N/A", { description: describe(error) }),
   });
+  const deleteRevisionMutation = useMutation({
+    mutationFn: (input: { submissionId: string; documentId: string; revisionId: string; expectedVersion: number }) =>
+      deleteDocumentRevision(input),
+    onSuccess: () => {
+      toast.success("File deleted", { description: "Upload a replacement file for this document." });
+      void queryClient.invalidateQueries({ queryKey: ["ppap", "submissions", submissionId] });
+    },
+    onError: (error) => toast.error("Unable to delete file", { description: describe(error) }),
+  });
   const submitMutation = useMutation({
     mutationFn: ({ id, expectedVersion }: { id: string; expectedVersion: number }) =>
       submitPpapSubmission(id, expectedVersion),
@@ -167,6 +177,7 @@ export function PpapSubmissionPage() {
   const enoughCredits = (balanceQuery.data?.availableCredits ?? 0) >= 10;
   const isUpdating = addMutation.isPending
     || notApplicableMutation.isPending
+    || deleteRevisionMutation.isPending
     || submissionQuery.isFetching
     || documentsQuery.isFetching;
   const canSubmit = submission.status === "Draft" && enoughCredits && hasAvailable && !hasBlockedDocument && !isUpdating;
@@ -221,7 +232,7 @@ export function PpapSubmissionPage() {
         )}
         {documents.length === 0 ? <div className="ppap-empty"><FilePlus2 /><h3>No document slots yet</h3><p>Add a slot from the catalogue to begin your package.</p></div> : (
           <ul className="ppap-document-list">
-            {documents.map((document) => <DocumentSlot key={document.id} submissionId={submissionId} expectedVersion={submission.version} document={document} revision={revisionsByDocument.get(document.id) ?? null} editable={submission.status === "Draft"} onOpen={() => setWorkspaceDocumentId(document.id)} onFinalized={uploadFinalized} onNotApplicable={(reason) => notApplicableMutation.mutate({ id: submissionId, documentId: document.id, reason })} markingNotApplicable={notApplicableMutation.isPending && notApplicableMutation.variables?.documentId === document.id} />)}
+            {documents.map((document) => <DocumentSlot key={document.id} submissionId={submissionId} expectedVersion={submission.version} document={document} revision={revisionsByDocument.get(document.id) ?? null} editable={submission.status === "Draft"} onOpen={() => setWorkspaceDocumentId(document.id)} onFinalized={uploadFinalized} onNotApplicable={(reason) => notApplicableMutation.mutate({ id: submissionId, documentId: document.id, reason })} markingNotApplicable={notApplicableMutation.isPending && notApplicableMutation.variables?.documentId === document.id} onDeleteRevision={(revisionId) => deleteRevisionMutation.mutate({ submissionId, documentId: document.id, revisionId, expectedVersion: submission.version })} deletingRevision={deleteRevisionMutation.isPending && deleteRevisionMutation.variables?.documentId === document.id} />)}
           </ul>
         )}
       </section>
@@ -235,7 +246,7 @@ export function PpapSubmissionPage() {
   );
 }
 
-function DocumentSlot({ submissionId, expectedVersion, document, revision, editable, onOpen, onFinalized, onNotApplicable, markingNotApplicable }: { submissionId: string; expectedVersion: number; document: SubmissionDocumentDto; revision: DocumentRevisionDto | null; editable: boolean; onOpen: () => void; onFinalized: () => void; onNotApplicable: (reason: string) => void; markingNotApplicable: boolean }) {
+function DocumentSlot({ submissionId, expectedVersion, document, revision, editable, onOpen, onFinalized, onNotApplicable, markingNotApplicable, onDeleteRevision, deletingRevision }: { submissionId: string; expectedVersion: number; document: SubmissionDocumentDto; revision: DocumentRevisionDto | null; editable: boolean; onOpen: () => void; onFinalized: () => void; onNotApplicable: (reason: string) => void; markingNotApplicable: boolean; onDeleteRevision: (revisionId: string) => void; deletingRevision: boolean }) {
   const [reason, setReason] = useState("");
   const [pendingUpload, setPendingUpload] = useState<{ revisionId: string; file: File } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -265,7 +276,7 @@ function DocumentSlot({ submissionId, expectedVersion, document, revision, edita
       <div className="ppap-document-code">{document.documentCode}</div>
       <div className="ppap-document-info"><strong>{label}</strong><span className="ppap-requirement-badge" title={document.disposition === "Submit" ? "Submit to customer" : document.disposition === "Retain" ? "Retain at supplier; upload does not block submission" : "Available for customer review"}>{document.disposition.slice(0, 1)} — {document.disposition}</span><span className="ppap-requirement-badge">{document.isRequired ? "Upload required" : "Retained"}</span><span className={statusClass(document.status)}>{document.status}</span>{revision && <span className={statusClass(revision.processingStatus)}>{`Revision ${revision.revisionNumber} · ${revision.processingStatus}`}</span>}{document.notApplicableReason && <p>Reason: {document.notApplicableReason}</p>}{pendingUpload && <RevisionUploader revisionId={pendingUpload.revisionId} file={pendingUpload.file} onFinalized={() => { setPendingUpload(null); onFinalized(); }} />}</div>
       {editable && document.status === "PendingUpload" && <div className="ppap-document-actions"><input ref={fileInputRef} className="sr-only" type="file" accept={ALLOWED_EXTENSIONS.join(",")} onChange={chooseFile} /><Button type="button" variant="outline" disabled={pendingUpload !== null} onClick={() => fileInputRef.current?.click()}><Upload />{pendingUpload ? "Uploading…" : "Upload file"}</Button><div className="ppap-na-control"><Input aria-label={`N/A reason for ${document.documentCode}`} placeholder="N/A reason" value={reason} onChange={(event) => setReason(event.target.value)} /><Button type="button" variant="ghost" disabled={!reason.trim() || markingNotApplicable || pendingUpload !== null} onClick={() => onNotApplicable(reason.trim())}>{markingNotApplicable ? "Saving…" : "Mark N/A"}</Button></div></div>}
-      {revision && <div className="ppap-document-actions"><Button type="button" variant="outline" onClick={onOpen}>Open workspace</Button></div>}
+      {revision && <div className="ppap-document-actions"><Button type="button" variant="outline" onClick={onOpen}>Open workspace</Button>{editable && <Button type="button" variant="ghost" aria-label={`Delete ${document.documentCode} file`} disabled={deletingRevision} onClick={() => { if (window.confirm(`Delete revision ${revision.revisionNumber} of ${document.documentCode}? Its findings will be cleared and you can upload a replacement.`)) onDeleteRevision(revision.id); }}><Trash2 />{deletingRevision ? "Deleting…" : "Delete file"}</Button>}</div>}
       {editable && document.status === "Quarantined" && <p className="ppap-document-warning">This file is quarantined. Upload a replacement revision after resolving the file issue.</p>}
     </li>
   );

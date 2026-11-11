@@ -61,7 +61,7 @@ public sealed class UpdateDocumentSettingCommandHandler(RulesDbContext db) : ICo
 public sealed class GetRuleLookupQueryHandler(RulesDbContext db) : IQueryHandler<GetRuleLookupQuery, IReadOnlyList<RuleLookupDto>>
 {
     public async ValueTask<IReadOnlyList<RuleLookupDto>> Handle(GetRuleLookupQuery query, CancellationToken ct) =>
-        await db.RuleDefinitions.AsNoTracking().OrderBy(x => x.StableCode).Take(5000)
+        await db.RuleDefinitions.AsNoTracking().Where(x => x.ArchivedAtUtc == null).OrderBy(x => x.StableCode).Take(5000)
             .Select(x => new RuleLookupDto(x.Id, x.StableCode, x.Name, x.Description, x.Category, x.Lifecycle, x.CurrentPublishedVersionId != null,
                 x.Versions.OrderByDescending(v => v.VersionNumber).Select(v => v.OutcomeJson).FirstOrDefault()))
             .ToListAsync(ct).ConfigureAwait(false);
@@ -229,7 +229,7 @@ internal static class SetupMap
         List<RuleTemplateRule> enabledRules = template.Rules.Where(x => x.IsEnabled && enabledCodes.Contains(x.DocumentCode)).ToList();
         Guid[] definitionIds = enabledRules.Select(x => x.RuleDefinitionId).Distinct().ToArray();
         Dictionary<Guid, Guid?> live = await db.RuleDefinitions.AsNoTracking().Where(x => definitionIds.Contains(x.Id))
-            .ToDictionaryAsync(x => x.Id, x => x.CurrentPublishedVersionId, ct).ConfigureAwait(false);
+            .ToDictionaryAsync(x => x.Id, x => x.ArchivedAtUtc == null ? x.CurrentPublishedVersionId : null, ct).ConfigureAwait(false);
         List<TemplateDocumentRequirementInput> requirements = template.Documents.Where(x => x.IsEnabled)
             .Select(x => new TemplateDocumentRequirementInput(x.DocumentCode, x.Disposition != TemplateDocumentDisposition.Retain, x.SortOrder, x.Disposition)).ToList();
         List<TemplateRuleAssignmentInput> assignments = enabledRules

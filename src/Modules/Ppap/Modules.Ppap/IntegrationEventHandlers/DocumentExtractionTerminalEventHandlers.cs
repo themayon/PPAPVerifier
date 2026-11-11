@@ -66,6 +66,7 @@ internal static class DocumentExtractionTerminalEventProcessor
             @event.OccurredOnUtc,
             @event.SubmissionDocumentId,
             @event.OwnerUserId,
+            @event.SourceFileAssetId,
             document => document.RecordExtractionCompleted(
                 @event.TenantId,
                 @event.DocumentCode,
@@ -108,6 +109,7 @@ internal static class DocumentExtractionTerminalEventProcessor
             @event.OccurredOnUtc,
             @event.SubmissionDocumentId,
             @event.OwnerUserId,
+            @event.SourceFileAssetId,
             document => document.RecordExtractionFailed(
                 @event.TenantId,
                 @event.DocumentCode,
@@ -132,6 +134,7 @@ internal static class DocumentExtractionTerminalEventProcessor
         DateTime occurredOnUtc,
         Guid submissionDocumentId,
         Guid ownerUserId,
+        Guid? sourceFileAssetId,
         Func<PpapSubmissionDocument, bool> applyTerminalEvent,
         Func<PpapDocumentRevision, bool> applyRevisionTerminalEvent,
         CancellationToken cancellationToken)
@@ -164,6 +167,10 @@ internal static class DocumentExtractionTerminalEventProcessor
         }
 
         PpapSubmissionDocument document = submission.Documents.Single(x => x.Id == submissionDocumentId);
+        if (sourceFileAssetId is Guid eventFileAssetId && document.FileAssetId != eventFileAssetId)
+        {
+            return;
+        }
         _ = applyTerminalEvent(document);
         PpapDocumentRevision? revision = await dbContext.PpapDocumentRevisions
             .FirstOrDefaultAsync(
@@ -192,6 +199,13 @@ internal static class DocumentExtractionTerminalEventProcessor
             }
             await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
             await transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+            if (revision is { ProcessingStatus: DocumentProcessingStatus.Ready } && submission.RuleTemplateVersionId is not null)
+            {
+                Guid submissionId = submission.Id;
+                Guid readyRevisionId = revision.Id;
+                jobService.Enqueue<PpapDraftRuleEvaluationJob>(
+                    draftJob => draftJob.RunAsync(tenantId, submissionId, readyRevisionId, CancellationToken.None));
+            }
             return;
         }
 

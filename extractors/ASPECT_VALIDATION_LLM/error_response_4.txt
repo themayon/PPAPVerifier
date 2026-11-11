@@ -1,0 +1,32 @@
+Error: No valid JSON found: line 1 column 1 (char 0)
+
+Content:
+**Expert 1 Analysis:**
+
+The document appears to be a Process Flow Diagram (PFD) with various operations and associated bubbles. The operations are listed with descriptions and bubble numbers, which are crucial for extracting structured data. The document seems to have a table structure with operations and bubbles aligned horizontally.
+
+**Confidence Score: 4**
+
+---
+
+**Expert 2 Analysis:**
+
+The image shows a PFD with operations and bubbles. The operations are listed with descriptions, and bubble numbers are present. The document has a structured table format, which is essential for extracting the required data. The alignment of bubbles with operations is clear, allowing for accurate extraction.
+
+**Confidence Score: 5**
+
+---
+
+**Expert 3 Analysis:**
+
+The document is a PFD with operations and bubbles. The operations are clearly listed with descriptions, and bubble numbers are visible. The table structure is evident, which aids in extracting the necessary data. The alignment of bubbles with operations is straightforward, ensuring precise extraction.
+
+**Confidence Score: 5**
+
+---
+
+**Final Decision:**
+
+Based on the analyses, the document is a Process Flow Diagram with a structured table format. The operations and bubbles are clearly aligned, allowing for accurate extraction of data. The confidence scores from Experts 2 and 3 are the highest, indicating a strong consensus on the document's structure and content.
+
+**Final Confidence Score: 5**

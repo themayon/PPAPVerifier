@@ -1,0 +1,644 @@
+LLM RESPONSES LOG
+====================================================================================================
+Total Responses: 4
+====================================================================================================
+
+page_index: 1
+Timestamp: 2025-10-17 17:33:56
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+**Expert 1 Analysis:**
+
+The document is a Process Flow Chart from Metal Flow Corporation. The metadata and operational flow data are extracted as follows:
+
+**Metadata:**
+- Project Name: "RAW Material (Target Steel) Process Flow Chart", Page 1
+- Part Number: "RAW-1730-A2", Page 1
+- Part Name: ".063 +/- .002 X 3.800 CRS", Page 1
+- Revision Date: "NOT PRESENT", Page 1
+- Core Team: "A Westfield, L Trombley, E Bronkema, J DeVries", Page 1
+- Process Responsibility: "NOT PRESENT", Page 1
+- Key Date: "NOT PRESENT", Page 1
+- Prepared By: "NOT PRESENT", Page 1
+- PFD Date (Org): "NOT PRESENT", Page 1
+- PFD Date (Rev): "NOT PRESENT", Page 1
+- Revision Number: "NOT PRESENT", Page 1
+
+**Operations:**
+- Operation Number: "5", Page 1
+- Operation Desc: "Receiving Inspection", Page 1
+- Bubbles: []
+- Special Characteristics: "NOT PRESENT", Page 1
+
+**Column Presence:**
+- Operation Number: "PRESENT", Page 1
+- Operation Desc: "PRESENT", Page 1
+- Bubble Number: "NOT PRESENT", Page 1
+- Specification: "NOT PRESENT", Page 1
+- Nominal: "NOT PRESENT", Page 1
+- Upper Limit: "NOT PRESENT", Page 1
+- Lower Limit: "NOT PRESENT", Page 1
+- Tolerance_1: "NOT PRESENT", Page 1
+- Tolerance_2: "NOT PRESENT", Page 1
+- Special Characteristics: "NOT PRESENT", Page 1
+
+Confidence Score: 4
+
+**Expert 2 Analysis:**
+
+The document is a Process Flow Chart from Metal Flow Corporation. The metadata and operational flow data are extracted as follows:
+
+**Metadata:**
+- Project Name: "RAW Material (Target Steel) Process Flow Chart", Page 1
+- Part Number: "RAW-1730-A2", Page 1
+- Part Name: ".063 +/- .002 X 3.800 CRS", Page 1
+- Revision Date: "NOT PRESENT", Page 1
+- Core Team: "A Westfield, L Trombley, E Bronkema, J DeVries", Page 1
+- Process Responsibility: "NOT PRESENT", Page 1
+- Key Date: "NOT PRESENT", Page 1
+- Prepared By: "NOT PRESENT", Page 1
+- PFD Date (Org): "NOT PRESENT", Page 1
+- PFD Date (Rev): "NOT PRESENT", Page 1
+- Revision Number: "NOT PRESENT", Page 1
+
+**Operations:**
+- Operation Number: "5", Page 1
+- Operation Desc: "Receiving Inspection", Page 1
+- Bubbles: []
+- Special Characteristics: "NOT PRESENT", Page 1
+
+**Column Presence:**
+- Operation Number: "PRESENT", Page 1
+- Operation Desc: "PRESENT", Page 1
+- Bubble Number: "NOT PRESENT", Page 1
+- Specification: "NOT PRESENT", Page 1
+- Nominal: "NOT PRESENT", Page 1
+- Upper Limit: "NOT PRESENT", Page 1
+- Lower Limit: "NOT PRESENT", Page 1
+- Tolerance_1: "NOT PRESENT", Page 1
+- Tolerance_2: "NOT PRESENT", Page 1
+- Special Characteristics: "NOT PRESENT", Page 1
+
+Confidence Score: 4
+
+**Expert 3 Analysis:**
+
+The document is a Process Flow Chart from Metal Flow Corporation. The metadata and operational flow data are extracted as follows:
+
+**Metadata:**
+- Project Name: "RAW Material (Target Steel) Process Flow Chart", Page 1
+- Part Number: "RAW-1730-A2", Page 1
+- Part Name: ".063 +/- .002 X 3.800 CRS", Page 1
+- Revision Date: "NOT PRESENT", Page 1
+- Core Team: "A Westfield, L Trombley, E Bronkema, J DeVries", Page 1
+- Process Responsibility: "NOT PRESENT", Page 1
+- Key Date: "NOT PRESENT", Page 1
+- Prepared By: "NOT PRESENT", Page 1
+- PFD Date (Org): "NOT PRESENT", Page 1
+- PFD Date (Rev): "NOT PRESENT", Page 1
+- Revision Number: "NOT PRESENT", Page 1
+
+**Operations:**
+- Operation Number: "5", Page 1
+- Operation Desc: "Receiving Inspection", Page 1
+- Bubbles: []
+- Special Characteristics: "NOT PRESENT", Page 1
+
+**Column Presence:**
+- Operation Number: "PRESENT", Page 1
+- Operation Desc: "PRESENT", Page 1
+- Bubble Number: "NOT PRESENT", Page 1
+- Specification: "NOT PRESENT", Page 1
+- Nominal: "NOT PRESENT", Page 1
+- Upper Limit: "NOT PRESENT", Page 1
+- Lower Limit: "NOT PRESENT", Page 1
+- Tolerance_1: "NOT PRESENT", Page 1
+- Tolerance_2: "NOT PRESENT", Page 1
+- Special Characteristics: "NOT PRESENT", Page 1
+
+Confidence Score: 4
+
+**Final Output:**
+
+```json
+{
+  "Header_content": {
+    "Project Name": "RAW Material (Target Steel) Process Flow Chart",
+    "Project Name_PageNumber": 1,
+    "Part Number": "RAW-1730-A2",
+    "Part Number_PageNumber": 1,
+    "Part Name": ".063 +/- .002 X 3.800 CRS",
+    "Part Name_PageNumber": 1,
+    "Revision Date": "NOT PRESENT",
+    "Revision Date_PageNumber": 1,
+    "Core Team": "A Westfield, L Trombley, E Bronkema, J DeVries",
+    "Core Team_PageNumber": 1,
+    "Process Responsibility": "NOT PRESENT",
+    "Process Responsibility_PageNumber": 1,
+    "Key Date": "NOT PRESENT",
+    "Key Date_PageNumber": 1,
+    "Prepared By": "NOT PRESENT",
+    "Prepared By_PageNumber": 1,
+    "PFD Date (Org)": "NOT PRESENT",
+    "PFD Date (Org)_PageNumber": 1,
+    "PFD Date (Rev)": "NOT PRESENT",
+    "PFD Date (Rev)_PageNumber": 1,
+    "Revision Number": "NOT PRESENT",
+    "Revision Number_PageNumber": 1
+  },
+  "Column_Present": {
+    "Operation Number": "PRESENT",
+    "Operation Number_PageNumber": 1,
+    "Operation Desc": "PRESENT",
+    "Operation Desc_PageNumber": 1,
+    "Bubble Number": "NOT PRESENT",
+    "Bubble Number_PageNumber": 1,
+    "Specification": "NOT PRESENT",
+    "Specification_PageNumber": 1,
+    "Nominal": "NOT PRESENT",
+    "Nominal_PageNumber": 1,
+    "Upper Limit": "NOT PRESENT",
+    "Upper Limit_PageNumber": 1,
+    "Lower Limit": "NOT PRESENT",
+    "Lower Limit_PageNumber": 1,
+    "Tolerance_1": "NOT PRESENT",
+    "Tolerance_1_PageNumber": 1,
+    "Tolerance_2": "NOT PRESENT",
+    "Tolerance_2_PageNumber": 1,
+    "Special Characteristics": "NOT PRESENT",
+    "Special Characteristics_PageNumber": 1
+  },
+  "Operations": [
+    {
+      "Operation Number": "5",
+      "Operation Number_PageNumber": 1,
+      "Operation Desc": "Receiving Inspection",
+      "Operation Desc_PageNumber": 1,
+      "Bubbles": []
+    }
+  ]
+}
+```
+====================================================================================================
+
+page_index: 2
+Timestamp: 2025-10-17 17:33:56
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+**Expert 1 Analysis:**
+
+The document is a Process Flow Chart for Metal Flow Corporation. The metadata and operational flow data are extracted as follows:
+
+**Metadata:**
+- Project Name: "RAW Material (Alkar Steel) Process Flow Chart" (Page 1)
+- Part Number: "RAW-1730-A3" (Page 1)
+- Part Name: ".063 +/- .002 X 3.800 CRS" (Page 1)
+- Revision Date: "NOT PRESENT" (Page 1)
+- Core Team: "A Westfield, L Trombley, E Bronkema, J DeVries" (Page 1)
+- Process Responsibility: "NOT PRESENT" (Page 1)
+- Key Date: "NOT PRESENT" (Page 1)
+- Prepared By: "NOT PRESENT" (Page 1)
+- PFD Date (Org): "NOT PRESENT" (Page 1)
+- PFD Date (Rev): "NOT PRESENT" (Page 1)
+- Revision Number: "NOT PRESENT" (Page 1)
+
+**Operations:**
+- Operation Number: "5" (Page 1)
+- Operation Desc: "Receive LBS with heat #" (Page 1)
+- Bubbles: []
+  - Special Characteristics: "Approved Suppliers: Alkar Steel" (Page 1)
+
+**Column Presence:**
+- Operation Number: PRESENT (Page 1)
+- Operation Desc: PRESENT (Page 1)
+- Bubble Number: NOT PRESENT (Page 1)
+- Specification: PRESENT (Page 1)
+- Nominal: NOT PRESENT (Page 1)
+- Upper Limit: NOT PRESENT (Page 1)
+- Lower Limit: NOT PRESENT (Page 1)
+- Tolerance_1: NOT PRESENT (Page 1)
+- Tolerance_2: NOT PRESENT (Page 1)
+- Special Characteristics: PRESENT (Page 1)
+
+Confidence Score: 4
+
+---
+
+**Expert 2 Analysis:**
+
+The document is a Process Flow Chart for Metal Flow Corporation. The metadata and operational flow data are extracted as follows:
+
+**Metadata:**
+- Project Name: "RAW Material (Alkar Steel) Process Flow Chart" (Page 1)
+- Part Number: "RAW-1730-A3" (Page 1)
+- Part Name: ".063 +/- .002 X 3.800 CRS" (Page 1)
+- Revision Date: "NOT PRESENT" (Page 1)
+- Core Team: "A Westfield, L Trombley, E Bronkema, J DeVries" (Page 1)
+- Process Responsibility: "NOT PRESENT" (Page 1)
+- Key Date: "NOT PRESENT" (Page 1)
+- Prepared By: "NOT PRESENT" (Page 1)
+- PFD Date (Org): "NOT PRESENT" (Page 1)
+- PFD Date (Rev): "NOT PRESENT" (Page 1)
+- Revision Number: "NOT PRESENT" (Page 1)
+
+**Operations:**
+- Operation Number: "5" (Page 1)
+- Operation Desc: "Receive LBS with heat #" (Page 1)
+- Bubbles: []
+  - Special Characteristics: "Approved Suppliers: Alkar Steel" (Page 1)
+
+**Column Presence:**
+- Operation Number: PRESENT (Page 1)
+- Operation Desc: PRESENT (Page 1)
+- Bubble Number: NOT PRESENT (Page 1)
+- Specification: PRESENT (Page 1)
+- Nominal: NOT PRESENT (Page 1)
+- Upper Limit: NOT PRESENT (Page 1)
+- Lower Limit: NOT PRESENT (Page 1)
+- Tolerance_1: NOT PRESENT (Page 1)
+- Tolerance_2: NOT PRESENT (Page 1)
+- Special Characteristics: PRESENT (Page 1)
+
+Confidence Score: 4
+
+---
+
+**Expert 3 Analysis:**
+
+The document is a Process Flow Chart for Metal Flow Corporation. The metadata and operational flow data are extracted as follows:
+
+**Metadata:**
+- Project Name: "RAW Material (Alkar Steel) Process Flow Chart" (Page 1)
+- Part Number: "RAW-1730-A3" (Page 1)
+- Part Name: ".063 +/- .002 X 3.800 CRS" (Page 1)
+- Revision Date: "NOT PRESENT" (Page 1)
+- Core Team: "A Westfield, L Trombley, E Bronkema, J DeVries" (Page 1)
+- Process Responsibility: "NOT PRESENT" (Page 1)
+- Key Date: "NOT PRESENT" (Page 1)
+- Prepared By: "NOT PRESENT" (Page 1)
+- PFD Date (Org): "NOT PRESENT" (Page 1)
+- PFD Date (Rev): "NOT PRESENT" (Page 1)
+- Revision Number: "NOT PRESENT" (Page 1)
+
+**Operations:**
+- Operation Number: "5" (Page 1)
+- Operation Desc: "Receive LBS with heat #" (Page 1)
+- Bubbles: []
+  - Special Characteristics: "Approved Suppliers: Alkar Steel" (Page 1)
+
+**Column Presence:**
+- Operation Number: PRESENT (Page 1)
+- Operation Desc: PRESENT (Page 1)
+- Bubble Number: NOT PRESENT (Page 1)
+- Specification: PRESENT (Page 1)
+- Nominal: NOT PRESENT (Page 1)
+- Upper Limit: NOT PRESENT (Page 1)
+- Lower Limit: NOT PRESENT (Page 1)
+- Tolerance_1: NOT PRESENT (Page 1)
+- Tolerance_2: NOT PRESENT (Page 1)
+- Special Characteristics: PRESENT (Page 1)
+
+Confidence Score: 4
+
+---
+
+**Final Output:**
+
+```json
+{
+  "Header_content": {
+    "Project Name": "RAW Material (Alkar Steel) Process Flow Chart",
+    "Project Name_PageNumber": 1,
+    "Part Number": "RAW-1730-A3",
+    "Part Number_PageNumber": 1,
+    "Part Name": ".063 +/- .002 X 3.800 CRS",
+    "Part Name_PageNumber": 1,
+    "Revision Date": "NOT PRESENT",
+    "Revision Date_PageNumber": 1,
+    "Core Team": "A Westfield, L Trombley, E Bronkema, J DeVries",
+    "Core Team_PageNumber": 1,
+    "Process Responsibility": "NOT PRESENT",
+    "Process Responsibility_PageNumber": 1,
+    "Key Date": "NOT PRESENT",
+    "Key Date_PageNumber": 1,
+    "Prepared By": "NOT PRESENT",
+    "Prepared By_PageNumber": 1,
+    "PFD Date (Org)": "NOT PRESENT",
+    "PFD Date (Org)_PageNumber": 1,
+    "PFD Date (Rev)": "NOT PRESENT",
+    "PFD Date (Rev)_PageNumber": 1,
+    "Revision Number": "NOT PRESENT",
+    "Revision Number_PageNumber": 1
+  },
+  "Column_Present": {
+    "Operation Number": "PRESENT",
+    "Operation Number_PageNumber": 1,
+    "Operation Desc": "PRESENT",
+    "Operation Desc_PageNumber": 1,
+    "Bubble Number": "NOT PRESENT",
+    "Bubble Number_PageNumber": 1,
+    "Specification": "PRESENT",
+    "Specification_PageNumber": 1,
+    "Nominal": "NOT PRESENT",
+    "Nominal_PageNumber": 1,
+    "Upper Limit": "NOT PRESENT",
+    "Upper Limit_PageNumber": 1,
+    "Lower Limit": "NOT PRESENT",
+    "Lower Limit_PageNumber": 1,
+    "Tolerance_1": "NOT PRESENT",
+    "Tolerance_1_PageNumber": 1,
+    "Tolerance_2": "NOT PRESENT",
+    "Tolerance_2_PageNumber": 1,
+    "Special Characteristics": "PRESENT",
+    "Special Characteristics_PageNumber": 1
+  },
+  "Operations": [
+    {
+      "Operation Number": "5",
+      "Operation Number_PageNumber": 1,
+      "Operation Desc": "Receive LBS with heat #",
+      "Operation Desc_PageNumber": 1,
+      "Bubbles": [
+        {
+          "Bubble Number": "NOT PRESENT",
+          "Bubble Number_PageNumber": 1,
+          "Bubble Specs": [
+            {
+              "Nominal": "NOT PRESENT",
+              "Nominal_PageNumber": 1,
+              "Upper Limit": "NOT PRESENT",
+              "Upper Limit_PageNumber": 1,
+              "Lower Limit": "NOT PRESENT",
+              "Lower Limit_PageNumber": 1,
+              "Tolerance_1": "NOT PRESENT",
+              "Tolerance_1_PageNumber": 1,
+              "Tolerance_2": "NOT PRESENT",
+              "Tolerance_2_PageNumber": 1,
+              "Special Characteristics": "Approved Suppliers: Alkar Steel",
+              "Special Characteristics_PageNumber": 1,
+              "Specification": "NOT PRESENT",
+              "Specification_PageNumber": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Confidence Score: 4
+====================================================================================================
+
+page_index: 3
+Timestamp: 2025-10-17 17:33:56
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+To extract the structured data from the provided Process Flow Diagram (PFD) document, we will follow the detailed extraction rules and JSON schema provided. Here's the extracted data in the required JSON format:
+
+```json
+{
+  "Header_content": {
+    "Project Name": "Metal Flow Corporation",
+    "Project Name_PageNumber": 1,
+    "Part Number": "259-1730B",
+    "Part Number_PageNumber": 1,
+    "Part Name": "Flange",
+    "Part Name_PageNumber": 1,
+    "Revision Date": "10/30/23",
+    "Revision Date_PageNumber": 1,
+    "Core Team": "Mike Essenburg, Randy Barnhard, Mike Elhart, Brian Schebor, Amy Thrift, Lisa Trombley, Ed Ploeg",
+    "Core Team_PageNumber": 1,
+    "Key Date": "10/30/23",
+    "Key Date_PageNumber": 1,
+    "Prepared By": "NOT PRESENT",
+    "Prepared By_PageNumber": "NOT PRESENT",
+    "PFD Date (Org)": "NOT PRESENT",
+    "PFD Date (Org)_PageNumber": "NOT PRESENT",
+    "PFD Date (Rev)": "10/30/23",
+    "PFD Date (Rev)_PageNumber": 1,
+    "Revision Number": "A",
+    "Revision Number_PageNumber": 1,
+    "Process Responsibility": "NOT PRESENT",
+    "Process Responsibility_PageNumber": "NOT PRESENT"
+  },
+  "Column_Present": {
+    "Operation Number": "PRESENT",
+    "Operation Number_PageNumber": 1,
+    "Operation Desc": "PRESENT",
+    "Operation Desc_PageNumber": 1,
+    "Bubble Number": "PRESENT",
+    "Bubble Number_PageNumber": 1,
+    "Specification": "PRESENT",
+    "Specification_PageNumber": 1,
+    "Nominal": "NOT PRESENT",
+    "Nominal_PageNumber": "NOT PRESENT",
+    "Upper Limit": "PRESENT",
+    "Upper Limit_PageNumber": 1,
+    "Lower Limit": "PRESENT",
+    "Lower Limit_PageNumber": 1,
+    "Tolerance_1": "PRESENT",
+    "Tolerance_1_PageNumber": 1,
+    "Tolerance_2": "PRESENT",
+    "Tolerance_2_PageNumber": 1,
+    "Special Characteristics": "PRESENT",
+    "Special Characteristics_PageNumber": 1
+  },
+  "Operations": [
+    {
+      "Operation Number": "10",
+      "Operation Number_PageNumber": 1,
+      "Operation Desc": "Stamping/Inspection AutoLot-D",
+      "Operation Desc_PageNumber": 1,
+      "Bubbles": [
+        {
+          "Bubble Number": "1",
+          "Bubble Number_PageNumber": 1,
+          "Bubble Specs": [
+            {
+              "Nominal": "NOT PRESENT",
+              "Nominal_PageNumber": "NOT PRESENT",
+              "Upper Limit": "0.1",
+              "Upper Limit_PageNumber": 1,
+              "Lower Limit": "0.1",
+              "Lower Limit_PageNumber": 1,
+              "Tolerance_1": "0.1",
+              "Tolerance_1_PageNumber": 1,
+              "Tolerance_2": "0.1",
+              "Tolerance_2_PageNumber": 1,
+              "Special Characteristics": "Maximum: 0.1mm",
+              "Special Characteristics_PageNumber": 1,
+              "Specification": "True Position Ø0.1 MMC to datum A to datum B MMC to datum C MMC (One-Sided)",
+              "Specification_PageNumber": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+**Expert Opinions:**
+
+1. **Expert 1:** The extraction follows the schema accurately, capturing all required fields and maintaining the structure. The metadata and operational data are correctly extracted, with page numbers included. Confidence Score: 5
+
+2. **Expert 2:** The JSON structure is well-formed, and the data extraction aligns with the provided rules. All necessary fields are present, and the page numbers are correctly assigned. Confidence Score: 5
+
+3. **Expert 3:** The extraction is comprehensive and adheres to the guidelines. The JSON object is complete, with all fields and page numbers accurately represented. Confidence Score: 5
+
+**Final Decision:** The response is accepted with a confidence score of 5.
+====================================================================================================
+
+page_index: 4
+Timestamp: 2025-10-17 17:33:56
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+**Expert 1 Analysis:**
+
+The document appears to be a Process Flow Diagram (PFD) with various operations and specifications. The image contains several operation descriptions and associated bubble numbers with specifications. The operations are visually aligned with bubble numbers, and each operation has specific details.
+
+**Confidence Score: 4**
+
+---
+
+**Expert 2 Analysis:**
+
+The document is a PFD with operations and bubble numbers. The operations are listed with descriptions, and bubble numbers are aligned with each operation. The specifications are detailed, and the document follows a structured format. The extraction of bubble numbers and specifications is clear.
+
+**Confidence Score: 5**
+
+---
+
+**Expert 3 Analysis:**
+
+The document is a structured PFD with operations and bubble numbers. Each operation is aligned with bubble numbers, and specifications are provided. The document is well-organized, and the extraction of data is straightforward. The visual alignment of bubbles with operations is clear.
+
+**Confidence Score: 5**
+
+---
+
+**Final Decision:**
+
+Based on the analysis, the document is a structured PFD with operations and bubble numbers. The extraction of data is clear, and the document follows a structured format. The confidence score is 5, indicating high confidence in the analysis.
+
+---
+
+**Extracted JSON:**
+
+```json
+{
+  "Header_content": {
+    "Project Name": "NOT PRESENT",
+    "Project Name_PageNumber": "NOT PRESENT",
+    "Part Number": "NOT PRESENT",
+    "Part Number_PageNumber": "NOT PRESENT",
+    "Part Name": "NOT PRESENT",
+    "Part Name_PageNumber": "NOT PRESENT",
+    "Revision Date": "NOT PRESENT",
+    "Revision Date_PageNumber": "NOT PRESENT",
+    "Core Team": "NOT PRESENT",
+    "Core Team_PageNumber": "NOT PRESENT",
+    "Key Date": "NOT PRESENT",
+    "Key Date_PageNumber": "NOT PRESENT",
+    "Prepared By": "NOT PRESENT",
+    "Prepared By_PageNumber": "NOT PRESENT",
+    "PFD Date (Org)": "NOT PRESENT",
+    "PFD Date (Org)_PageNumber": "NOT PRESENT",
+    "PFD Date (Rev)": "NOT PRESENT",
+    "PFD Date (Rev)_PageNumber": "NOT PRESENT",
+    "Revision Number": "NOT PRESENT",
+    "Revision Number_PageNumber": "NOT PRESENT",
+    "Process Responsibility": "NOT PRESENT",
+    "Process Responsibility_PageNumber": "NOT PRESENT"
+  },
+  "Column_Present": {
+    "Operation Number": "PRESENT",
+    "Operation Number_PageNumber": 1,
+    "Operation Desc": "PRESENT",
+    "Operation Desc_PageNumber": 1,
+    "Bubble Number": "PRESENT",
+    "Bubble Number_PageNumber": 1,
+    "Specification": "PRESENT",
+    "Specification_PageNumber": 1,
+    "Nominal": "NOT PRESENT",
+    "Nominal_PageNumber": 1,
+    "Upper Limit": "PRESENT",
+    "Upper Limit_PageNumber": 1,
+    "Lower Limit": "PRESENT",
+    "Lower Limit_PageNumber": 1,
+    "Tolerance_1": "PRESENT",
+    "Tolerance_1_PageNumber": 1,
+    "Tolerance_2": "PRESENT",
+    "Tolerance_2_PageNumber": 1,
+    "Special Characteristics": "PRESENT",
+    "Special Characteristics_PageNumber": 1
+  },
+  "Operations": [
+    {
+      "Operation Number": "In Process - 3X/Shift/Tool Change, Mfg in QA Lab",
+      "Operation Number_PageNumber": 1,
+      "Operation Desc": "027.1 Gage - 072.60 MIN",
+      "Operation Desc_PageNumber": 1,
+      "Bubbles": [
+        {
+          "Bubble Number": 1,
+          "Bubble Number_PageNumber": 1,
+          "Bubble Specs": [
+            {
+              "Nominal": "NOT PRESENT",
+              "Nominal_PageNumber": 1,
+              "Upper Limit": "NOT PRESENT",
+              "Upper Limit_PageNumber": 1,
+              "Lower Limit": "NOT PRESENT",
+              "Lower Limit_PageNumber": 1,
+              "Tolerance_1": "NOT PRESENT",
+              "Tolerance_1_PageNumber": 1,
+              "Tolerance_2": "NOT PRESENT",
+              "Tolerance_2_PageNumber": 1,
+              "Special Characteristics": "NOT PRESENT",
+              "Special Characteristics_PageNumber": 1,
+              "Specification": "NOT PRESENT",
+              "Specification_PageNumber": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "Operation Number": "In Process - Coil Change",
+      "Operation Number_PageNumber": 1,
+      "Operation Desc": "Label Parts, Scrap Parts, Move Parts",
+      "Operation Desc_PageNumber": 1,
+      "Bubbles": []
+    },
+    {
+      "Operation Number": "Wash Process Controls",
+      "Operation Number_PageNumber": 1,
+      "Operation Desc": "Cleanliness Testing",
+      "Operation Desc_PageNumber": 1,
+      "Bubbles": []
+    },
+    {
+      "Operation Number": "Job Setup - Initial",
+      "Operation Number_PageNumber": 1,
+      "Operation Desc": "Pack & Label Parts at MFJ",
+      "Operation Desc_PageNumber": 1,
+      "Bubbles": []
+    },
+    {
+      "Operation Number": "Customer Order/Shipping Requirements",
+      "Operation Number_PageNumber": 1,
+      "Operation Desc": "NOT PRESENT",
+      "Operation Desc_PageNumber": 1,
+      "Bubbles": []
+    }
+  ]
+}
+```
+====================================================================================================
+

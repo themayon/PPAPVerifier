@@ -44,7 +44,7 @@ public sealed class RuleDefinitionConfiguration : IEntityTypeConfiguration<RuleD
         builder.Property(x => x.Name).HasMaxLength(200).IsRequired(); builder.Property(x => x.Description).HasMaxLength(2000);
         builder.Property(x => x.Category).HasConversion<string>().HasMaxLength(32); builder.Property(x => x.Lifecycle).HasConversion<string>().HasMaxLength(16);
         builder.Property(x => x.Version).IsConcurrencyToken(); builder.HasMany(x => x.Versions).WithOne().HasForeignKey(x => x.RuleDefinitionId).OnDelete(DeleteBehavior.Cascade);
-        builder.Ignore(x => x.DomainEvents);
+        builder.Ignore(x => x.DomainEvents); builder.Ignore(x => x.IsArchived);
     }
 }
 

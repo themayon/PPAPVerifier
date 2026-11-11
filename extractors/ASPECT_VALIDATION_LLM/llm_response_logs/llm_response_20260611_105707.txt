@@ -1,0 +1,91 @@
+LLM RESPONSES LOG - 20260611_105707
+====================================================================================================
+Total Responses: 1
+Doc Type: MSA
+Pages selected by classifier: 1 / total in PDF
+====================================================================================================
+
+page_index: 1
+Timestamp: 2026-06-11 10:57:07
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+```json
+[
+  {
+    "Header_content": {
+      "Part_Name": "BUSHING,MOUNTING",
+      "Part_Number": "38367105 002D",
+      "Revision_Number": "NOT PRESENT"
+    },
+    "Column_Present": {
+      "MSA_Study_Type": "GRR",
+      "Gage Type": "Variable",
+      "Characteristic": "PRESENT",
+      "Number_of_parts": "PRESENT",
+      "Number_of_repetitions": "PRESENT",
+      "Number_of_inspectors": "PRESENT",
+      "Bubble Number": "NOT PRESENT",
+      "Nominal": "PRESENT",
+      "Upper Limit": "PRESENT",
+      "Lower Limit": "PRESENT",
+      "Tolerance_1": "PRESENT",
+      "Tolerance_2": "PRESENT",
+      "Special Characteristics": "NOT PRESENT",
+      "Special Characteristics Symbol": "NOT PRESENT",
+      "Gauge name": "PRESENT",
+      "Gauge number": "PRESENT",
+      "grr total per": "PRESENT",
+      "ndc": "PRESENT",
+      "Linearity": "NOT PRESENT",
+      "Bias": "NOT PRESENT",
+      "Specification": "PRESENT",
+      "Between Inspector": "NOT PRESENT",
+      "All Inspectors versus Std": "NOT PRESENT",
+      "Inspector 1 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 2 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 3 Disagreement OK/NOK": "NOT PRESENT",
+      "Inspector 1 Bad Part %": "NOT PRESENT",
+      "Inspector 2 Bad Part %": "NOT PRESENT",
+      "Inspector 3 Bad Part %": "NOT PRESENT",
+      "Kappa": "NOT PRESENT"
+    },
+    "msa_data": [
+      {
+        "MSA_Study_Type": "GRR",
+        "Gage Type": "Variable",
+        "Characteristic": "Height",
+        "Number_of_parts": "10",
+        "Number_of_repetitions": "3",
+        "Number_of_inspectors": "3",
+        "Bubble Number": "NOT PRESENT",
+        "Nominal": "5",
+        "Upper Limit": "5.25",
+        "Lower Limit": "4.75",
+        "Tolerance_1": "+0.25",
+        "Tolerance_2": "-0.25",
+        "Special Characteristics": "NOT PRESENT",
+        "Special Characteristics Symbol": "NOT PRESENT",
+        "Gauge name": "Dial caliper",
+        "Gauge number": "LS53 0632",
+        "grr total per": "8.83",
+        "ndc": "15",
+        "Linearity": "NOT PRESENT",
+        "Bias": "NOT PRESENT",
+        "Specification": "2×5±0.25",
+        "Between Inspector": "NOT PRESENT",
+        "All Inspectors versus Std": "NOT PRESENT",
+        "Inspector 1 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 2 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 3 Disagreement OK/NOK": "NOT PRESENT",
+        "Inspector 1 Bad Part %": "NOT PRESENT",
+        "Inspector 2 Bad Part %": "NOT PRESENT",
+        "Inspector 3 Bad Part %": "NOT PRESENT",
+        "Kappa": "NOT PRESENT"
+      }
+    ]
+  }
+]
+```
+====================================================================================================
+

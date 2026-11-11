@@ -1,0 +1,246 @@
+﻿SWE2: |
+  For the given questions, find all the relevant data from the following context:
+            Context: {excel_json}
+            
+            --
+            Questions:            
+            Question 1: SWE 2:BP602: Are the criteria for architectures evaluations such as Modularity, Scalability, Feasibility, Re-Usability, Maintainability, Portability, Safety, Security without rationale defined? Give all evidences for the context provided.
+            Question 2: SWE 2:BP401: Is "Dynamic behavior of the software" or "Dynamic Behavior of the software" documented?If yes give not more than 15 evidences of image, table and text from the context provided.Don't provide irrelevant evidences from other sections.
+            Question 3: SWE 2:BP402: Are the all operating modes strategy such as Startup, Shutdown, Sleep, Initialization documented? If yes, include only relevant evidences from those section and order based on confidence.
+            Question 4: SWE 2:BP102_C: Is the "Software Elements" documented? If yes, give all sections  title under the "Software elements" section.Exclude "Application components", component description section.
+            Question 5: SWE 2:BP101: Are architectural diagrams on the  "Software Architecture Design" available? If yes, include relevant image evidences from those section, EMPHASIS MORE ON IMAGE as evidence.
+            Question 6: SWE 2:BP603: Is the alternative architecture evaluation performed with documented rationale? If yes give the relevnat evidences for the rationale.
+            Question 7: SWE 2:BP103_A: Is the "Software Architecture Design" or "Software Architecture Diagram" or "System Context" documented Look for Software Element keywords as well ?If yes, provide all image evidences under those section, EMPHASIS MORE ON IMAGE as evidence and order based on confidence.
+            Question 8: SWE 2:BP103_B: Is the "Software Elements" section available?If yes, include all evidences under "Software Elements" section, EMPHASIS MORE ON TEXT as evidence, Don't provide evidences from "Software components" sections.
+            Question 9: SWE 2:BP601: Are the diagrams of software architectures such as alternative, Architecture Proposal documented? If yes, include all relevant image,table and text evidences from those section, EMPHASIS MORE ON IMAGE as evidence.
+            Question 10: SWE 2:BP501: Are the software resource consumption objectives such as RAM , ROM, CPU, Memory usage defined for the elements of the software architectural design?
+            Question 11: SWE 2:BP301_ExternalInterface: Is the description of external interface available? If yes give relevant evidence from the section.
+            Question 12: SWE 2:BP104_D: Is the "Software Architecture Design / Diagram" documented Look for Software Element keywords ?If yes, relevant image evidences from those section, EMPHASIS MORE ON IMAGE as evidence and order based on confidence.   
+       
+            
+
+            Ignore the  question number which starts with "SWE 2:BP.." while generating answer, but include it in question key of answer.
+            Answer of one question should be clubbed together in the given format.
+            Each answer should have the confidence score between 0 to 100, based on its relevence with question.
+            Give <values> in response, exactly as it is in the context. If one section contains multiple relevant responses, then give all. 
+            Similarily there can multiple sections which can contain relevant response give them all.
+            Response format: {{<question1 value>: [{{
+                                "page_number":<value>, 
+                                "serial_number":<value>,
+                                "section_name":<value>,
+                                "confidence":<value>}},
+                                {{"page_number":<value>,
+                                "serial_number":<value>, 
+                                "section_name":<value>,
+                                "confidence":<value>}}],
+                                <question2 value>:[{{
+                                "page_number":<value>,
+                                "serial_number":<value>, 
+                                "section_name":<value>,
+                                "confidence":<value>}},
+                                {{
+                                "page_number":<value>,
+                                "serial_number":<value>, 
+                                "section_name":<value>,
+                                "confidence":<value>}}]
+                                }}
+
+            The response should be STRICTLY in format defined above without any extra words like 'JSON' or 'here is the json' etc..
+
+SYS3: |
+  For the given questions, find all the relevant data from the context below, utilize additional guidelines to provide accurate answers:
+          Context: {excel_json}
+
+          --
+          Questions:
+          Question 1: SYS 3:BP101: Is the "system architecture diagram" or "system block diagram" or "system context diagram" documented? If yes, include all relevant image,table and text evidences from those section, EMPHASIS MORE ON IMAGE as evidence.
+          Question 2: SYS 3:BP402: Is the dynamic behavior of the system documented with a description? List only 10 relevant text.
+          Question 3: SYS 3:BP401: Are "system behavior" diagrams for the system available? If yes, include all relevant diagrams as part of response.
+          Question 4: SYS 3:BP502: Are the criteria for evaluating alternative designs with documented Rationale? Look for these keywords as well Modularity, Scalability, Feasibility, Re-Usability, Maintainability, Portability, Safety, Security without rationale.
+          Question 5: SYS 3:BP403: Is the description of the systems operating modes such as Startup, Wakeup, Shutdown, Sleep, Initialization documented?If yes, include all image,table and text evidences under those section.
+          Question 6: SYS 3:BP302: Is the description of the \"external interfaces\" available?If yes, include all image,table and text evidences under those section.
+          Question 7: SYS 3:BP304: Is a description of the \"internal interfaces\" available?If yes, include all image,table and text evidences under those section.
+          Question 8: SYS 3:BP102_A: Are the "System architecture block diagram" or "System Context Diagram" available?If yes, include relevant image,table and text evidences from those section, EMPHASIS MORE ON IMAGE as evidence.
+          Question 9: SYS 3:BP501: Are architectures for alternative documented? If yes, include all image,table and text evidences under those section, EMPHASIS MORE ON IMAGE as evidence
+          Question 10: SYS 3:BP103: Is the description of system elements documented in the architecture? If yes, include all image,table and text evidences under those section.
+          Question 11: SYS 3:BP102_B: Is the "System Elements" section available?If yes, include all evidences from those section, EMPHASIS MORE ON TEXT as evidence.
+          Question 12: SYS 3:BP104: Is the diagrams for element or subsystem or component documented? If yes, include all relevant image,table and text evidences from those section, EMPHASIS MORE ON IMAGE as evidence.
+
+          Additional Guidelines:
+            - If the question is about a dynamic behavior diagram, it can be a dynamic behavior as well as the system behavior diagram.
+            - Understand the question if the context doesn't have any relevant data about the question, return an empty list as a response for that question.
+
+          Ignore the question number which starts with "SYS 3:BP.." while generating answer, but include it in question key of answer.
+          Answer of one question should be clubbed together in the given format.
+          Each answer should have the confidence score between 0 to 100, based on its relevance with the question.
+          Give <values> in response, exactly as it is in the context. If one section contains multiple relevant responses, then give all.
+          Response format: {{<question1 value>: [{{
+                    "page_number":<value>, 
+                    "serial_number":<value>,
+                    "section_name":<value>,
+                    "confidence":<value>}},
+                    {{"page_number":<value>,
+                    "serial_number":<value>, 
+                    "section_name":<value>,
+                    "confidence":<value>}}],
+                    <question2 value>:[{{
+                    "page_number":<value>,
+                    "serial_number":<value>, 
+                    "section_name":<value>,
+                    "confidence":<value>}},
+                    {{
+                    "page_number":<value>,
+                    "serial_number":<value>, 
+                    "section_name":<value>,
+                    "confidence":<value>}}]
+                    }}
+
+            The response should be STRICTLY in format defined above without any extra words like 'JSON' or 'here is the json' etc..
+
+
+SUP8 : |
+      For the given questions, find all the relevant data from the following context:
+            Context: {excel_json}
+            
+            --
+            Questions:
+            Question 1: SUP 8:BP101: Does the strategy identify required/optional baselines?
+            Question 2: SUP 8:BP102: Does the strategy identify naming conventions for Baselines and Releases?
+      
+            Ignore the question number which starts with "SUP 8:BP.." while generating answer, but include it in question key of answer.
+            Answer of one question should be clubbed together in the given format.
+            Each answer should have the confidence score between 0 to 100, based on its relevence with question.
+            Give <values> in response, exactly as it is in the context. If one section contains multiple relevant responses, then give all.
+            Response format: {{<question1 value>: [{{
+                                'page_number':<value>, 
+                                'serial_number':<value>,
+                                'section_name':<value>,
+                                'confidence':<value>}},
+                                {{'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}}],
+                                <next_question>
+                                <question2 value>:[{{
+                                'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}},
+                                {{
+                                'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}}]
+                                }}
+
+            The response should be STRICTLY in format defined above without any extra words like 'JSON' or 'here is the json' etc..
+
+
+MAN3 : |
+      For the given questions, find all the relevant data from the following context:
+            Context: {excel_json}
+            
+            --
+            Questions:
+            Question 1: MAN 3:BP201: Is there a Project lifecycle?
+            
+            Ignore the question number which starts with "MAN 3:BP.." while generating answer, but include it in question key of answer.
+            Understand the question clearly. Answer of one question should be clubbed together in the given format.
+            Each answer should have the confidence score between 0 to 100, based on its relevence with question.
+            Give <values> in response, exactly as it is in the context. If one section contains multiple relevant responses, then give all.
+            Response format: {{<question1 value>: [{{
+                                'page_number':<value>, 
+                                'serial_number':<value>,
+                                'section_name':<value>,
+                                'confidence':<value>}},
+                                {{'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}}],
+                                <question2 value>:[{{
+                                'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}},
+                                {{
+                                'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}}]
+                                }}
+
+            The response should be STRICTLY in format defined above without any extra words like 'JSON' or 'here is the json' etc..
+
+
+SUP9 : |
+      For the given questions, find all the relevant data from the following context:
+            Context: {excel_json}
+            
+            --
+            Questions:
+            Question 1: SUP 9:BP101: Are status models consistent with the workflow?
+            Question 2: SUP 9:BP102: Is there a definition for every status model value?
+            
+            Ignore the question number which starts with "SUP 9:BP.." while generating answer, but include it in question key of answer.
+            Understand the question clearly. Answer of one question should be clubbed together in the given format.
+            Each answer should have the confidence score between 0 to 100, based on its relevence with question.
+            Give <values> in response, exactly as it is in the context. If one section contains multiple relevant responses, then give all.
+            Response format: {{<question1 value>: [{{
+                                'page_number':<value>, 
+                                'serial_number':<value>,
+                                'section_name':<value>,
+                                'confidence':<value>}},
+                                {{'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}}],
+                                <question2 value>:[{{
+                                'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}},
+                                {{
+                                'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}}]
+                                }}
+
+            The response should be STRICTLY in format defined above without any extra words like 'JSON' or 'here is the json' etc..
+
+
+SUP10 : |
+      For the given questions, find all the relevant data from the following context:
+            Context: {excel_json}
+            
+            --
+            Questions:
+            Question 1: SUP 10:BP101: Are status models consistent with the workflow?
+            Question 2: SUP 10:BP102: Is there a definition for every status model value?
+            
+            Ignore the question number which starts with "SUP 10:BP.." while generating answer, but include it in question key of answer.
+            Understand the question clearly. Answer of one question should be clubbed together in the given format.
+            Each answer should have the confidence score between 0 to 100, based on its relevence with question.
+            Give <values> in response, exactly as it is in the context. If one section contains multiple relevant responses, then give all.
+            Response format: {{<question1 value>: [{{
+                                'page_number':<value>, 
+                                'serial_number':<value>,
+                                'section_name':<value>,
+                                'confidence':<value>}},
+                                {{'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}}],
+                                <question2 value>:[{{
+                                'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}},
+                                {{
+                                'page_number':<value>,
+                                'serial_number':<value>, 
+                                'section_name':<value>,
+                                'confidence':<value>}}]
+                                }}
+
+            The response should be STRICTLY in format defined above without any extra words like 'JSON' or 'here is the json' etc..

@@ -1,0 +1,13 @@
+GPT4O_KEY: null
+GPT4O_API_VERSION: 2025-01-01-preview
+# GPT4_VISION_DEPLOYMENT_NAME: gpt-4-vision
+# GPT4_VISION_BASE: https://omnex-sweden.openai.azure.com
+GPT4O_ENDPOINT: https://omnexllm.openai.azure.com/openai/deployments/omnexgpt4o/chat/completions?api-version=2025-01-01-preview
+GPT4O_MAX_TOKENS: 16384
+GPT4O_BATCH_CONCURRENCY: 5
+GPT4O_TEMPERATURE: 0.0
+
+#PROVIDER: openai,gemini,Deepseek
+# Gemini configuration (used when PROVIDER: gemini)
+GEMINI_API_KEY: null
+GEMINI_MODEL: gemini-3-pro-preview

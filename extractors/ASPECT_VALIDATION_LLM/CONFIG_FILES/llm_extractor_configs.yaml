@@ -1,0 +1,9 @@
+FOLDER_NAME: Document_Operation_Files
+TEMPLATE_DOC_PROMPT_TABLE: OBTemplateDocumentPrompt
+TABLE_NAME: OBPrompt
+SERVER_NAME: DESKTOP-T2FCVNU
+DATABASE_NAME: OBot_PPAPDynamicForm_New
+IMAGES_PER_BATCH: 1
+DRIVER: "ODBC Driver 17 for SQL Server"
+username: null
+password: null

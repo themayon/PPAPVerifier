@@ -33,6 +33,36 @@ public sealed class PpapSubmissionTests
     }
 
     [Fact]
+    public void RemoveDocumentRevision_Should_ResetSlotToPendingUpload_When_Draft()
+    {
+        PpapSubmission submission = PpapSubmission.CreateDraft("tenant-1", Guid.NewGuid(), "Part", "PN-100", "A", 3);
+        PpapSubmissionDocument document = submission.AddDocumentSlot("PFMEA");
+        submission.ApplyFinalizedFile(document.Id, Guid.CreateVersion7(), true);
+        document.MarkExtractionRequestPublished(Guid.CreateVersion7(), DateTime.UtcNow);
+        int versionBefore = submission.Version;
+
+        submission.RemoveDocumentRevision(document.Id);
+
+        document.Status.ShouldBe(SubmissionDocumentStatus.PendingUpload);
+        document.FileAssetId.ShouldBeNull();
+        document.ExtractionRequestPublishedAtUtc.ShouldBeNull();
+        document.ExtractionTerminalStatus.ShouldBeNull();
+        submission.Version.ShouldBeGreaterThan(versionBefore);
+    }
+
+    [Fact]
+    public void RemoveDocumentRevision_Should_Throw_When_SubmissionIsNotDraft()
+    {
+        PpapSubmission submission = PpapSubmission.CreateDraft("tenant-1", Guid.NewGuid(), "Part", "PN-100", "A", 3);
+        PpapSubmissionDocument document = submission.AddDocumentSlot("PFMEA");
+        submission.ApplyFinalizedFile(document.Id, Guid.CreateVersion7(), true);
+        submission.Submit();
+
+        Should.Throw<CustomException>(() => submission.RemoveDocumentRevision(document.Id))
+            .StatusCode.ShouldBe(HttpStatusCode.Conflict);
+    }
+
+    [Fact]
     public void CreateDraft_Should_PersistTemplateSnapshot_When_BothIdsAreSupplied()
     {
         Guid templateId = Guid.NewGuid();
