@@ -1,0 +1,39 @@
+LLM RESPONSES LOG - 20260225_113632
+====================================================================================================
+Total Responses: 2
+====================================================================================================
+
+page_index: 1
+Timestamp: 2026-02-25 11:36:32
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+{
+  "Header_content": {
+    "What is the letterhead logo or name of the laboratory?": "China National Accreditation Service for Conformity Assessment",
+    "Letterhead_PageNumber": "1",
+    "Does the document mention iso 17025?": "ISO/IEC 17025",
+    "ISO_17025_PageNumber": "1",
+    "Does the document mention ISO 9001 or IATF 16949?": "NOT PRESENT",
+    "ISO_9001_or_IATF_16949_PageNumber": "NOT PRESENT"
+  }
+}
+====================================================================================================
+
+page_index: 2
+Timestamp: 2026-02-25 11:36:18
+Parse Status: success
+----------------------------------------------------------------------------------------------------
+Raw LLM Response:
+{
+  "Header_content": {
+    "What is the letterhead logo or name of the laboratory?": "NOT PRESENT",
+    "Letterhead_PageNumber": "NOT PRESENT",
+    "Does the document mention iso 17025?": "NOT PRESENT",
+    "ISO_17025_PageNumber": "NOT PRESENT",
+    "Does the document mention ISO 9001 or IATF 16949?": "NOT PRESENT",
+    "ISO_9001_or_IATF_16949_PageNumber": "NOT PRESENT"
+  }
+}
+====================================================================================================
+

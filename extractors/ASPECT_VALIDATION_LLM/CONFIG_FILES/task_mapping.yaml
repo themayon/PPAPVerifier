@@ -1,0 +1,4 @@
+CP:
+  user_prompt: "CP"
+  pydantic_model_path: "pydantic_objects.ControlPlanData"
+  prompt_text_key: "CP"

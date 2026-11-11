@@ -1,0 +1,82 @@
+# Image Quality Configuration for PDF to Image Conversion
+# Higher values = better quality but larger file sizes and slower processing
+
+# PDF to Image Conversion Settings
+pdf_conversion:
+  # DPI (Dots Per Inch) - Higher = better quality
+  # Recommended: 600 for good quality, 900-1200 for maximum quality
+  dpi: 600
+
+  # Image format: 'png' (lossless, larger files) or 'jpeg' (compressed, smaller files)
+  # PNG recommended for maximum quality, JPEG for smaller file sizes
+  format: 'png'
+
+  # Enable image quality enhancements
+  enhance_quality: true
+
+  # Use pdftocairo for better rendering (recommended: true)
+  use_pdftocairo: true
+
+# Image Enhancement Settings
+image_enhancement:
+  # Contrast enhancement factor (1.0 = no change, >1.0 = more contrast)
+  # Recommended: 1.1-1.3 for scanned documents, 1.0 for digital PDFs
+  contrast_factor: 1.2
+
+  # Sharpness enhancement factor (1.0 = no change, >1.0 = sharper)
+  # Recommended: 1.2-1.8 for scanned documents, 1.0-1.2 for digital PDFs
+  sharpness_factor: 1.5
+
+  # Brightness enhancement factor (1.0 = no change, >1.0 = brighter)
+  # Recommended: 1.0-1.2 for most documents
+  brightness_factor: 1.1
+
+  # Apply noise reduction filter
+  # Recommended: true for scanned documents, false for digital PDFs
+  noise_reduction: true
+
+  # JPEG quality (1-100, only applies when format is 'jpeg')
+  jpeg_quality: 95
+
+# Quality Presets
+presets:
+  # Maximum quality (slower, larger files)
+  maximum:
+    dpi: 1200
+    format: 'png'
+    enhance_quality: true
+    contrast_factor: 1.3
+    sharpness_factor: 1.8
+    brightness_factor: 1.2
+
+  # High quality (balanced)
+  high:
+    dpi: 600
+    format: 'png'
+    enhance_quality: true
+    contrast_factor: 1.2
+    sharpness_factor: 1.5
+    brightness_factor: 1.1
+
+  # Standard quality (faster, smaller files)
+  standard:
+    dpi: 300
+    format: 'jpeg'
+    enhance_quality: true
+    contrast_factor: 1.1
+    sharpness_factor: 1.2
+    brightness_factor: 1.05
+
+  # Fast processing (minimal quality)
+  fast:
+    dpi: 300
+    format: 'jpeg'
+    enhance_quality: false
+    contrast_factor: 1.0
+    sharpness_factor: 1.0
+    brightness_factor: 1.0
+
+  balanced:
+    dpi: 300
+    format: 'png'
+    enhance_quality: false

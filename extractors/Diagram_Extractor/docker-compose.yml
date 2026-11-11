@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: adminrabbit
+      RABBITMQ_DEFAULT_PASS: rabbitpassword
+    networks:
+      - omnex_diagram_extractor
+
+  # Uncomment the following services if you need to use PostgreSQL or SQL Server
+  # Make Sure to update the envfile with the appropriate database connection strings
+  # db:
+  #   image: postgres:13.7-alpine3.16
+  #   container_name: postgres_db
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #     POSTGRES_DB: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - omnex_diagram_extractor
+
+  # sqlserver:
+  #   build:
+  #     context: ./docker/sql_server
+  #     dockerfile: Dockerfile.sqlserver
+  #   container_name: sqlserver_db
+  #   environment:
+  #     ACCEPT_EULA: "Y"
+  #     SA_PASSWORD: "kidusqlpass123Pass"
+  #     MSSQL_PID: "Developer"
+  #     MSSQL_AGENT_ENABLED: "True"
+  #   ports:
+  #     - "1433:1433"
+  #   healthcheck:
+  #     test: [ "CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'kidusqlpass123Pass' -Q \"SELECT 1\"" ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 10
+  #   networks:
+  #     - omnex_diagram_extractor
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      # - db
+      # - sqlserver
+      - rabbitmq
+    networks:
+      - omnex_diagram_extractor
+
+  celery:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: celery_worker
+    command: celery -A app.src.tasks:app worker --loglevel=info --concurrency=2 --pool=prefork
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      # - db
+      # - sqlserver
+    networks:
+      - omnex_diagram_extractor
+
+networks:
+  omnex_diagram_extractor:
+    driver: bridge

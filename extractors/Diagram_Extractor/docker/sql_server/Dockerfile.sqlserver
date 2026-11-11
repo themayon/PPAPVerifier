@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/mssql/server:2019-latest
+USER root
+
+# Install the prerequisites, mssql-tools, and msodbcsql17
+RUN apt-get update && \
+    apt-get install -y curl apt-transport-https gnupg && \
+    curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - && \
+    curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-tools.list && \
+    apt-get update && \
+    ACCEPT_EULA=Y apt-get install -y mssql-tools msodbcsql17 && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY init.sql /init.sql
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+USER mssql
+ENTRYPOINT ["/entrypoint.sh"]

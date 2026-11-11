@@ -1,0 +1,332 @@
+ {
+        "header": {
+            "Part Name": "TRANSFER-PLATE-BODY",
+            "Part Number": "24262230",
+            "Revision Number": "R006"
+        },
+        "measurements": [
+            {
+                "serial_number": "1",
+                "characteristic_Type": "Diameter",
+                "nominal": "0.2",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "DR11"
+            },
+            {
+                "serial_number": "2",
+                "characteristic_Type": "Geometric Tolerance",
+                "nominal": "0.3",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "A B M"
+            },
+            {
+                "serial_number": "3",
+                "characteristic_Type": "Diameter",
+                "nominal": "2.72",
+                "tolerance_1": "+0.035",
+                "tolerance_2": "-0.035",
+                "dr_no": "DR 8"
+            },
+            {
+                "serial_number": "3",
+                "characteristic_Type": "Diameter",
+                "nominal": "2",
+                "tolerance_1": "+0.035",
+                "tolerance_2": "-0.035",
+                "dr_no": "DR 9"
+            },
+            {
+                "serial_number": "3",
+                "characteristic_Type": "Diameter",
+                "nominal": "0.5",
+                "tolerance_1": "+0.035",
+                "tolerance_2": "-0.035",
+                "dr_no": "DR 7"
+            },
+            {
+                "serial_number": "4",
+                "characteristic_Type": "Geometric Tolerance",
+                "nominal": "0.4",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "A|B|C"
+            },
+            {
+                "serial_number": "8",
+                "characteristic_Type": "Linear",
+                "nominal": "0.79",
+                "tolerance_1": "+0.08",
+                "tolerance_2": "",
+                "dr_no": "DR 4"
+            },
+            {
+                "serial_number": "8",
+                "characteristic_Type": "Diameter",
+                "nominal": "1.5",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "10",
+                "characteristic_Type": "Linear",
+                "nominal": "7.1",
+                "tolerance_1": "+0.076",
+                "tolerance_2": "-0.076",
+                "dr_no": "DR1"
+            },
+            {
+                "serial_number": "12",
+                "characteristic_Type": "Linear",
+                "nominal": "6.1",
+                "tolerance_1": "+0.076",
+                "tolerance_2": "-0.076",
+                "dr_no": "DR2"
+            },
+            {
+                "serial_number": "12",
+                "characteristic_Type": "Mass",
+                "nominal": "0.2147",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "14",
+                "characteristic_Type": "Diameter",
+                "nominal": "6.1",
+                "tolerance_1": "+0.076",
+                "tolerance_2": "",
+                "dr_no": "DR 3"
+            },
+            {
+                "serial_number": "15",
+                "characteristic_Type": "Linear",
+                "nominal": "0.008",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "17",
+                "characteristic_Type": "Diameter",
+                "nominal": "2",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "18",
+                "characteristic_Type": "Diameter",
+                "nominal": "1.8",
+                "tolerance_1": "+0.035",
+                "tolerance_2": "",
+                "dr_no": "DR 6"
+            },
+            {
+                "serial_number": "18",
+                "characteristic_Type": "Diameter",
+                "nominal": "1.8",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "19",
+                "characteristic_Type": "Diameter",
+                "nominal": "1.5",
+                "tolerance_1": "+0.035",
+                "tolerance_2": "",
+                "dr_no": "DR 10"
+            },
+            {
+                "serial_number": "19",
+                "characteristic_Type": "Material Added",
+                "nominal": "7",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "20",
+                "characteristic_Type": "Diameter",
+                "nominal": "7",
+                "tolerance_1": "+0.05",
+                "tolerance_2": "-0.05",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "21",
+                "characteristic_Type": "Linear",
+                "nominal": "0.35",
+                "tolerance_1": "+0.15",
+                "tolerance_2": "-0.15",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "22",
+                "characteristic_Type": "Diameter",
+                "nominal": "9.525",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "23",
+                "characteristic_Type": "Geometric Tolerance",
+                "nominal": "0.13",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "A B M C M"
+            },
+            {
+                "serial_number": "39",
+                "characteristic_Type": "Linear",
+                "nominal": "6.3",
+                "tolerance_1": "+0.1",
+                "tolerance_2": "-0.1",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "39",
+                "characteristic_Type": "Linear",
+                "nominal": "6.3",
+                "tolerance_1": "+0.1",
+                "tolerance_2": "-0.1",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "40",
+                "characteristic_Type": "Geometric Tolerance",
+                "nominal": "0.12",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "A B M"
+            },
+            {
+                "serial_number": "41",
+                "characteristic_Type": "Linear",
+                "nominal": "7.3",
+                "tolerance_1": "+0.1",
+                "tolerance_2": "-0.1",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "41",
+                "characteristic_Type": "Linear",
+                "nominal": "7.3",
+                "tolerance_1": "+0.1",
+                "tolerance_2": "-0.1",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "41",
+                "characteristic_Type": "Geometric Tolerance",
+                "nominal": "0.25",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "A B M"
+            },
+            {
+                "serial_number": "42",
+                "characteristic_Type": "Geometric Tolerance",
+                "nominal": "0.25",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "A B M"
+            },
+            {
+                "serial_number": "43",
+                "characteristic_Type": "Diameter",
+                "nominal": "6.3",
+                "tolerance_1": "+0.1",
+                "tolerance_2": "-0.1",
+                "dr_no": "B"
+            },
+            {
+                "serial_number": "43",
+                "characteristic_Type": "Diameter",
+                "nominal": "6.3",
+                "tolerance_1": "+0.1",
+                "tolerance_2": "-0.1",
+                "dr_no": ""
+            },
+            {
+                "serial_number": "85",
+                "characteristic_Type": "Geometric Tolerance",
+                "nominal": "0.4",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "A"
+            },
+            {
+                "serial_number": "9A",
+                "characteristic_Type": "Linear",
+                "nominal": "1.6",
+                "tolerance_1": "",
+                "tolerance_2": "",
+                "dr_no": "DR 5"
+            }
+        ],
+        "text_details": [
+            {
+                "serial_no": "25",
+                "text": "THIS ASM MUST BE FREE OF BURRS AND SHARP EDGES"
+            },
+            {
+                "serial_no": "26",
+                "text": "SCALE: FULL\nADHESIVE: RUBBER MODIFIED PHENOLIC RESIN EMULSION OR SOLUTION\nAPPROVED ADHESIVES: AROFENE 1168-ASHLAND CHEMICAL INC.\nAROFENE 1240-ASHLAND CHEMICAL INC.\nUNIPRIME #18S2 UNIVERSAL CHEMICAL INC."
+            },
+            {
+                "serial_no": "27",
+                "text": "THE ADHESIVE SHOULD BE HOMOGENEOUSLY APPLIED TO THE SURFACES TO BE BONDED (PAPER GASKET OR METAL PLATE) WITH 100% ADHESIVE COVERAGE (NO VOIDS OR NON-COVERAGE). THE FINISHED STEEL ROLL (OR PAPER ROLL) SHOULD NOT SHOW ANY STICKY PROBLEM (THE ADHESIVE SHOULD BE PROPERLY PRE-CURED)."
+            },
+            {
+                "serial_no": "28",
+                "text": "THE BONDED PLATE ASSEMBLY SHOULD MEET GM 24215300 PLUS THE FOLLOWING REQUIREMENTS:"
+            },
+            {
+                "serial_no": "29",
+                "text": "1. THE OVERALL THICKNESS AS SPECIFIED ON THE PART DETAIL DRAWING"
+            },
+            {
+                "serial_no": "30",
+                "text": "2. NO SEPARATION OF GASKET-PLATE AS RECEIVED AND AFTER HUMIDITY TESTING FOR A MINIMUM OF 22 HOURS AT 40 ±2°C AND 95% MINIMUM RELATIVE HUMIDITY."
+            },
+            {
+                "serial_no": "31",
+                "text": "NO SEPARATION OF GASKET-PLATE, AND NO SIGN OF ADHESIVE DISSOLUTION OR FLAKING AFTER BEING AGED IN DEXRON VI ATF (GM9986153) AT 150°C FOR 168 HOURS."
+            },
+            {
+                "serial_no": "51",
+                "text": "ANY PROCESS, DESIGN OR MATERIAL CHANGES PAST THE INITIAL APPROVAL TEST DATE MUST BE REVIEWED AND APPROVED BY THE GMPT RESPONSIBLE ENGINEERS."
+            },
+            {
+                "serial_no": "32",
+                "text": "AT ASSEMBLY, GASKET MATERIAL MAY EXTEND 0.4 MAX INSIDE SPACER PLATE FEATURES EXCEPT IN 5 PLACES PER SIDE IN HOLES IDENTIFIED FROM A THRU E."
+            },
+            {
+                "serial_no": "33",
+                "text": "IN PLACE IDENTIFIED CB, GASKET MATERIAL ON BOTH SIDES OF THE SPACER PLATE SHALL NO CLOSER THAN 0.2mm TO EDGE OF THE HOLE."
+            },
+            {
+                "serial_no": "34",
+                "text": "IN ASSEMBLY, GASKET MATERIAL MAY EXTEND 1.2 MAX BEYOND SPACER PLATE OUTER CONTOUR"
+            },
+            {
+                "serial_no": "35",
+                "text": "MUST BE FREE FROM TEARS, LOOSE MATERIAL AND FRAYED EDGES"
+            },
+            {
+                "serial_no": "36",
+                "text": "PARTS AS DELIVERED TO ASSEMBLY SHALL BE CLEAN AND FREE OF DEBRIS, RESIDUAL ABRASIVE MATERIAL AND CORROSION PRODUCTS ADVERSELY AFFECTING FUNCTION OR APPEARANCE"
+            },
+            {
+                "serial_no": "37",
+                "text": "DEBRIS ON FINISHED PARTS SHALL BE REGULARLY MONITORED AND CONTROLLED USING STATISTICAL METHODS, UPPER CONTROL LIMITS AND PROCEDURES APPROVED BY GM POWERTRAIN MATERIALS ENGINEERING AND DEFINED IN THE SUPPLIER PROCESS CONTROL PLAN\nFOR SPECIFICATION AND INTERPRETATION AND INTERPRETATION OF KCDS BLOCK AND DRAWING SYMBOLS, SEE GM GLOBAL KCDS STANDARD GMW15049 AND POWERTRAIN PROCEDURE ETQ-114+."
+            }
+        ],
+        "table_data": []
+    }

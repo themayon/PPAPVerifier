@@ -1,0 +1,14 @@
+*.pt
+models\detect_v3.pt
+image.jpg
+__pycache__/
+*.env
+*gz
+*tar
+wheelhouse
+.vscode
+*venv
+*logs
+*log
+*.db
+config.xml
