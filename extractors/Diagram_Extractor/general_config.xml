@@ -1,7 +1,7 @@
 <instance_configuration>
 
     <!-- OpenAI  -->
-    <OPENAI_ENDPOINT attr1="https://omnexllm.openai.azure.com/" />
+    <OPENAI_ENDPOINT attr1="" />
     <OPENAI_API_KEY attr1="" />
 
     <!-- FASTAPI Keys -->
