@@ -2,7 +2,7 @@
 
     <!-- OpenAI  -->
     <OPENAI_ENDPOINT attr1="https://omnexllm.openai.azure.com/" />
-    <OPENAI_API_KEY attr1="adca0f4a1200405f8e7309e63e3c17a7" />
+    <OPENAI_API_KEY attr1="" />
 
     <!-- FASTAPI Keys -->
     <X_API_KEY attr1="9de6a830726c7b356f621e783293c6cd402bd6aea94aaade2c851cabbfb847fd" />
@@ -14,7 +14,7 @@
     <CELERY_RESULT_BACKEND attr1="rpc://" />
 
     <WEBHOOK_URL attr1="http://localhost:7215/api/WebHook/" />
-  <GEMINI_API_KEY attr1="AIzaSyCWaLsPnHC1P0l4dAkUbeeQl288TO2mK3w"/>
+  <GEMINI_API_KEY attr1=""/>
   <GEMINI_MODEL attr1="gemini-2.5-flash"/>
 
 </instance_configuration>
