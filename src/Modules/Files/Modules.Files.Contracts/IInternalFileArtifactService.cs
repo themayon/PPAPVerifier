@@ -13,6 +13,10 @@ public interface IInternalFileArtifactService
         GeneratedFileArtifactRequest request,
         string currentUserId,
         CancellationToken ct = default);
+
+    Task<int> SoftDeleteAsync(
+        IReadOnlyCollection<Guid> fileAssetIds,
+        CancellationToken ct = default);
 }
 
 public sealed record GeneratedFileArtifactRequest(

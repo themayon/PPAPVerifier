@@ -123,6 +123,35 @@ public sealed class InternalFileArtifactServiceTests
         storage.ReceivedCalls().ShouldBeEmpty();
     }
 
+    [Fact]
+    public async Task SoftDeleteAsync_Should_RemoveOnlyRequestedAssets_WithoutTouchingStorage()
+    {
+        await using FilesDbContext db = CreateContext();
+        FileAsset target = CreateAvailableAsset();
+        FileAsset other = CreateAvailableAsset();
+        db.FileAssets.AddRange(target, other);
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        IStorageService storage = Substitute.For<IStorageService>();
+        InternalFileArtifactService service = CreateService(db, storage, CreatePolicy());
+
+        int removed = await service.SoftDeleteAsync([target.Id, target.Id, Guid.Empty, Guid.CreateVersion7()]);
+
+        removed.ShouldBe(1);
+        (await db.FileAssets.AnyAsync(x => x.Id == target.Id)).ShouldBeFalse();
+        (await db.FileAssets.AnyAsync(x => x.Id == other.Id)).ShouldBeTrue();
+        storage.ReceivedCalls().ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task SoftDeleteAsync_Should_ReturnZero_When_NoIdsSupplied()
+    {
+        await using FilesDbContext db = CreateContext();
+        InternalFileArtifactService service = CreateService(db, Substitute.For<IStorageService>(), CreatePolicy());
+
+        (await service.SoftDeleteAsync([])).ShouldBe(0);
+    }
+
     private static InternalFileArtifactService CreateService(
         FilesDbContext db,
         IStorageService storage,

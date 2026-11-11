@@ -5,6 +5,7 @@ using DES.Framework.Jobs.Services;
 using DES.Framework.Shared.Multitenancy;
 using DES.Framework.Shared.Persistence;
 using DES.Modules.DocumentIntelligence.Contracts.Events;
+using DES.Modules.Files.Contracts;
 using DES.Modules.Ppap.Contracts.Events;
 using DES.Modules.Ppap.Data;
 using DES.Modules.Ppap.Domain;
@@ -32,7 +33,7 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
         await using TestContext test = await CreateTestContextAsync(2);
         PpapSubmissionDocument first = test.Submission.Documents.First();
         PpapSubmissionDocument second = test.Submission.Documents.Last();
-        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
+        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>(), test.FileArtifacts);
 
         await handler.HandleAsync(Completed(first));
         test.Job.CurrentStage.ShouldBe(PpapJobStage.PreprocessingExtraction);
@@ -93,7 +94,7 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
         PpapSubmissionDocument first = test.Submission.Documents.First();
         PpapSubmissionDocument second = test.Submission.Documents.Last();
         DocumentExtractionFailedIntegrationEventHandler failedHandler = new(test.DbContext, test.Outbox, test.JobService);
-        DocumentExtractionCompletedIntegrationEventHandler completedHandler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
+        DocumentExtractionCompletedIntegrationEventHandler completedHandler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>(), test.FileArtifacts);
 
         await failedHandler.HandleAsync(Failed(first, "Failed", "Provider/Unavailable"));
         await completedHandler.HandleAsync(Completed(second));
@@ -111,7 +112,7 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
     {
         await using TestContext test = await CreateTestContextAsync(2);
         PpapSubmissionDocument document = test.Submission.Documents.First();
-        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
+        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>(), test.FileArtifacts);
         DocumentExtractionCompletedIntegrationEvent completed = Completed(document);
         await handler.HandleAsync(completed);
 
@@ -140,13 +141,20 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
     {
         await using TestContext test = await CreateTestContextAsync(1);
         PpapSubmissionDocument document = test.Submission.Documents.Single();
-        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
+        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>(), test.FileArtifacts);
 
-        await handler.HandleAsync(Completed(document) with { SourceFileAssetId = Guid.CreateVersion7() });
+        DocumentExtractionCompletedIntegrationEvent stale = Completed(document) with { SourceFileAssetId = Guid.CreateVersion7() };
+
+        await handler.HandleAsync(stale);
 
         document.ExtractionTerminalStatus.ShouldBeNull();
         test.Job.CurrentStage.ShouldBe(PpapJobStage.PreprocessingExtraction);
         test.JobService.DidNotReceiveWithAnyArgs().Enqueue<PpapRuleEvaluationJob>(default!);
+        await test.FileArtifacts.Received(1).SoftDeleteAsync(
+            Arg.Is<IReadOnlyCollection<Guid>>(ids => ids.Count == 2
+                && ids.Contains(stale.RawResponseFileAssetId!.Value)
+                && ids.Contains(stale.GeneratedExcelFileAssetId!.Value)),
+            Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -167,11 +175,12 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
     {
         await using TestContext test = await CreateTestContextAsync(1);
         PpapSubmissionDocument document = test.Submission.Documents.Single();
-        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
+        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>(), test.FileArtifacts);
 
         await handler.HandleAsync(Completed(document) with { SourceFileAssetId = document.FileAssetId });
 
         document.ExtractionTerminalStatus.ShouldBe(DocumentExtractionTerminalStatus.Succeeded);
+        await test.FileArtifacts.DidNotReceiveWithAnyArgs().SoftDeleteAsync(default!, default);
     }
 
     private static DocumentExtractionCompletedIntegrationEvent Completed(PpapSubmissionDocument document) => new(
@@ -255,7 +264,8 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
         await dbContext.SaveChangesAsync();
         IOutboxWriter outbox = Substitute.For<IOutboxWriter>();
         IJobService jobService = Substitute.For<IJobService>();
-        return new TestContext(connection, dbContext, outbox, jobService, submission, job, account);
+        IInternalFileArtifactService fileArtifacts = Substitute.For<IInternalFileArtifactService>();
+        return new TestContext(connection, dbContext, outbox, jobService, fileArtifacts, submission, job, account);
     }
 
     private sealed class TestTenantAccessor : IMultiTenantContextAccessor<AppTenantInfo>
@@ -271,6 +281,7 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
         PpapDbContext dbContext,
         IOutboxWriter outbox,
         IJobService jobService,
+        IInternalFileArtifactService fileArtifacts,
         PpapSubmission submission,
         PpapJob job,
         CreditAccount account) : IAsyncDisposable
@@ -280,6 +291,7 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
         internal PpapDbContext DbContext { get; } = dbContext;
         internal IOutboxWriter Outbox { get; } = outbox;
         internal IJobService JobService { get; } = jobService;
+        internal IInternalFileArtifactService FileArtifacts { get; } = fileArtifacts;
         internal PpapSubmission Submission { get; } = submission;
         internal PpapJob Job { get; } = job;
         internal CreditAccount Account { get; } = account;

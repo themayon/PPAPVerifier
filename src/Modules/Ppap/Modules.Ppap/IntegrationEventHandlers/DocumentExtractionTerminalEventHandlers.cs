@@ -6,6 +6,7 @@ using DES.Framework.Core.Exceptions;
 using DES.Framework.Eventing.Abstractions;
 using DES.Framework.Jobs.Services;
 using DES.Modules.DocumentIntelligence.Contracts.Events;
+using DES.Modules.Files.Contracts;
 using DES.Modules.Ppap.Contracts.Events;
 using DES.Modules.Ppap.Data;
 using DES.Modules.Ppap.Domain;
@@ -20,13 +21,14 @@ public sealed class DocumentExtractionCompletedIntegrationEventHandler(
     PpapDbContext dbContext,
     IOutboxWriter outbox,
     IJobService jobService,
-    IComplexValidationRequestScheduler validationScheduler)
+    IComplexValidationRequestScheduler validationScheduler,
+    IInternalFileArtifactService fileArtifacts)
     : IIntegrationEventHandler<DocumentExtractionCompletedIntegrationEvent>
 {
     public Task HandleAsync(DocumentExtractionCompletedIntegrationEvent @event, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(@event);
-        return DocumentExtractionTerminalEventProcessor.ProcessCompletedAsync(dbContext, outbox, jobService, validationScheduler, @event, ct);
+        return DocumentExtractionTerminalEventProcessor.ProcessCompletedAsync(dbContext, outbox, jobService, validationScheduler, fileArtifacts, @event, ct);
     }
 }
 
@@ -55,6 +57,7 @@ internal static class DocumentExtractionTerminalEventProcessor
         IOutboxWriter outbox,
         IJobService jobService,
         IComplexValidationRequestScheduler validationScheduler,
+        IInternalFileArtifactService fileArtifacts,
         DocumentExtractionCompletedIntegrationEvent @event,
         CancellationToken cancellationToken) => ProcessAsync(
             dbContext,
@@ -83,6 +86,12 @@ internal static class DocumentExtractionTerminalEventProcessor
                 @event.Provider,
                 @event.Model,
                 @event.OccurredOnUtc),
+            ct => fileArtifacts.SoftDeleteAsync(
+                new[] { @event.RawResponseFileAssetId, @event.GeneratedExcelFileAssetId }
+                    .Where(id => id.HasValue)
+                    .Select(id => id!.Value)
+                    .ToArray(),
+                ct),
             cancellationToken);
 
     internal static Task ProcessFailedAsync(
@@ -121,6 +130,7 @@ internal static class DocumentExtractionTerminalEventProcessor
                 @event.ExtractionAttemptId,
                 @event.ErrorCode,
                 @event.OccurredOnUtc),
+            null,
             cancellationToken);
     }
 
@@ -137,6 +147,7 @@ internal static class DocumentExtractionTerminalEventProcessor
         Guid? sourceFileAssetId,
         Func<PpapSubmissionDocument, bool> applyTerminalEvent,
         Func<PpapDocumentRevision, bool> applyRevisionTerminalEvent,
+        Func<CancellationToken, Task>? onStaleEvent,
         CancellationToken cancellationToken)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(tenantId);
@@ -169,6 +180,11 @@ internal static class DocumentExtractionTerminalEventProcessor
         PpapSubmissionDocument document = submission.Documents.Single(x => x.Id == submissionDocumentId);
         if (sourceFileAssetId is Guid eventFileAssetId && document.FileAssetId != eventFileAssetId)
         {
+            await transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+            if (onStaleEvent is not null)
+            {
+                await onStaleEvent(cancellationToken).ConfigureAwait(false);
+            }
             return;
         }
         _ = applyTerminalEvent(document);

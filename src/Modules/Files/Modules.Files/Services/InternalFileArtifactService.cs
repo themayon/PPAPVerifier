@@ -167,5 +167,30 @@ internal sealed class InternalFileArtifactService(
         }
     }
 
+    public async Task<int> SoftDeleteAsync(
+        IReadOnlyCollection<Guid> fileAssetIds,
+        CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(fileAssetIds);
+        Guid[] ids = fileAssetIds.Where(id => id != Guid.Empty).Distinct().ToArray();
+        if (ids.Length == 0)
+        {
+            return 0;
+        }
+
+        List<FileAsset> assets = await db.FileAssets
+            .Where(asset => ids.Contains(asset.Id))
+            .ToListAsync(ct)
+            .ConfigureAwait(false);
+        if (assets.Count == 0)
+        {
+            return 0;
+        }
+
+        db.FileAssets.RemoveRange(assets);
+        await db.SaveChangesAsync(ct).ConfigureAwait(false);
+        return assets.Count;
+    }
+
     private sealed record GeneratedArtifactStorageMarker(Guid Id);
 }

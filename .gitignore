@@ -528,4 +528,4 @@ extractors/**/Venv_*/
 extractors/**/.venv/
 extractors/**/venv/
 extractors/**/__pycache__/
-extractors/**/*.pyc
+extractors/**/*.pycextractors/**/general_config.xml
