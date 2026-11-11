@@ -16,4 +16,5 @@ public sealed record DocumentExtractionCompletedIntegrationEvent(
     Guid? GeneratedExcelFileAssetId,
     string DocumentCode,
     string Provider,
-    string Model) : IIntegrationEvent;
+    string Model,
+    Guid? SourceFileAssetId = null) : IIntegrationEvent;

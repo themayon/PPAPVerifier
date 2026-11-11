@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { keepPreviousData, useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { Copy, Filter, Hash, LayoutGrid, MessageSquareText, MoreHorizontal, Plus, RefreshCw, Rows3, Search, SquarePen, Trash2, X } from "lucide-react";
+import { Archive, ArchiveRestore, Copy, Filter, Hash, LayoutGrid, MessageSquareText, MoreHorizontal, Plus, RefreshCw, Rows3, Search, SquarePen, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import { deleteRule, isRuleDeletable, searchRules, type RuleCategory, type RuleDefinitionSummaryDto, type RuleLifecycle, type RuleSort } from "@/api/rules";
+import { deleteRule, isRuleDeletable, restoreRule, searchRules, type RuleArchiveFilter, type RuleCategory, type RuleDefinitionSummaryDto, type RuleLifecycle, type RuleSort } from "@/api/rules";
 import { useAuth } from "@/auth/use-auth";
 import { Combobox, EntityEmpty, EntityListCard, EntityListHeader, EntityListRow, EntityPageHeader, EntityPager, ErrorBand } from "@/components/list";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,10 @@ const SORTS: ReadonlyArray<{ value: RuleSort; label: string }> = [
   { value: "created", label: "Oldest" },
 ];
 const LIST_COLUMNS = "grid-cols-[minmax(8rem,0.9fr)_minmax(14rem,2fr)_7rem_6rem_7rem_7rem_2rem]";
+const ARCHIVE_OPTIONS: ReadonlyArray<{ value: Exclude<RuleArchiveFilter, "Exclude">; label: string }> = [
+  { value: "Only", label: "Archived only" },
+  { value: "Include", label: "Active + archived" },
+];
 
 type View = "grid" | "list";
 
@@ -46,15 +50,32 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
   const [deleting, setDeleting] = useState<RuleDefinitionSummaryDto | null>(null);
   const remove = useMutation({
     mutationFn: (rule: RuleDefinitionSummaryDto) => deleteRule(rule.id, rule.version),
-    onSuccess: (_result, rule) => {
-      toast.success(`Rule ${rule.stableCode} deleted`);
+    onSuccess: (result, rule) => {
+      if (result?.outcome === "Archived") {
+        toast.success(`Rule ${rule.stableCode} archived`, { description: "It has evaluation history, so it was archived instead of deleted. Restore it from the Archived filter." });
+        void queryClient.invalidateQueries({ queryKey: ["rule", rule.id] });
+      } else {
+        toast.success(`Rule ${rule.stableCode} deleted`);
+        queryClient.removeQueries({ queryKey: ["rule", rule.id] });
+      }
       setDeleting(null);
       void queryClient.invalidateQueries({ queryKey: ["rules"] });
-      queryClient.removeQueries({ queryKey: ["rule", rule.id] });
+      void queryClient.invalidateQueries({ queryKey: ["rule-lookup"] });
     },
     onError: (error) => toast.error("Delete failed", { description: describe(error) }),
   });
+  const restore = useMutation({
+    mutationFn: (rule: RuleDefinitionSummaryDto) => restoreRule(rule.id, rule.version),
+    onSuccess: (_result, rule) => {
+      toast.success(`Rule ${rule.stableCode} restored`);
+      void queryClient.invalidateQueries({ queryKey: ["rules"] });
+      void queryClient.invalidateQueries({ queryKey: ["rule", rule.id] });
+      void queryClient.invalidateQueries({ queryKey: ["rule-lookup"] });
+    },
+    onError: (error) => toast.error("Restore failed", { description: describe(error) }),
+  });
   const onDelete = canDelete ? setDeleting : null;
+  const onRestore = canDelete ? (rule: RuleDefinitionSummaryDto) => restore.mutate(rule) : null;
   const [params, setParams] = useSearchParams();
   const [view, setView] = useState<View>(() => (localStorage.getItem(VIEW_KEY) === "list" ? "list" : "grid"));
   const searchRef = useRef<HTMLInputElement>(null);
@@ -64,6 +85,8 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
   const severity = (params.get("severity") ?? "") as Severity | "";
   const scope = (params.get("scope") ?? "") as RuleCategory | "";
   const tag = params.get("tag") ?? "";
+  const archivedParam = params.get("archived");
+  const archived = archivedParam === "Only" || archivedParam === "Include" ? archivedParam : "";
   const sort = (params.get("sort") ?? "name") as RuleSort;
   const page = Math.max(1, Number(params.get("page") ?? 1) || 1);
   const [searchDraft, setSearchDraft] = useState(search);
@@ -109,8 +132,8 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
 
   const categories = scope ? [scope] : type.categories;
   const query = useQuery({
-    queryKey: ["rules", { type: type.key, page, search, status, severity, scope, tag, sort }],
-    queryFn: () => searchRules({ categories, pageNumber: page, pageSize: PAGE_SIZE, search: search || undefined, status: status || undefined, severity: severity || undefined, tag: tag || undefined, sort }),
+    queryKey: ["rules", { type: type.key, page, search, status, severity, scope, tag, archived, sort }],
+    queryFn: () => searchRules({ categories, pageNumber: page, pageSize: PAGE_SIZE, search: search || undefined, status: status || undefined, severity: severity || undefined, tag: tag || undefined, archived: archived || undefined, sort }),
     placeholderData: keepPreviousData,
     enabled: permissionsHydrated && canView,
   });
@@ -124,7 +147,7 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
     })),
   });
 
-  const activeFilters = [status, severity, scope, tag, search].filter(Boolean).length;
+  const activeFilters = [status, severity, scope, tag, archived, search].filter(Boolean).length;
   const items = query.data?.items ?? [];
 
   if (permissionsHydrated && !canView) {
@@ -212,6 +235,7 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
           {type.categories.length > 1 && (
             <Combobox variant="filter" label="Scope" value={scope || null} clearable onChange={(value) => patch({ scope: value })} options={type.categories.map((value) => ({ value, label: CATEGORY_LABELS[value] }))} />
           )}
+          <Combobox variant="filter" label="Archived" value={archived || null} clearable onChange={(value) => patch({ archived: value })} options={[...ARCHIVE_OPTIONS]} />
           {tag && (
             <span className="inline-flex h-7 items-center gap-1 rounded-full border border-[oklch(from_var(--color-primary)_l_c_h_/_0.25)] bg-[oklch(from_var(--color-primary)_l_c_h_/_0.10)] pl-3 pr-1 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-primary)]">
               Tag: #{tag}
@@ -244,7 +268,7 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
         <ul className={cn("grid gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4", query.isPlaceholderData && "opacity-70")}>
           {items.map((rule) => (
             <li key={rule.id}>
-              <RuleCard rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} onTag={(value) => patch({ tag: value })} />
+              <RuleCard rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} onRestore={onRestore} onTag={(value) => patch({ tag: value })} />
             </li>
           ))}
         </ul>
@@ -258,7 +282,7 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
                 <span>Code</span><span>Rule</span><span>Severity</span><span>Conditions</span><span>Status</span><span>Updated</span><span className="sr-only">Actions</span>
               </EntityListHeader>
               {items.map((rule, index) => (
-                <RuleRow key={rule.id} rule={rule} type={type} isLast={index === items.length - 1} canCreate={canCreate} onDelete={onDelete} />
+                <RuleRow key={rule.id} rule={rule} type={type} isLast={index === items.length - 1} canCreate={canCreate} onDelete={onDelete} onRestore={onRestore} />
               ))}
             </div>
           </div>
@@ -281,7 +305,7 @@ function RulesLibrary({ type }: { type: RuleTypeConfig }) {
           <DialogHeader>
             <DialogTitle>Delete rule</DialogTitle>
             <DialogDescription>
-              Permanently delete <strong>{deleting?.name}</strong> (<code className="font-mono">{deleting?.stableCode}</code>) and all its draft versions? It is also removed from document settings. This cannot be undone.
+              Delete <strong>{deleting?.name}</strong> (<code className="font-mono">{deleting?.stableCode}</code>)? It is removed from templates and document settings. If the rule has evaluation history it is archived instead, so past results stay intact and it can be restored later. Otherwise it is permanently deleted with all its versions.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -300,7 +324,15 @@ function useRuleMeta(rule: RuleDefinitionSummaryDto) {
 
 type OnDelete = ((rule: RuleDefinitionSummaryDto) => void) | null;
 
-function RuleMenu({ rule, type, canCreate, onDelete }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; canCreate: boolean; onDelete: OnDelete }) {
+function ArchivedBadge() {
+  return (
+    <span className="inline-flex h-5 items-center gap-1 rounded-full bg-[var(--color-muted)] px-2 text-[10.5px] font-semibold uppercase tracking-wider text-[var(--color-muted-foreground)]">
+      <Archive className="size-3" />Archived
+    </span>
+  );
+}
+
+function RuleMenu({ rule, type, canCreate, onDelete, onRestore }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; canCreate: boolean; onDelete: OnDelete; onRestore: OnDelete }) {
   const navigate = useNavigate();
   return (
     <DropdownMenu>
@@ -319,6 +351,12 @@ function RuleMenu({ rule, type, canCreate, onDelete }: { rule: RuleDefinitionSum
         {canCreate && <DropdownMenuItem onSelect={() => navigate(`/rules/${type.key}/new?from=${rule.id}`)}><Copy className="size-4" />Duplicate</DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => { void navigator.clipboard?.writeText(rule.stableCode); toast.success("Rule code copied"); }}><Hash className="size-4" />Copy code</DropdownMenuItem>
+        {onRestore && rule.isArchived && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => onRestore(rule)}><ArchiveRestore className="size-4" />Restore</DropdownMenuItem>
+          </>
+        )}
         {onDelete && isRuleDeletable(rule) && (
           <>
             <DropdownMenuSeparator />
@@ -330,7 +368,7 @@ function RuleMenu({ rule, type, canCreate, onDelete }: { rule: RuleDefinitionSum
   );
 }
 
-function RuleCard({ rule, type, canCreate, onDelete, onTag }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; canCreate: boolean; onDelete: OnDelete; onTag: (tag: string) => void }) {
+function RuleCard({ rule, type, canCreate, onDelete, onRestore, onTag }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; canCreate: boolean; onDelete: OnDelete; onRestore: OnDelete; onTag: (tag: string) => void }) {
   const meta = useRuleMeta(rule);
   const href = `/rules/${type.key}/${rule.id}`;
   return (
@@ -339,7 +377,7 @@ function RuleCard({ rule, type, canCreate, onDelete, onTag }: { rule: RuleDefini
       className={cn(
         "group relative flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-xs",
         "transition-all duration-[var(--duration-default)] hover:-translate-y-0.5 hover:shadow-md focus-within:ring-2 focus-within:ring-[var(--color-ring)]",
-        rule.lifecycle === "Retired" && "opacity-70",
+        (rule.lifecycle === "Retired" || rule.isArchived) && "opacity-70",
       )}
     >
       <span aria-hidden className={cn("absolute inset-y-0 left-0 w-1", SEVERITY_STRIPE[meta.severity])} />
@@ -347,8 +385,9 @@ function RuleCard({ rule, type, canCreate, onDelete, onTag }: { rule: RuleDefini
         <div className="flex min-w-0 flex-wrap items-center gap-1.5">
           <code className="truncate rounded-md bg-[var(--color-muted)] px-1.5 py-0.5 font-mono text-[11px] font-semibold text-[var(--color-foreground)]">{rule.stableCode}</code>
           <SeverityBadge severity={meta.severity} />
+          {rule.isArchived && <ArchivedBadge />}
         </div>
-        <div className="relative z-[1]"><RuleMenu rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} /></div>
+        <div className="relative z-[1]"><RuleMenu rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} onRestore={onRestore} /></div>
       </div>
       <Link to={href} className="flex-1 px-4 pl-5 outline-none after:absolute after:inset-0 after:content-['']">
         <h3 className="line-clamp-1 font-display text-[15px] font-semibold text-[var(--color-foreground)]">{rule.name}</h3>
@@ -377,11 +416,11 @@ function RuleCard({ rule, type, canCreate, onDelete, onTag }: { rule: RuleDefini
   );
 }
 
-function RuleRow({ rule, type, isLast, canCreate, onDelete }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; isLast: boolean; canCreate: boolean; onDelete: OnDelete }) {
+function RuleRow({ rule, type, isLast, canCreate, onDelete, onRestore }: { rule: RuleDefinitionSummaryDto; type: RuleTypeConfig; isLast: boolean; canCreate: boolean; onDelete: OnDelete; onRestore: OnDelete }) {
   const meta = useRuleMeta(rule);
   const navigate = useNavigate();
   return (
-    <EntityListRow className={LIST_COLUMNS} isLast={isLast} dim={rule.lifecycle === "Retired"} onClick={() => navigate(`/rules/${type.key}/${rule.id}`)}>
+    <EntityListRow className={LIST_COLUMNS} isLast={isLast} dim={rule.lifecycle === "Retired" || Boolean(rule.isArchived)} onClick={() => navigate(`/rules/${type.key}/${rule.id}`)}>
       <code className="flex min-w-0 items-center gap-2 font-mono text-[12px] font-semibold">
         <span aria-hidden className={cn("h-5 w-1 shrink-0 rounded-full", SEVERITY_STRIPE[meta.severity])} />
         <span className="truncate">{rule.stableCode}</span>
@@ -392,9 +431,9 @@ function RuleRow({ rule, type, isLast, canCreate, onDelete }: { rule: RuleDefini
       </span>
       <span><SeverityBadge severity={meta.severity} /></span>
       <span className="font-mono text-[12px] text-[var(--color-muted-foreground)]">{rule.conditionCount ?? 0}</span>
-      <span><LifecycleBadge status={rule.lifecycle} /></span>
+      <span>{rule.isArchived ? <ArchivedBadge /> : <LifecycleBadge status={rule.lifecycle} />}</span>
       <span className="text-[12px] text-[var(--color-muted-foreground)]">{new Date(rule.updatedAtUtc).toLocaleDateString()}</span>
-      <span className="flex justify-end"><RuleMenu rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} /></span>
+      <span className="flex justify-end"><RuleMenu rule={rule} type={type} canCreate={canCreate} onDelete={onDelete} onRestore={onRestore} /></span>
     </EntityListRow>
   );
 }

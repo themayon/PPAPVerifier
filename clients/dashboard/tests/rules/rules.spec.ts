@@ -128,36 +128,78 @@ test("lists validation rules as cards with severity, tags, and server-side filte
   await expect.poll(() => searches.some((url) => url.searchParams.get("Categories") === "ModelInference" && url.searchParams.get("PageSize") === "24")).toBe(true);
 });
 
-test("deletes a never-published rule from the list and hides Delete for live rules", async ({ page }) => {
-  const draftRule = { ...summary, id: "draft-rule-id", stableCode: "WRONG_RULE", name: "Wrong rule", lifecycle: "Draft", currentPublishedVersionId: null, version: 3 };
+test("deletes a published rule from the list when it has no evaluation history", async ({ page }) => {
+  const liveRule = { ...summary, id: "live-rule-id", stableCode: "WRONG_RULE", name: "Wrong rule", version: 3 };
   let deleted = false;
   await page.route("**/api/v1/rules/definitions?**", async (route) => {
-    const items = deleted ? [summary] : [summary, draftRule];
+    const items = deleted ? [summary] : [summary, liveRule];
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(paged(items, { pageSize: 24 })) });
   });
-  await page.route("**/api/v1/rules/definitions/draft-rule-id?**", async (route) => {
+  await page.route("**/api/v1/rules/definitions/live-rule-id?**", async (route) => {
     if (route.request().method() !== "DELETE") return route.fallback();
     deleted = true;
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ outcome: "Deleted" }) });
+  });
+
+  await page.goto("/rules/validation");
+  await expect(page.getByRole("heading", { name: "Validation rules" })).toBeVisible({ timeout: 20_000 });
+
+  await page.getByRole("button", { name: "Actions for WRONG_RULE" }).click();
+  await expect(page.getByRole("menuitem", { name: "Restore" })).toHaveCount(0);
+  await page.getByRole("menuitem", { name: "Delete" }).click();
+  const dialog = page.getByRole("dialog", { name: "Delete rule" });
+  await expect(dialog).toContainText("WRONG_RULE");
+  const request = page.waitForRequest((req) => req.url().includes("/api/v1/rules/definitions/live-rule-id") && req.method() === "DELETE");
+  await dialog.getByRole("button", { name: "Delete" }).click();
+  expect(new URL((await request).url()).searchParams.get("expectedVersion")).toBe("3");
+  await expect(dialog).toHaveCount(0);
+  await expect(page.getByText("Rule WRONG_RULE deleted")).toBeVisible();
+  await expect(page.getByText("WRONG_RULE", { exact: true })).toHaveCount(0);
+});
+
+test("archives an evaluated rule on delete and restores it from the Archived filter", async ({ page }) => {
+  const evaluated = { ...summary, id: "eval-rule-id", stableCode: "EVAL_RULE", name: "Evaluated rule", version: 5 };
+  let archived = false;
+  const searches: URL[] = [];
+  await page.route("**/api/v1/rules/definitions?**", async (route) => {
+    const url = new URL(route.request().url());
+    searches.push(url);
+    const onlyArchived = url.searchParams.get("Archived") === "Only";
+    const items = onlyArchived ? (archived ? [{ ...evaluated, version: 6, isArchived: true, archivedAtUtc: "2026-11-10T10:00:00Z" }] : []) : archived ? [summary] : [summary, evaluated];
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(paged(items, { pageSize: 24 })) });
+  });
+  await page.route("**/api/v1/rules/definitions/eval-rule-id?**", async (route) => {
+    if (route.request().method() !== "DELETE") return route.fallback();
+    archived = true;
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ outcome: "Archived" }) });
+  });
+  await page.route("**/api/v1/rules/definitions/eval-rule-id/restore?**", async (route) => {
+    archived = false;
     await route.fulfill({ status: 204, body: "" });
   });
 
   await page.goto("/rules/validation");
   await expect(page.getByRole("heading", { name: "Validation rules" })).toBeVisible({ timeout: 20_000 });
 
-  await page.getByRole("button", { name: `Actions for ${summary.stableCode}` }).click();
-  await expect(page.getByRole("menuitem", { name: "Open" })).toBeVisible();
-  await expect(page.getByRole("menuitem", { name: "Delete" })).toHaveCount(0);
-  await page.keyboard.press("Escape");
-
-  await page.getByRole("button", { name: "Actions for WRONG_RULE" }).click();
+  await page.getByRole("button", { name: "Actions for EVAL_RULE" }).click();
   await page.getByRole("menuitem", { name: "Delete" }).click();
-  const dialog = page.getByRole("dialog", { name: "Delete rule" });
-  await expect(dialog).toContainText("WRONG_RULE");
-  const request = page.waitForRequest((req) => req.url().includes("/api/v1/rules/definitions/draft-rule-id") && req.method() === "DELETE");
-  await dialog.getByRole("button", { name: "Delete" }).click();
-  expect(new URL((await request).url()).searchParams.get("expectedVersion")).toBe("3");
-  await expect(dialog).toHaveCount(0);
-  await expect(page.getByText("WRONG_RULE")).toHaveCount(0);
+  await page.getByRole("dialog", { name: "Delete rule" }).getByRole("button", { name: "Delete" }).click();
+  await expect(page.getByText("Rule EVAL_RULE archived")).toBeVisible();
+  await expect(page.getByText("EVAL_RULE", { exact: true })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Archived" }).click();
+  await page.getByRole("menuitemradio", { name: "Archived only" }).click();
+  await expect(page).toHaveURL(/archived=Only/);
+  await expect.poll(() => searches.some((url) => url.searchParams.get("Archived") === "Only")).toBe(true);
+  const card = page.getByTestId("rule-card").filter({ hasText: "EVAL_RULE" });
+  await expect(card.getByText("Archived", { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: "Actions for EVAL_RULE" }).click();
+  await expect(page.getByRole("menuitem", { name: "Delete" })).toHaveCount(0);
+  const restore = page.waitForRequest((req) => req.url().includes("/api/v1/rules/definitions/eval-rule-id/restore") && req.method() === "POST");
+  await page.getByRole("menuitem", { name: "Restore" }).click();
+  expect(new URL((await restore).url()).searchParams.get("expectedVersion")).toBe("6");
+  await expect(page.getByText("Rule EVAL_RULE restored")).toBeVisible();
 });
 
 test("builds a legacy-style formula from column master columns and posts the AST", async ({ page }) => {

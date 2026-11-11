@@ -30,8 +30,11 @@ public sealed record UpdateRuleColumnCommand(Guid Id, long ExpectedVersion, stri
 public sealed record DeleteRuleColumnCommand(Guid Id) : ICommand;
 
 public sealed record RuleVersionMetadataDto(Guid Id, int VersionNumber, RuleLifecycle Status, DateTime CreatedAtUtc, DateTime? PublishedAtUtc, DateTime? RetiredAtUtc, Guid CreatedByUserId, string? AstJson = null, string? OutcomeJson = null);
-public sealed record RuleDefinitionSummaryDto(Guid Id, string StableCode, string Name, string? Description, RuleCategory Category, RuleLifecycle Lifecycle, Guid? CurrentPublishedVersionId, DateTime CreatedAtUtc, DateTime UpdatedAtUtc, long Version, string? LatestOutcomeJson = null, int ConditionCount = 0);
-public sealed record RuleDefinitionDetailDto(Guid Id, string StableCode, string Name, string? Description, RuleCategory Category, RuleLifecycle Lifecycle, Guid? CurrentPublishedVersionId, DateTime CreatedAtUtc, DateTime UpdatedAtUtc, long Version, IReadOnlyList<RuleVersionMetadataDto> Versions);
+public sealed record RuleDefinitionSummaryDto(Guid Id, string StableCode, string Name, string? Description, RuleCategory Category, RuleLifecycle Lifecycle, Guid? CurrentPublishedVersionId, DateTime CreatedAtUtc, DateTime UpdatedAtUtc, long Version, string? LatestOutcomeJson = null, int ConditionCount = 0, bool IsArchived = false, DateTime? ArchivedAtUtc = null);
+public sealed record RuleDefinitionDetailDto(Guid Id, string StableCode, string Name, string? Description, RuleCategory Category, RuleLifecycle Lifecycle, Guid? CurrentPublishedVersionId, DateTime CreatedAtUtc, DateTime UpdatedAtUtc, long Version, IReadOnlyList<RuleVersionMetadataDto> Versions, bool IsArchived = false, DateTime? ArchivedAtUtc = null, bool HasEvaluationHistory = false);
+public enum RuleArchiveFilter { Exclude, Include, Only }
+public enum DeleteRuleOutcome { Deleted, Archived }
+public sealed record DeleteRuleResultDto(DeleteRuleOutcome Outcome);
 public sealed record RuleTraceDto(string Node, string? Operator, string? Left, string? Right, RuleEvaluationStatus Status, string? Reason);
 public sealed record RuleEvaluationResultDto(RuleEvaluationStatus Status, string? Reason, IReadOnlyList<RuleTraceDto> Trace);
 
@@ -43,6 +46,7 @@ public sealed record SearchRulesQuery : IQuery<PagedResponse<RuleDefinitionSumma
     public RuleLifecycle? Status { get; init; }
     public string? Severity { get; init; }
     public string? Tag { get; init; }
+    public RuleArchiveFilter? Archived { get; init; }
     public int? PageNumber { get; set; } = 1;
     public int? PageSize { get; set; } = 20;
     public string? Sort { get; set; }
@@ -54,7 +58,8 @@ public sealed record SubmitRuleForReviewCommand(Guid DefinitionId, Guid VersionI
 public sealed record PublishRuleCommand(Guid DefinitionId, Guid VersionId, long ExpectedAggregateVersion, bool RetireCurrent = true) : ICommand;
 public sealed record RetireRuleCommand(Guid DefinitionId, Guid VersionId, long ExpectedAggregateVersion) : ICommand;
 public sealed record ClonePublishedRuleCommand(Guid DefinitionId, Guid VersionId, long ExpectedAggregateVersion) : ICommand<Guid>;
-public sealed record DeleteRuleCommand(Guid DefinitionId, long ExpectedAggregateVersion) : ICommand;
+public sealed record DeleteRuleCommand(Guid DefinitionId, long ExpectedAggregateVersion) : ICommand<DeleteRuleResultDto>;
+public sealed record RestoreRuleCommand(Guid DefinitionId, long ExpectedAggregateVersion) : ICommand;
 public sealed record TestRuleCommand(string AstJson, IReadOnlyDictionary<string, string> Documents, string? ParametersJson = null) : ICommand<RuleEvaluationResultDto>;
 
 public sealed record TemplateDocumentRequirementDto(Guid Id, string DocumentCode, bool IsRequired, int SortOrder, TemplateDocumentDisposition Disposition);
@@ -115,9 +120,25 @@ public sealed record RuleEvaluationRequest(
     string InputSchemaVersion,
     IReadOnlyDictionary<string, string> Documents);
 
+public sealed record RuleEvaluationPreviewResult(
+    Guid RuleDefinitionId,
+    Guid RuleVersionId,
+    string StableRuleCode,
+    string RuleName,
+    string? DocumentCode,
+    RuleEvaluationStatus Status,
+    string? Reason,
+    string? Message,
+    string TraceJson);
+
 public interface IRuleEvaluationService
 {
     Task<Guid> EvaluateAsync(RuleEvaluationRequest request, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<RuleEvaluationPreviewResult>> PreviewAsync(
+        RuleEvaluationRequest request,
+        string documentCode,
+        CancellationToken cancellationToken = default);
 }
 
 public sealed record ComplexValidationPlanItem(

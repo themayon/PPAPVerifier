@@ -204,6 +204,178 @@ public sealed class RuleEvaluationServiceTests
         await Should.ThrowAsync<UnauthorizedException>(() => service.EvaluateAsync(request));
     }
 
+    [Fact]
+    public async Task EvaluateAsync_Should_SkipArchivedRule_AndEvaluateOthers()
+    {
+        await using TestContext testContext = await CreateTestContextAsync();
+        (RuleDefinition kept, RuleDefinition archived, RuleTemplate template, Guid templateVersionId) = CreateTwoRuleSnapshot();
+        archived.Archive(archived.Version, Guid.NewGuid(), DateTime.UtcNow);
+        testContext.Db.AddRange(kept, archived, template);
+        await testContext.Db.SaveChangesAsync();
+        var service = new RuleEvaluationService(testContext.Db, testContext.TenantAccessor, TimeProvider.System);
+
+        Guid runId = await service.EvaluateAsync(new RuleEvaluationRequest(templateVersionId, Guid.NewGuid(), Guid.NewGuid(), "v1", new Dictionary<string, string> { ["PSW"] = "{}" }));
+
+        RuleEvaluationRun run = await testContext.Db.RuleEvaluationRuns.Include(x => x.Results).SingleAsync(x => x.Id == runId);
+        run.Results.ShouldHaveSingleItem().RuleDefinitionId.ShouldBe(kept.Id);
+        run.Status.ShouldBe(EvaluationRunStatus.Completed);
+    }
+
+    [Fact]
+    public async Task PreviewAsync_Should_EvaluateOnlyTargetDocumentAssignments_WithoutPersistingRun()
+    {
+        await using TestContext testContext = await CreateTestContextAsync();
+        (RuleDefinition rule, RuleTemplate template, Guid templateVersionId) = CreatePublishedParameterizedSnapshot();
+        testContext.Db.AddRange(rule, template);
+        await testContext.Db.SaveChangesAsync();
+        var service = new RuleEvaluationService(testContext.Db, testContext.TenantAccessor, TimeProvider.System);
+
+        IReadOnlyList<RuleEvaluationPreviewResult> results = await service.PreviewAsync(
+            new RuleEvaluationRequest(templateVersionId, Guid.NewGuid(), Guid.NewGuid(), "v1", new Dictionary<string, string> { ["PSW"] = "{}", ["FMEA"] = "{}" }),
+            "psw");
+
+        RuleEvaluationPreviewResult result = results.ShouldHaveSingleItem();
+        result.DocumentCode.ShouldBe("PSW");
+        result.Status.ShouldBe(RuleEvaluationStatus.Passed);
+        result.StableRuleCode.ShouldBe("RULE-PARAM");
+        (await testContext.Db.RuleEvaluationRuns.CountAsync()).ShouldBe(0);
+    }
+
+    [Fact]
+    public async Task PreviewAsync_Should_SkipComplexExecutorAssignments()
+    {
+        await using TestContext testContext = await CreateTestContextAsync();
+        (RuleDefinition rule, RuleTemplate template, Guid templateVersionId) = CreatePublishedParameterizedSnapshot(
+            pswParameters: "{\"expected\":1,\"executorKey\":\"pfmea-action-dates\"}");
+        testContext.Db.AddRange(rule, template);
+        await testContext.Db.SaveChangesAsync();
+        var service = new RuleEvaluationService(testContext.Db, testContext.TenantAccessor, TimeProvider.System);
+
+        IReadOnlyList<RuleEvaluationPreviewResult> results = await service.PreviewAsync(
+            new RuleEvaluationRequest(templateVersionId, Guid.NewGuid(), Guid.NewGuid(), "v1", new Dictionary<string, string> { ["PSW"] = "{}" }),
+            "PSW");
+
+        results.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task PreviewAsync_Should_SkipArchivedRules()
+    {
+        await using TestContext testContext = await CreateTestContextAsync();
+        (RuleDefinition kept, RuleDefinition archived, RuleTemplate template, Guid templateVersionId) = CreateTwoRuleSnapshot();
+        archived.Archive(archived.Version, Guid.NewGuid(), DateTime.UtcNow);
+        testContext.Db.AddRange(kept, archived, template);
+        await testContext.Db.SaveChangesAsync();
+        var service = new RuleEvaluationService(testContext.Db, testContext.TenantAccessor, TimeProvider.System);
+
+        IReadOnlyList<RuleEvaluationPreviewResult> results = await service.PreviewAsync(
+            new RuleEvaluationRequest(templateVersionId, Guid.NewGuid(), Guid.NewGuid(), "v1", new Dictionary<string, string> { ["PSW"] = "{}" }),
+            "PSW");
+
+        results.ShouldHaveSingleItem().RuleDefinitionId.ShouldBe(kept.Id);
+    }
+
+    [Fact]
+    public async Task DeleteRule_Should_HardDeletePublishedRule_AndRemoveTemplateAssignments_WhenNeverEvaluated()
+    {
+        await using TestContext testContext = await CreateTestContextAsync();
+        (RuleDefinition rule, RuleTemplate template, Guid templateVersionId) = CreatePublishedSnapshot();
+        testContext.Db.AddRange(rule, template);
+        await testContext.Db.SaveChangesAsync();
+        testContext.Db.ChangeTracker.Clear();
+        var handler = new DeleteRuleCommandHandler(testContext.Db, new TestUser(Guid.NewGuid()));
+
+        DeleteRuleResultDto result = await handler.Handle(new DeleteRuleCommand(rule.Id, rule.Version), CancellationToken.None);
+
+        result.Outcome.ShouldBe(DeleteRuleOutcome.Deleted);
+        (await testContext.Db.RuleDefinitions.AnyAsync(x => x.Id == rule.Id)).ShouldBeFalse();
+        (await testContext.Db.RuleVersions.AnyAsync(x => x.RuleDefinitionId == rule.Id)).ShouldBeFalse();
+        (await testContext.Db.TemplateRuleAssignments.AnyAsync(x => x.TemplateVersionId == templateVersionId)).ShouldBeFalse();
+        (await testContext.Db.RuleTemplateVersions.AnyAsync(x => x.Id == templateVersionId)).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task DeleteRule_Should_Archive_AndKeepHistory_WhenRuleWasEvaluated()
+    {
+        await using TestContext testContext = await CreateTestContextAsync();
+        (RuleDefinition rule, RuleTemplate template, Guid templateVersionId) = CreatePublishedSnapshot();
+        testContext.Db.AddRange(rule, template);
+        await testContext.Db.SaveChangesAsync();
+        var service = new RuleEvaluationService(testContext.Db, testContext.TenantAccessor, TimeProvider.System);
+        Guid runId = await service.EvaluateAsync(new RuleEvaluationRequest(templateVersionId, Guid.NewGuid(), Guid.NewGuid(), "v1", new Dictionary<string, string> { ["PSW"] = "{}" }));
+        testContext.Db.ChangeTracker.Clear();
+        Guid userId = Guid.NewGuid();
+        var handler = new DeleteRuleCommandHandler(testContext.Db, new TestUser(userId));
+
+        DeleteRuleResultDto result = await handler.Handle(new DeleteRuleCommand(rule.Id, rule.Version), CancellationToken.None);
+
+        result.Outcome.ShouldBe(DeleteRuleOutcome.Archived);
+        RuleDefinition stored = await testContext.Db.RuleDefinitions.AsNoTracking().SingleAsync(x => x.Id == rule.Id);
+        stored.ArchivedAtUtc.ShouldNotBeNull();
+        stored.ArchivedByUserId.ShouldBe(userId);
+        (await testContext.Db.RuleEvaluationResults.CountAsync(x => x.RuleEvaluationRunId == runId)).ShouldBe(1);
+        (await testContext.Db.TemplateRuleAssignments.AnyAsync(x => x.TemplateVersionId == templateVersionId)).ShouldBeTrue();
+
+        testContext.Db.ChangeTracker.Clear();
+        await new RestoreRuleCommandHandler(testContext.Db).Handle(new RestoreRuleCommand(rule.Id, stored.Version), CancellationToken.None);
+        (await testContext.Db.RuleDefinitions.AsNoTracking().SingleAsync(x => x.Id == rule.Id)).ArchivedAtUtc.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task SearchRules_Should_HideArchivedByDefault_AndFilterOnRequest()
+    {
+        await using TestContext testContext = await CreateTestContextAsync();
+        (RuleDefinition kept, RuleDefinition archived, RuleTemplate template, _) = CreateTwoRuleSnapshot();
+        archived.Archive(archived.Version, Guid.NewGuid(), DateTime.UtcNow);
+        testContext.Db.AddRange(kept, archived, template);
+        await testContext.Db.SaveChangesAsync();
+        var handler = new SearchRulesQueryHandler(testContext.Db);
+
+        (await handler.Handle(new SearchRulesQuery(), CancellationToken.None)).Items.ShouldHaveSingleItem().Id.ShouldBe(kept.Id);
+        RuleDefinitionSummaryDto only = (await handler.Handle(new SearchRulesQuery { Archived = RuleArchiveFilter.Only }, CancellationToken.None)).Items.ShouldHaveSingleItem();
+        only.Id.ShouldBe(archived.Id);
+        only.IsArchived.ShouldBeTrue();
+        (await handler.Handle(new SearchRulesQuery { Archived = RuleArchiveFilter.Include }, CancellationToken.None)).Items.Count.ShouldBe(2);
+    }
+
+    private static (RuleDefinition Kept, RuleDefinition Archived, RuleTemplate Template, Guid TemplateVersionId) CreateTwoRuleSnapshot()
+    {
+        Guid userId = Guid.NewGuid();
+        DateTime now = DateTime.UtcNow;
+        RuleDefinition kept = RuleDefinition.Create(TenantId, "RULE-KEEP", "Kept", null, RuleCategory.Document, Ast, "{}", userId, now);
+        RuleDefinition archived = RuleDefinition.Create(TenantId, "RULE-ARCH", "Archived", null, RuleCategory.Document, Ast, "{}", userId, now);
+        foreach (RuleDefinition rule in new[] { kept, archived })
+        {
+            Guid versionId = rule.Versions.Single().Id;
+            rule.SubmitForReview(versionId, rule.Version, now);
+            rule.Publish(versionId, rule.Version, true, userId, now);
+        }
+        RuleTemplate template = RuleTemplate.Create(TenantId, "TEMPLATE-TWO", "Template", null, userId, now);
+        Guid templateVersionId = template.Versions.Single().Id;
+        template.ConfigureDraft(
+            templateVersionId,
+            template.Version,
+            "Template",
+            null,
+            [new TemplateDocumentRequirementInput("PSW", true, 1)],
+            [new TemplateRuleAssignmentInput(kept.Versions.Single().Id, "PSW", "{}"), new TemplateRuleAssignmentInput(archived.Versions.Single().Id, "PSW", "{}")],
+            now);
+        template.SubmitForReview(templateVersionId, template.Version, now);
+        template.Publish(templateVersionId, template.Version, true, userId, now);
+        return (kept, archived, template, templateVersionId);
+    }
+
+    private sealed class TestUser(Guid userId) : ICurrentUser
+    {
+        public string? Name => "Test User";
+        public Guid GetUserId() => userId;
+        public string? GetUserEmail() => null;
+        public string? GetTenant() => TenantId;
+        public bool IsAuthenticated() => true;
+        public bool IsInRole(string role) => false;
+        public IEnumerable<Claim>? GetUserClaims() => null;
+    }
+
     private static (RuleDefinition Rule, RuleTemplate Template, Guid TemplateVersionId) CreatePublishedSnapshot()
     {
         Guid userId = Guid.NewGuid();
@@ -338,6 +510,12 @@ public sealed class EvaluateTemplateCommandHandlerTests
             CancellationToken = cancellationToken;
             return Task.FromResult(RunId);
         }
+
+        public Task<IReadOnlyList<RuleEvaluationPreviewResult>> PreviewAsync(
+            RuleEvaluationRequest request,
+            string documentCode,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<RuleEvaluationPreviewResult>>([]);
     }
 
     private sealed class TestCurrentUser(Guid userId) : ICurrentUser

@@ -197,14 +197,52 @@ public sealed class RuleFoundationTests
     }
 
     [Fact]
-    public void EnsureDeletable_Should_Throw_WhenRuleWasPublishedOrRetired()
+    public void EnsureDeletable_Should_Allow_WhenRuleWasPublishedOrRetired()
     {
         DateTime now = DateTime.UnixEpoch; Guid user = Guid.NewGuid();
         RuleDefinition rule = RuleDefinition.Create("tenant", "LIVE", "Name", null, RuleCategory.Header, Comparison(), "{}", user, now);
         RuleVersion first = rule.Versions.Single(); rule.SubmitForReview(first.Id, 1, now); rule.Publish(first.Id, 2, true, user, now);
-        Should.Throw<CustomException>(() => rule.EnsureDeletable(3));
+        Should.NotThrow(() => rule.EnsureDeletable(3));
         rule.Retire(first.Id, 3, now);
-        Should.Throw<CustomException>(() => rule.EnsureDeletable(4));
+        Should.NotThrow(() => rule.EnsureDeletable(4));
+    }
+
+    [Fact]
+    public void Archive_Should_SetArchivedState_AndRestore_Should_ClearIt()
+    {
+        DateTime now = DateTime.UnixEpoch; Guid user = Guid.NewGuid();
+        RuleDefinition rule = RuleDefinition.Create("tenant", "ARCH", "Name", null, RuleCategory.Header, Comparison(), "{}", user, now);
+        RuleVersion first = rule.Versions.Single(); rule.SubmitForReview(first.Id, 1, now); rule.Publish(first.Id, 2, true, user, now);
+
+        rule.Archive(3, user, now);
+        rule.IsArchived.ShouldBeTrue(); rule.ArchivedAtUtc.ShouldBe(now); rule.ArchivedByUserId.ShouldBe(user); rule.Version.ShouldBe(4);
+        rule.CurrentPublishedVersionId.ShouldBe(first.Id);
+        Should.Throw<CustomException>(() => rule.Archive(4, user, now));
+
+        rule.Restore(4, now);
+        rule.IsArchived.ShouldBeFalse(); rule.ArchivedByUserId.ShouldBeNull(); rule.Version.ShouldBe(5);
+        Should.Throw<CustomException>(() => rule.Restore(5, now));
+    }
+
+    [Fact]
+    public void Archive_Should_Throw_WhenExpectedVersionIsStale()
+    {
+        RuleDefinition rule = RuleDefinition.Create("tenant", "ARCHSTALE", "Name", null, RuleCategory.Header, Comparison(), "{}", Guid.NewGuid(), DateTime.UnixEpoch);
+        Should.Throw<CustomException>(() => rule.Archive(5, Guid.NewGuid(), DateTime.UnixEpoch));
+    }
+
+    [Fact]
+    public void ArchivedRule_Should_RejectLifecycleChanges_UntilRestored()
+    {
+        DateTime now = DateTime.UnixEpoch; Guid user = Guid.NewGuid();
+        RuleDefinition rule = RuleDefinition.Create("tenant", "LOCKED", "Name", null, RuleCategory.Header, Comparison(), "{}", user, now);
+        RuleVersion first = rule.Versions.Single(); rule.SubmitForReview(first.Id, 1, now); rule.Publish(first.Id, 2, true, user, now);
+        rule.Archive(3, user, now);
+
+        Should.Throw<CustomException>(() => rule.ClonePublished(first.Id, 4, user, now));
+        Should.Throw<CustomException>(() => rule.Retire(first.Id, 4, now));
+        rule.Restore(4, now);
+        Should.NotThrow(() => rule.ClonePublished(first.Id, 5, user, now));
     }
 
     [Fact]

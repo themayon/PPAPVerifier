@@ -670,6 +670,18 @@ export function reserveDocumentRevision(input: {
   );
 }
 
+export function deleteDocumentRevision(input: {
+  submissionId: string;
+  documentId: string;
+  revisionId: string;
+  expectedVersion: number;
+}) {
+  return apiFetch<void>(
+    `${BASE}/submissions/${encodeURIComponent(input.submissionId)}/documents/${encodeURIComponent(input.documentId)}/revisions/${encodeURIComponent(input.revisionId)}?expectedVersion=${input.expectedVersion}`,
+    { method: "DELETE" },
+  );
+}
+
 export function requestFindingWaiver(input: { submissionId: string; findingId: string; reason: string }) {
   return apiFetch<string>(`${BASE}/submissions/${encodeURIComponent(input.submissionId)}/findings/${encodeURIComponent(input.findingId)}/waiver-requests`, {
     method: "POST",

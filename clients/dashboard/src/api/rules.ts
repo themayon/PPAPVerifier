@@ -7,12 +7,15 @@ export type TemplateDocumentDisposition = "Submit" | "Retain" | "Available";
 export type RuleEvaluationStatus = "Passed" | "Failed" | "NotEvaluated" | "Error";
 
 export type RuleVersionMetadataDto = { id: string; versionNumber: number; status: RuleLifecycle; createdAtUtc: string; publishedAtUtc?: string | null; retiredAtUtc?: string | null; createdByUserId: string; astJson?: string | null; outcomeJson?: string | null };
-export type RuleDefinitionSummaryDto = { id: string; stableCode: string; name: string; description?: string | null; category: RuleCategory; lifecycle: RuleLifecycle; currentPublishedVersionId?: string | null; createdAtUtc: string; updatedAtUtc: string; version: number; latestOutcomeJson?: string | null; conditionCount?: number };
-export type RuleDefinitionDetailDto = RuleDefinitionSummaryDto & { versions: RuleVersionMetadataDto[] };
+export type RuleDefinitionSummaryDto = { id: string; stableCode: string; name: string; description?: string | null; category: RuleCategory; lifecycle: RuleLifecycle; currentPublishedVersionId?: string | null; createdAtUtc: string; updatedAtUtc: string; version: number; latestOutcomeJson?: string | null; conditionCount?: number; isArchived?: boolean; archivedAtUtc?: string | null };
+export type RuleDefinitionDetailDto = RuleDefinitionSummaryDto & { versions: RuleVersionMetadataDto[]; hasEvaluationHistory?: boolean };
+export type RuleArchiveFilter = "Exclude" | "Include" | "Only";
+export type DeleteRuleOutcome = "Deleted" | "Archived";
+export type DeleteRuleResultDto = { outcome: DeleteRuleOutcome };
 export type RuleTraceDto = { node: string; operator?: string | null; left?: string | null; right?: string | null; status: RuleEvaluationStatus; reason?: string | null };
 export type RuleEvaluationResultDto = { status: RuleEvaluationStatus; reason?: string | null; trace: RuleTraceDto[] };
 export type RuleSort = "name" | "-name" | "created" | "-created" | "updated" | "-updated";
-export type SearchRulesParams = { search?: string; category?: RuleCategory; categories?: readonly RuleCategory[]; status?: RuleLifecycle; severity?: string; tag?: string; pageNumber?: number; pageSize?: number; sort?: RuleSort };
+export type SearchRulesParams = { search?: string; category?: RuleCategory; categories?: readonly RuleCategory[]; status?: RuleLifecycle; severity?: string; tag?: string; archived?: RuleArchiveFilter; pageNumber?: number; pageSize?: number; sort?: RuleSort };
 export type CreateRuleInput = { stableCode: string; name: string; description?: string | null; category: RuleCategory; astJson: string; outcomeJson: string };
 export type UpdateRuleDraftInput = Omit<CreateRuleInput, "stableCode"> & { versionId: string; expectedAggregateVersion: number };
 export type RuleVersionTransitionInput = { versionId: string; expectedAggregateVersion: number };
@@ -67,6 +70,7 @@ function query(params: SearchRulesParams | SearchTemplatesParams) {
   if ("categories" in params && params.categories?.length) value.set("Categories", params.categories.join(","));
   if ("severity" in params && params.severity) value.set("Severity", params.severity);
   if ("tag" in params && params.tag?.trim()) value.set("Tag", params.tag.trim());
+  if ("archived" in params && params.archived) value.set("Archived", params.archived);
   if (params.status) value.set("Status", params.status);
   if (params.sort) value.set("Sort", params.sort);
   return value.toString();
@@ -81,9 +85,9 @@ export const submitRuleForReview = (id: string, input: RuleVersionTransitionInpu
 export const publishRule = (id: string, input: RuleVersionTransitionInput & { retireCurrent?: boolean }) => apiFetch<void>(`${BASE}/definitions/${encodeURIComponent(id)}/publish`, body(input));
 export const retireRule = (id: string, input: RuleVersionTransitionInput) => apiFetch<void>(`${BASE}/definitions/${encodeURIComponent(id)}/retire`, body(input));
 export const cloneRule = (id: string, input: RuleVersionTransitionInput) => apiFetch<string>(`${BASE}/definitions/${encodeURIComponent(id)}/clone`, body(input));
-export const deleteRule = (id: string, expectedVersion: number) => apiFetch<void>(`${BASE}/definitions/${encodeURIComponent(id)}?expectedVersion=${expectedVersion}`, { method: "DELETE" });
-export const isRuleDeletable = (rule: Pick<RuleDefinitionSummaryDto, "lifecycle" | "currentPublishedVersionId">) =>
-  !rule.currentPublishedVersionId && (rule.lifecycle === "Draft" || rule.lifecycle === "InReview");
+export const deleteRule = (id: string, expectedVersion: number) => apiFetch<DeleteRuleResultDto>(`${BASE}/definitions/${encodeURIComponent(id)}?expectedVersion=${expectedVersion}`, { method: "DELETE" });
+export const restoreRule = (id: string, expectedVersion: number) => apiFetch<void>(`${BASE}/definitions/${encodeURIComponent(id)}/restore?expectedVersion=${expectedVersion}`, { method: "POST" });
+export const isRuleDeletable = (rule: Pick<RuleDefinitionSummaryDto, "isArchived">) => !rule.isArchived;
 export const testRule = (input: TestRuleInput) => apiFetch<RuleEvaluationResultDto>(`${BASE}/definitions/test`, body(input));
 export function searchRuleColumns(params: SearchRuleColumnsParams = {}) {
   const value = new URLSearchParams({ PageNumber: String(params.pageNumber ?? 1), PageSize: String(params.pageSize ?? 50) });

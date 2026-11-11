@@ -48,6 +48,9 @@ internal sealed class ComplexValidationPlanReader(
             .AsSplitQuery()
             .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
+        HashSet<Guid> archivedAssignments = definitions.Where(definition => definition.ArchivedAtUtc is not null)
+            .SelectMany(definition => definition.Versions.Select(version => version.Id))
+            .ToHashSet();
         Dictionary<Guid, (RuleDefinition Definition, RuleVersion Version)> versions = definitions
             .SelectMany(definition => definition.Versions.Select(version => (version.Id, definition, version)))
             .ToDictionary(item => item.Id, item => (item.definition, item.version));
@@ -59,6 +62,7 @@ internal sealed class ComplexValidationPlanReader(
 
         var plan = new List<ComplexValidationPlanItem>();
         foreach (TemplateRuleAssignment assignment in templateVersion.RuleAssignments
+                     .Where(item => !archivedAssignments.Contains(item.RuleVersionId))
                      .OrderBy(item => item.DocumentCode, StringComparer.Ordinal)
                      .ThenBy(item => item.RuleVersionId))
         {
@@ -87,7 +91,7 @@ internal sealed class ComplexValidationPlanReader(
         return plan;
     }
 
-    private static void CollectAstDocumentCodes(string astJson, ISet<string> documentCodes)
+    internal static void CollectAstDocumentCodes(string astJson, ISet<string> documentCodes)
     {
         using JsonDocument ast = JsonDocument.Parse(astJson);
         CollectAstDocumentCodes(ast.RootElement, documentCodes);
@@ -135,7 +139,7 @@ internal sealed class ComplexValidationPlanReader(
         }
     }
 
-    private static bool TryReadString(JsonElement value, string propertyName, out string? result)
+    internal static bool TryReadString(JsonElement value, string propertyName, out string? result)
     {
         foreach (JsonProperty property in value.EnumerateObject())
         {

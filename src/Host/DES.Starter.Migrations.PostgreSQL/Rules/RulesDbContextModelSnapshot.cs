@@ -18,7 +18,7 @@ namespace DES.Starter.Migrations.PostgreSQL.Rules
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("rules")
-                .HasAnnotation("ProductVersion", "10.0.8")
+                .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -169,6 +169,12 @@ namespace DES.Starter.Migrations.PostgreSQL.Rules
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ArchivedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ArchivedByUserId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Category")

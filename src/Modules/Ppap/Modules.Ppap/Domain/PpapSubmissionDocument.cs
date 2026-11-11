@@ -128,6 +128,24 @@ public sealed class PpapSubmissionDocument : BaseEntity<Guid>, IHasTenant
         UpdatedAtUtc = DateTime.UtcNow;
     }
 
+    internal void ClearCurrentRevisionFile()
+    {
+        FileAssetId = null;
+        NotApplicableReason = null;
+        Status = SubmissionDocumentStatus.PendingUpload;
+        ExtractionRequestEventId = null;
+        ExtractionRequestPublishedAtUtc = null;
+        ExtractionAttemptId = null;
+        ExtractionTerminalStatus = null;
+        CanonicalDocumentId = null;
+        RawResponseFileAssetId = null;
+        GeneratedExcelFileAssetId = null;
+        ExtractionFailureCode = null;
+        ExtractionCompletedAtUtc = null;
+        ExtractionFailedAtUtc = null;
+        UpdatedAtUtc = DateTime.UtcNow;
+    }
+
     public bool MarkExtractionRequestPublished(Guid eventId, DateTime publishedAtUtc)
     {
         if (ExtractionRequestPublishedAtUtc is not null)

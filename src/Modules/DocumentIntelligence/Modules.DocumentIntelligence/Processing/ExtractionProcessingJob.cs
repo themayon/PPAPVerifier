@@ -368,7 +368,8 @@ public sealed class ExtractionProcessingJob(
             document.GeneratedExcelFileAssetId,
             attempt.DocumentCode,
             attempt.Provider,
-            attempt.Model), cancellationToken).ConfigureAwait(false);
+            attempt.Model,
+            attempt.SourceFileAssetId), cancellationToken).ConfigureAwait(false);
     }
 
     private static async Task AddFailureEventAsync(
@@ -394,7 +395,8 @@ public sealed class ExtractionProcessingJob(
             attempt.Provider,
             attempt.Model,
             attempt.Status == ExtractionAttemptStatus.InvalidDocument ? "InvalidDocument" : "Failed",
-            attempt.ErrorCode ?? "ExtractionFailed"), cancellationToken).ConfigureAwait(false);
+            attempt.ErrorCode ?? "ExtractionFailed",
+            attempt.SourceFileAssetId), cancellationToken).ConfigureAwait(false);
     }
 
     private static string BuildClaimedBy()

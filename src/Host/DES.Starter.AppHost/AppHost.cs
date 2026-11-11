@@ -1,4 +1,5 @@
-﻿using Aspire.Hosting.ApplicationModel;
+﻿using System.Globalization;
+using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -309,6 +310,59 @@ else if (useExternalRabbitMq)
         .WithEnvironment("ValidationWorker__UseSsl", infra["RabbitMQ:UseSsl"] ?? "false");
 }
 
+// External Python LLM extractors (ASPECT document extraction, Diagram drawing extraction). Each service keeps its own .env (provider keys, DB); AppHost launches it from its venv and hands the API the same API key via a secret parameter.
+var extractors = builder.Configuration.GetSection("ExternalExtractors");
+var aspectConfig = extractors.GetSection("Aspect");
+string extractorsRoot = Path.GetFullPath(Path.Combine(builder.AppHostDirectory, "..", "..", "..", ".."));
+string aspectPath = aspectConfig["Path"] ?? Path.Combine(extractorsRoot, "ASPECT_VALIDATION_LLM");
+if (aspectConfig.GetValue("Enabled", false)
+    && ResolveVenvPython(aspectPath, aspectConfig["Venv"] ?? "Venv_LLM_Extraction", "ExternalExtractors:Aspect") is { } aspectPython)
+{
+    int aspectPort = aspectConfig.GetValue("Port", 8001);
+    string aspectPortText = aspectPort.ToString(CultureInfo.InvariantCulture);
+    var aspectApiKey = builder.AddParameter("aspect-api-key", secret: true);
+    var aspectExtractor = builder.AddExecutable("aspect-extractor", aspectPython, aspectPath, "-m", "uvicorn", "main_pdf_extractor:app", "--host", "127.0.0.1", "--port", aspectPortText)
+        .WithHttpEndpoint(port: aspectPort, targetPort: aspectPort, name: "http", isProxied: false)
+        .WithEnvironment("ASPECT_API_KEY", aspectApiKey)
+        .WithHttpHealthCheck("/health");
+    api = api
+        .WaitFor(aspectExtractor)
+        .WithEnvironment("AspectPdfExtractionOptions__Enabled", "true")
+        .WithEnvironment("AspectPdfExtractionOptions__BaseUrl", $"http://127.0.0.1:{aspectPortText}")
+        .WithEnvironment("AspectPdfExtractionOptions__ApiKey", aspectApiKey)
+        .WithEnvironment("AspectPdfExtractionOptions__Provider", aspectConfig["Provider"] ?? "gemini")
+        .WithEnvironment("AspectPdfExtractionOptions__Model", aspectConfig["Model"] ?? string.Empty)
+        .WithEnvironment("AspectPdfExtractionOptions__UseAsyncTaskApi", aspectConfig.GetValue("UseAsyncTaskApi", true) ? "true" : "false");
+}
+
+var diagramConfig = extractors.GetSection("Diagram");
+string diagramPath = diagramConfig["Path"] ?? Path.Combine(extractorsRoot, "Diagram_Extractor");
+if (diagramConfig.GetValue("Enabled", false)
+    && ResolveVenvPython(diagramPath, diagramConfig["Venv"] ?? "Venv_DiagramExtractorAPI", "ExternalExtractors:Diagram") is { } diagramPython)
+{
+    int diagramPort = diagramConfig.GetValue("Port", 8002);
+    string diagramPortText = diagramPort.ToString(CultureInfo.InvariantCulture);
+    var diagramApiKey = builder.AddParameter("diagram-api-key", secret: true);
+    var diagramExtractor = builder.AddExecutable("diagram-extractor", diagramPython, diagramPath, "-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", diagramPortText)
+        .WithHttpEndpoint(port: diagramPort, targetPort: diagramPort, name: "http", isProxied: false)
+        .WithEnvironment("X-API-KEY", diagramApiKey);
+    var diagramCelery = builder.AddExecutable("diagram-celery", diagramPython, diagramPath, "-m", "celery", "-A", "app.src.tasks", "worker", "--loglevel=info", "--concurrency=4", "--pool=threads");
+    if (rabbitMq is not null && rabbitMqEndpoint is not null)
+    {
+        var brokerUrl = ReferenceExpression.Create(
+            $"amqp://{rabbitMqUser}:{rabbitMqPassword}@{rabbitMqEndpoint.Property(EndpointProperty.Host)}:{rabbitMqEndpoint.Property(EndpointProperty.Port)}/");
+        diagramExtractor = diagramExtractor.WaitFor(rabbitMq).WithEnvironment("CELERY_BROKER_URL", brokerUrl);
+        diagramCelery.WaitFor(rabbitMq).WithEnvironment("CELERY_BROKER_URL", brokerUrl);
+    }
+    api = api
+        .WaitFor(diagramExtractor)
+        .WithEnvironment("DiagramDrawingExtractionOptions__Enabled", "true")
+        .WithEnvironment("DiagramDrawingExtractionOptions__BaseUrl", $"http://127.0.0.1:{diagramPortText}")
+        .WithEnvironment("DiagramDrawingExtractionOptions__ApiKey", diagramApiKey)
+        .WithEnvironment("DiagramDrawingExtractionOptions__Provider", diagramConfig["Provider"] ?? "gemini")
+        .WithEnvironment("DiagramDrawingExtractionOptions__Model", diagramConfig["Model"] ?? string.Empty);
+}
+
 //#if (frontend)
 // Unified PPAP Verifier application (React + Vite, with SSE live feed)
 builder.AddJavaScriptApp("ppap-verifier", "../../../clients/dashboard", "dev")
@@ -324,3 +378,11 @@ _ = api;
 //#endif
 
 await builder.Build().RunAsync();
+
+static string? ResolveVenvPython(string projectPath, string venvName, string configSection)
+{
+    string python = Path.Combine(projectPath, venvName, "Scripts", "python.exe");
+    if (File.Exists(python)) return python;
+    Console.Error.WriteLine($"[AppHost] {configSection} skipped: Python venv not found at '{python}'. Run the project's initial_setup_*.bat once or fix {configSection}:Path/Venv. Extraction stays disabled for this provider.");
+    return null;
+}

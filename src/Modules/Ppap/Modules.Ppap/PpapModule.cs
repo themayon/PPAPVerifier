@@ -28,6 +28,7 @@ using DES.Modules.Ppap.Features.v1.Submissions.AddSubmissionDocument;
 using DES.Modules.Ppap.Features.v1.Submissions.CancelDraftSubmission;
 using DES.Modules.Ppap.Features.v1.Submissions.CreateDraftSubmission;
 using DES.Modules.Ppap.Features.v1.Submissions.DecidePpapSubmission;
+using DES.Modules.Ppap.Features.v1.Submissions.DeleteDocumentRevision;
 using DES.Modules.Ppap.Features.v1.Submissions.GetPpapSubmission;
 using DES.Modules.Ppap.Features.v1.Submissions.GetSubmissionDocuments;
 using DES.Modules.Ppap.Features.v1.Submissions.MarkSubmissionDocumentNotApplicable;
@@ -76,6 +77,7 @@ public sealed class PpapModule : IModule
         builder.Services.AddScoped<IPpapProgressNotifier, SignalRPpapProgressNotifier>();
         builder.Services.AddScoped<PpapProcessingJob>();
         builder.Services.AddScoped<PpapRuleEvaluationJob>();
+        builder.Services.AddScoped<PpapDraftRuleEvaluationJob>();
         builder.Services.AddScoped<PpapReportGenerationJob>();
         builder.Services.AddScoped<ComplexValidationResultProcessor>();
         builder.Services.AddScoped<IComplexValidationRequestScheduler, ComplexValidationRequestScheduler>();
@@ -128,6 +130,7 @@ public sealed class PpapModule : IModule
         group.MapDecidePpapSubmissionEndpoint();
         group.MapAddSubmissionDocumentEndpoint();
         group.MapCreateDocumentRevisionEndpoint();
+        group.MapDeleteDocumentRevisionEndpoint();
         group.MapMarkSubmissionDocumentNotApplicableEndpoint();
         group.MapGetSubmissionDocumentsEndpoint();
         group.MapGetSubmissionWorkspaceEndpoint();

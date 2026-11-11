@@ -119,6 +119,13 @@ public sealed class PpapSubmission : AggregateRoot<Guid>, IHasTenant
         RecordMutation();
     }
 
+    public void RemoveDocumentRevision(Guid documentId)
+    {
+        EnsureDraft("delete document revisions on");
+        GetDocument(documentId).ClearCurrentRevisionFile();
+        RecordMutation();
+    }
+
     public void UpdateDraft(string partName, string partNumber, string drawingRevision, int ppapLevel)
     {
         EnsureDraft("update");

@@ -21,6 +21,7 @@ public sealed class SearchRulesQueryHandler(RulesDbContext db) : IQueryHandler<S
         int page = Math.Max(query.PageNumber ?? 1, 1); int size = Math.Clamp(query.PageSize ?? 20, 1, 100); IQueryable<RuleDefinition> q = db.RuleDefinitions.AsNoTracking();
         if (!string.IsNullOrWhiteSpace(query.Search)) { string s = query.Search.Trim(); q = q.Where(x => EF.Functions.ILike(x.Name, $"%{s}%") || EF.Functions.ILike(x.StableCode, $"%{s}%")); }
         if (query.Category is { } category) q = q.Where(x => x.Category == category); if (query.Status is { } status) q = q.Where(x => x.Lifecycle == status);
+        q = (query.Archived ?? RuleArchiveFilter.Exclude) switch { RuleArchiveFilter.Only => q.Where(x => x.ArchivedAtUtc != null), RuleArchiveFilter.Include => q, _ => q.Where(x => x.ArchivedAtUtc == null) };
         RuleCategory[] categories = RuleSearchFilters.ParseCategories(query.Categories); if (categories.Length > 0) q = q.Where(x => categories.Contains(x.Category));
         if (!string.IsNullOrWhiteSpace(query.Severity)) { string severity = JsonSerializer.Serialize(new { severity = query.Severity.Trim() }); q = q.Where(x => x.Versions.OrderByDescending(v => v.VersionNumber).Take(1).Any(v => EF.Functions.JsonContains(v.OutcomeJson, severity))); }
         if (!string.IsNullOrWhiteSpace(query.Tag)) { string tag = JsonSerializer.Serialize(new { tags = new[] { query.Tag.Trim() } }); q = q.Where(x => x.Versions.OrderByDescending(v => v.VersionNumber).Take(1).Any(v => EF.Functions.JsonContains(v.OutcomeJson, tag))); }
@@ -43,7 +44,12 @@ internal static class RuleSearchFilters
 }
 public sealed class GetRuleQueryHandler(RulesDbContext db) : IQueryHandler<GetRuleQuery, RuleDefinitionDetailDto>
 {
-    public async ValueTask<RuleDefinitionDetailDto> Handle(GetRuleQuery query, CancellationToken ct) => Map.Detail(await Load(db, query.DefinitionId, false, ct).ConfigureAwait(false));
+    public async ValueTask<RuleDefinitionDetailDto> Handle(GetRuleQuery query, CancellationToken ct)
+    {
+        RuleDefinition rule = await Load(db, query.DefinitionId, false, ct).ConfigureAwait(false);
+        bool hasHistory = await db.RuleEvaluationResults.AnyAsync(x => x.RuleDefinitionId == rule.Id, ct).ConfigureAwait(false);
+        return Map.Detail(rule, hasHistory);
+    }
     internal static async Task<RuleDefinition> Load(RulesDbContext db, Guid id, bool tracking, CancellationToken ct) { IQueryable<RuleDefinition> q = db.RuleDefinitions.Include(x => x.Versions); if (!tracking) q = q.AsNoTracking(); return await q.SingleOrDefaultAsync(x => x.Id == id, ct).ConfigureAwait(false) ?? throw new CustomException("Rule was not found.", (IEnumerable<string>?)null, HttpStatusCode.NotFound); }
 }
 public sealed class CreateRuleCommandHandler(RulesDbContext db, ICurrentUser user, IMultiTenantContextAccessor<AppTenantInfo> tenant) : ICommandHandler<CreateRuleCommand, Guid>
@@ -71,21 +77,29 @@ public sealed class ClonePublishedRuleCommandHandler(RulesDbContext db, ICurrent
 {
     public async ValueTask<Guid> Handle(ClonePublishedRuleCommand c, CancellationToken ct) { RuleDefinition r = await GetRuleQueryHandler.Load(db, c.DefinitionId, true, ct).ConfigureAwait(false); RuleVersion v = r.ClonePublished(c.VersionId, c.ExpectedAggregateVersion, user.GetUserId(), DateTime.UtcNow); await CreateRuleCommandHandler.Save(db, ct).ConfigureAwait(false); return v.Id; }
 }
-public sealed class DeleteRuleCommandHandler(RulesDbContext db) : ICommandHandler<DeleteRuleCommand>
+public sealed class DeleteRuleCommandHandler(RulesDbContext db, ICurrentUser user) : ICommandHandler<DeleteRuleCommand, DeleteRuleResultDto>
 {
-    public async ValueTask<Unit> Handle(DeleteRuleCommand c, CancellationToken ct)
+    public async ValueTask<DeleteRuleResultDto> Handle(DeleteRuleCommand c, CancellationToken ct)
     {
         RuleDefinition r = await GetRuleQueryHandler.Load(db, c.DefinitionId, true, ct).ConfigureAwait(false);
+        if (await db.RuleEvaluationResults.AnyAsync(x => x.RuleDefinitionId == r.Id, ct).ConfigureAwait(false))
+        {
+            r.Archive(c.ExpectedAggregateVersion, user.GetUserId(), DateTime.UtcNow);
+            await CreateRuleCommandHandler.Save(db, ct).ConfigureAwait(false);
+            return new DeleteRuleResultDto(DeleteRuleOutcome.Archived);
+        }
         r.EnsureDeletable(c.ExpectedAggregateVersion);
         Guid[] versionIds = r.Versions.Select(v => v.Id).ToArray();
-        if (await db.TemplateRuleAssignments.AnyAsync(x => versionIds.Contains(x.RuleVersionId), ct).ConfigureAwait(false))
-            throw new CustomException("The rule is assigned to a rule template version and cannot be deleted.", (IEnumerable<string>?)null, HttpStatusCode.Conflict);
-        if (await db.RuleEvaluationResults.AnyAsync(x => x.RuleDefinitionId == r.Id, ct).ConfigureAwait(false))
-            throw new CustomException("The rule has evaluation history and cannot be deleted.", (IEnumerable<string>?)null, HttpStatusCode.Conflict);
+        List<TemplateRuleAssignment> assignments = await db.TemplateRuleAssignments.Where(x => versionIds.Contains(x.RuleVersionId)).ToListAsync(ct).ConfigureAwait(false);
+        db.TemplateRuleAssignments.RemoveRange(assignments);
         db.RuleDefinitions.Remove(r);
         await CreateRuleCommandHandler.Save(db, ct).ConfigureAwait(false);
-        return Unit.Value;
+        return new DeleteRuleResultDto(DeleteRuleOutcome.Deleted);
     }
+}
+public sealed class RestoreRuleCommandHandler(RulesDbContext db) : ICommandHandler<RestoreRuleCommand>
+{
+    public async ValueTask<Unit> Handle(RestoreRuleCommand c, CancellationToken ct) { RuleDefinition r = await GetRuleQueryHandler.Load(db, c.DefinitionId, true, ct).ConfigureAwait(false); r.Restore(c.ExpectedAggregateVersion, DateTime.UtcNow); await CreateRuleCommandHandler.Save(db, ct).ConfigureAwait(false); return Unit.Value; }
 }
 public sealed class TestRuleCommandHandler : ICommandHandler<TestRuleCommand, RuleEvaluationResultDto>
 {
@@ -93,6 +107,6 @@ public sealed class TestRuleCommandHandler : ICommandHandler<TestRuleCommand, Ru
 }
 internal static class Map
 {
-    internal static RuleDefinitionSummaryDto Summary(RuleDefinition x, string? latestOutcomeJson, int conditionCount) => new(x.Id, x.StableCode, x.Name, x.Description, x.Category, x.Lifecycle, x.CurrentPublishedVersionId, x.CreatedAtUtc, x.UpdatedAtUtc, x.Version, latestOutcomeJson, conditionCount);
-    internal static RuleDefinitionDetailDto Detail(RuleDefinition x) => new(x.Id, x.StableCode, x.Name, x.Description, x.Category, x.Lifecycle, x.CurrentPublishedVersionId, x.CreatedAtUtc, x.UpdatedAtUtc, x.Version, x.Versions.OrderByDescending(v => v.VersionNumber).Select(v => new RuleVersionMetadataDto(v.Id, v.VersionNumber, v.Status, v.CreatedAtUtc, v.PublishedAtUtc, v.RetiredAtUtc, v.CreatedByUserId, v.AstJson, v.OutcomeJson)).ToArray());
+    internal static RuleDefinitionSummaryDto Summary(RuleDefinition x, string? latestOutcomeJson, int conditionCount) => new(x.Id, x.StableCode, x.Name, x.Description, x.Category, x.Lifecycle, x.CurrentPublishedVersionId, x.CreatedAtUtc, x.UpdatedAtUtc, x.Version, latestOutcomeJson, conditionCount, x.IsArchived, x.ArchivedAtUtc);
+    internal static RuleDefinitionDetailDto Detail(RuleDefinition x, bool hasEvaluationHistory = false) => new(x.Id, x.StableCode, x.Name, x.Description, x.Category, x.Lifecycle, x.CurrentPublishedVersionId, x.CreatedAtUtc, x.UpdatedAtUtc, x.Version, x.Versions.OrderByDescending(v => v.VersionNumber).Select(v => new RuleVersionMetadataDto(v.Id, v.VersionNumber, v.Status, v.CreatedAtUtc, v.PublishedAtUtc, v.RetiredAtUtc, v.CreatedByUserId, v.AstJson, v.OutcomeJson)).ToArray(), x.IsArchived, x.ArchivedAtUtc, hasEvaluationHistory);
 }

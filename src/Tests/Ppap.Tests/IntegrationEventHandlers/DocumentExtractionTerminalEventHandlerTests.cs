@@ -135,6 +135,45 @@ public sealed class DocumentExtractionTerminalEventHandlerTests
         document.ExtractionTerminalStatus.ShouldBeNull();
     }
 
+    [Fact]
+    public async Task CompletedHandler_Should_IgnoreEvent_When_SourceFileNoLongerMatchesDocument()
+    {
+        await using TestContext test = await CreateTestContextAsync(1);
+        PpapSubmissionDocument document = test.Submission.Documents.Single();
+        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
+
+        await handler.HandleAsync(Completed(document) with { SourceFileAssetId = Guid.CreateVersion7() });
+
+        document.ExtractionTerminalStatus.ShouldBeNull();
+        test.Job.CurrentStage.ShouldBe(PpapJobStage.PreprocessingExtraction);
+        test.JobService.DidNotReceiveWithAnyArgs().Enqueue<PpapRuleEvaluationJob>(default!);
+    }
+
+    [Fact]
+    public async Task FailedHandler_Should_IgnoreEvent_When_SourceFileNoLongerMatchesDocument()
+    {
+        await using TestContext test = await CreateTestContextAsync(1);
+        PpapSubmissionDocument document = test.Submission.Documents.Single();
+        DocumentExtractionFailedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService);
+
+        await handler.HandleAsync(Failed(document, "Failed", "ProviderUnavailable") with { SourceFileAssetId = Guid.CreateVersion7() });
+
+        document.ExtractionTerminalStatus.ShouldBeNull();
+        test.Job.Status.ShouldBe(PpapJobStatus.Processing);
+    }
+
+    [Fact]
+    public async Task CompletedHandler_Should_ProcessEvent_When_SourceFileMatchesDocument()
+    {
+        await using TestContext test = await CreateTestContextAsync(1);
+        PpapSubmissionDocument document = test.Submission.Documents.Single();
+        DocumentExtractionCompletedIntegrationEventHandler handler = new(test.DbContext, test.Outbox, test.JobService, Substitute.For<IComplexValidationRequestScheduler>());
+
+        await handler.HandleAsync(Completed(document) with { SourceFileAssetId = document.FileAssetId });
+
+        document.ExtractionTerminalStatus.ShouldBe(DocumentExtractionTerminalStatus.Succeeded);
+    }
+
     private static DocumentExtractionCompletedIntegrationEvent Completed(PpapSubmissionDocument document) => new(
         Guid.CreateVersion7(),
         DateTime.UtcNow,
